@@ -1,0 +1,30 @@
+﻿namespace Module.Domain.Shared
+{
+    public enum ViewTypeEnum
+    {
+        Text, 
+        LongText,
+        RichText,
+        Int, 
+        Float,
+        Currency,
+        Percentage,
+        User,
+        MultiUser,
+        Lookup,
+        MultiLookup,
+        Checkbox,
+        Api,
+        Date,
+        Time,
+        DateTime,
+        Month,
+        Week,
+        Quarter,
+        ExternalDisplayValue, 
+        MappedPropertyList,
+        Dynamic,
+        Attachment,
+        MultiAttachment,
+    }
+}
