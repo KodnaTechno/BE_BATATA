@@ -102,19 +102,19 @@ namespace Module.Service
         }
 
 
-        private bool MaxLength(object value, ValidationRule rule)
+        private static bool MaxLength(object value, ValidationRule rule)
         {
             var str = value as string;
             return str != null && str.Length <= int.Parse(rule.Configuration);
         }
 
-        private bool MinLength(object value, ValidationRule rule)
+        private static bool MinLength(object value, ValidationRule rule)
         {
             var str = value as string;
             return str != null && str.Length >= int.Parse(rule.Configuration);
         }
 
-        private bool GreaterThan(object value, ValidationRule rule)
+        private static bool GreaterThan(object value, ValidationRule rule)
         {
             if (value is IComparable comparableValue)
             {
@@ -123,7 +123,7 @@ namespace Module.Service
             return false;
         }
 
-        private bool LessThan(object value, ValidationRule rule)
+        private static bool LessThan(object value, ValidationRule rule)
         {
             if (value is IComparable comparableValue)
             {
@@ -132,7 +132,7 @@ namespace Module.Service
             return false;
         }
 
-        private bool Between(object value, ValidationRule rule)
+        private static bool Between(object value, ValidationRule rule)
         {
             if (value is IComparable comparableValue)
             {
@@ -142,29 +142,29 @@ namespace Module.Service
             return false;
         }
 
-        private bool InDomain(object value, ValidationRule rule)
+        private static bool InDomain(object value, ValidationRule rule)
         {
             var domainValues = rule.Configuration.Split(';');
             return domainValues.Contains(value.ToString());
         }
 
-        private bool IsRequired(object value, ValidationRule rule)
+        private static bool IsRequired(object value, ValidationRule rule)
         {
             return value != null && !string.IsNullOrEmpty(value.ToString());
         }
 
         // Numeric rules
-        private bool IsNumeric(object value, ValidationRule rule)
+        private static bool IsNumeric(object value, ValidationRule rule)
         {
             return double.TryParse(value.ToString(), out _);
         }
 
-        private bool IsInteger(object value, ValidationRule rule)
+        private static bool IsInteger(object value, ValidationRule rule)
         {
             return int.TryParse(value.ToString(), out _);
         }
 
-        private bool IsPositive(object value, ValidationRule rule)
+        private static bool IsPositive(object value, ValidationRule rule)
         {
             if (double.TryParse(value.ToString(), out double numericValue))
             {
@@ -173,7 +173,7 @@ namespace Module.Service
             return false;
         }
 
-        private bool IsNegative(object value, ValidationRule rule)
+        private static bool IsNegative(object value, ValidationRule rule)
         {
             if (double.TryParse(value.ToString(), out double numericValue))
             {
@@ -182,7 +182,7 @@ namespace Module.Service
             return false;
         }
 
-        private bool IsZero(object value, ValidationRule rule)
+        private static bool IsZero(object value, ValidationRule rule)
         {
             if (double.TryParse(value.ToString(), out double numericValue))
             {
@@ -192,41 +192,41 @@ namespace Module.Service
         }
 
         // Text rules
-        private bool Contains(object value, ValidationRule rule)
+        private static bool Contains(object value, ValidationRule rule)
         {
             return value.ToString().Contains(rule.RuleValue);
         }
 
-        private bool StartsWith(object value, ValidationRule rule)
+        private static bool StartsWith(object value, ValidationRule rule)
         {
             return value.ToString().StartsWith(rule.RuleValue);
         }
 
-        private bool EndsWith(object value, ValidationRule rule)
+        private static  bool EndsWith(object value, ValidationRule rule)
         {
             return value.ToString().EndsWith(rule.RuleValue);
         }
 
-        private bool IsEmail(object value, ValidationRule rule)
+        private static bool IsEmail(object value, ValidationRule rule)
         {
             var emailRegex = new Regex(@"^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$");
             return emailRegex.IsMatch(value.ToString());
         }
 
-        private bool IsPhoneNumber(object value, ValidationRule rule)
+        private static bool IsPhoneNumber(object value, ValidationRule rule)
         {
             var phoneNumberRegex = new Regex(@"^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$");
             return phoneNumberRegex.IsMatch(value.ToString());
         }
 
-        private bool MatchesRegex(object value, ValidationRule rule)
+        private static bool MatchesRegex(object value, ValidationRule rule)
         {
             var regex = new Regex(rule.RuleValue);
             return regex.IsMatch(value.ToString());
         }
 
         // Date rules
-        private bool BeforeDate(object value, ValidationRule rule)
+        private static bool BeforeDate(object value, ValidationRule rule)
         {
             if (DateTime.TryParse(value.ToString(), out DateTime dateValue))
             {
@@ -238,7 +238,7 @@ namespace Module.Service
             return false;
         }
 
-        private bool AfterDate(object value, ValidationRule rule)
+        private static bool AfterDate(object value, ValidationRule rule)
         {
             if (DateTime.TryParse(value.ToString(), out DateTime dateValue))
             {
@@ -250,7 +250,7 @@ namespace Module.Service
             return false;
         }
 
-        private bool BetweenDates(object value, ValidationRule rule)
+        private static bool BetweenDates(object value, ValidationRule rule)
         {
             if (DateTime.TryParse(value.ToString(), out DateTime dateValue))
             {
@@ -263,13 +263,13 @@ namespace Module.Service
             return false;
         }
 
-        private bool IsDate(object value, ValidationRule rule)
+        private static bool IsDate(object value, ValidationRule rule)
         {
             return DateTime.TryParse(value.ToString(), out _);
         }
 
         // Boolean rules
-        private bool IsTrue(object value, ValidationRule rule)
+        private static bool IsTrue(object value, ValidationRule rule)
         {
             return value is bool booleanValue && booleanValue;
         }
@@ -283,18 +283,18 @@ namespace Module.Service
 
         // Attachment rules: these are more complex, you would need access to the actual file for this
         // You need to adjust these methods based on how your attachments are structured in your application
-        private bool MaxFileSize(object value, ValidationRule rule)
+        private static bool MaxFileSize(object value, ValidationRule rule)
         {
             throw new NotImplementedException("You need to implement this based on your application.");
         }
 
-        private bool AllowedFileExtensions(object value, ValidationRule rule)
+        private static bool AllowedFileExtensions(object value, ValidationRule rule)
         {
             throw new NotImplementedException("You need to implement this based on your application.");
         }
 
         // Other rules: this is complex and requires more context on how uniqueness should be checked
-        private bool IsUnique(object value, ValidationRule rule)
+        private static bool IsUnique(object value, ValidationRule rule)
         {
             throw new NotImplementedException("You need to implement this based on your application.");
         }

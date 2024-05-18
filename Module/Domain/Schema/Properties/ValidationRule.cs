@@ -4,6 +4,7 @@ namespace Module.Domain.Schema.Properties
 {
     public class ValidationRule
     {
+        public Guid Id { get; set; }
         public RuleTypeEnum RuleType { get; set; }
         public string RuleValue { get; set; }
         public string Configuration { get; set; }
