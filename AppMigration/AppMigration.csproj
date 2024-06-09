@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AppMigration.MySql\AppMigration.MySql.csproj" />
+    <ProjectReference Include="..\AppMigration.PostgreSql\AppMigration.PostgreSql.csproj" />
+    <ProjectReference Include="..\AppMigration.SqlServer\AppMigration.SqlServer.csproj" />
+    <ProjectReference Include="..\Localization\Localization.csproj" />
+  </ItemGroup>
+
+</Project>
