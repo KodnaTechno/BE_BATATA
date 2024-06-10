@@ -21,12 +21,11 @@ public abstract class UserProvider : UserProviderBase
     private readonly ISettingsService _settingsService;
 
 
-    protected UserProvider(UserManager<AppUser> userManager, IHttpContextAccessor httpContextAccessor, AppIdentityDbContext dbContext, IGroupProvider groupProvider, ISettingsService settingsService) : base(httpContextAccessor, userManager, settingsService)
+    protected UserProvider(UserManager<AppUser> userManager, IHttpContextAccessor httpContextAccessor, AppIdentityDbContext dbContext, IGroupProvider groupProvider) : base(httpContextAccessor, userManager)
     {
         UserManager = userManager;
         DbContext = dbContext;
         _groupProvider = groupProvider;
-        _settingsService = settingsService;
     }
 
     public abstract override Task<AppResult<AppUser>> Add(AddUserRes user, bool isExternal = false);

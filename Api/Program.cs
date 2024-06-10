@@ -15,9 +15,16 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddCulture();
-
+AppConfigration.Configure(builder.Configuration);
 builder.Services.AddModule(builder.Configuration);
-builder.Services.AddAppIdentity(builder.Configuration,x=>x.UseSqlServer(AppConfigration.IdentityDbConnection));
+builder.Services.AddAppIdentity(builder.Configuration,x=>
+ {
+     x.UseSqlServer(AppConfigration.IdentityDbConnection, z =>
+     {
+         z.MigrationsAssembly("AppMigration.SqlServer");
+         z.MigrationsHistoryTable("__AppIdentity_MigrationTable");
+     });
+ });
 var app = builder.Build();
 
 ApplyMigrations(app, typeof(ModuleDbContext), typeof(AppIdentityDbContext));

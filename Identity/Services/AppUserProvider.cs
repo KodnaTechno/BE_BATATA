@@ -16,8 +16,8 @@ public class AppUserProvider : UserProvider
     private readonly AppIdentityDbContext _dbContext;
     private readonly SignInManager<AppUser> _signInManager;
 
-    public AppUserProvider(UserManager<AppUser> userManager, IHttpContextAccessor httpContextAccessor, AppIdentityDbContext dbContext, IGroupProvider groupProvider, SignInManager<AppUser> signInManager, ISettingsService settingsService)
-        : base(userManager, httpContextAccessor, dbContext, groupProvider, settingsService)
+    public AppUserProvider(UserManager<AppUser> userManager, IHttpContextAccessor httpContextAccessor, AppIdentityDbContext dbContext, IGroupProvider groupProvider, SignInManager<AppUser> signInManager)
+        : base(userManager, httpContextAccessor, dbContext, groupProvider)
     {
         this._dbContext = dbContext;
         _signInManager = signInManager;

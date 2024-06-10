@@ -18,13 +18,12 @@ public abstract class UserProviderBase : IUserProvider
 {
     protected readonly IHttpContextAccessor HttpContextAccessor;
     protected readonly UserManager<AppUser> userManager;
-    protected readonly ISettingsService _settingsService;
 
-    protected UserProviderBase(IHttpContextAccessor httpContextAccessor, UserManager<AppUser> userManager, ISettingsService settingsService)
+    protected UserProviderBase(IHttpContextAccessor httpContextAccessor, UserManager<AppUser> userManager)
     {
         HttpContextAccessor = httpContextAccessor;
         this.userManager = userManager;
-        _settingsService = settingsService;
+        
     }
 
     public abstract Task<AppResult<AppUser>> Add(AddUserRes user, bool isExternal = false);
@@ -128,7 +127,6 @@ public abstract class UserProviderBase : IUserProvider
 
         var claims = new List<Claim>
         {
-            new(_settingsService.UsernameMapping(),username),
             new("UserName",username),
             new("ExpireDate", expireDate.ToString()),
             new("IsExternal", isExternal.ToString()),

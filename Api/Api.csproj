@@ -7,10 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0-preview.4.24267.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AppMigration.MySql\AppMigration.MySql.csproj" />
+    <ProjectReference Include="..\AppMigration.PostgreSql\AppMigration.PostgreSql.csproj" />
+    <ProjectReference Include="..\AppMigration.SqlServer\AppMigration.SqlServer.csproj" />
     <ProjectReference Include="..\Identity\AppIdentity.csproj" />
     <ProjectReference Include="..\Localization\Localization.csproj" />
     <ProjectReference Include="..\Module\Module.csproj" />
