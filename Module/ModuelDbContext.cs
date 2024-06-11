@@ -9,6 +9,7 @@ namespace Module
     public class ModuleDbContext : DbContext
     {
         #region Schema
+        public DbSet<Application> Applications { get; set; }
         public DbSet<Workspace> Workspaces { get; set; }
         public DbSet<Domain.Schema.Module> Modules { get; set; }
         public DbSet<ModuleBlock> ModuleBlocks { get; set; }
@@ -53,6 +54,7 @@ namespace Module
             modelBuilder.ApplyConfiguration(new WorkspaceConnectionConfiguration());
             modelBuilder.ApplyConfiguration(new WorkspaceModuleBlockConfiguration());
             modelBuilder.ApplyConfiguration(new PropertyFormulaConfiguration());
+            modelBuilder.ApplyConfiguration(new ApplicationConfiguration());
         }
     }
 }
