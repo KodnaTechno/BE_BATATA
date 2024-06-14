@@ -5,9 +5,19 @@ using Module.ServiceFactory;
 using AppIdentity;
 using AppCommon;
 using AppIdentity.Database;
+using Serilog;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+
+// Configure Serilog
+builder.Host.UseSerilog((hostingContext, services, loggerConfiguration) => loggerConfiguration
+    .ReadFrom.Configuration(hostingContext.Configuration)
+    .Enrich.FromLogContext());
+
+
 
 builder.Services.AddControllers();
 

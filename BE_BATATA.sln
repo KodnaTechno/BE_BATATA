@@ -21,6 +21,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppMigration.MySql", "AppMi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppMigration.PostgreSql", "AppMigration.PostgreSql\AppMigration.PostgreSql.csproj", "{AD9710D7-891F-4A18-A235-37908849D640}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{2A3817B4-36DA-4AFD-9694-5AD874B98B40}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{6C528BEB-1B3E-4218-A86B-AB1E07F92BEE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +67,14 @@ Global
 		{AD9710D7-891F-4A18-A235-37908849D640}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD9710D7-891F-4A18-A235-37908849D640}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD9710D7-891F-4A18-A235-37908849D640}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A3817B4-36DA-4AFD-9694-5AD874B98B40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A3817B4-36DA-4AFD-9694-5AD874B98B40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A3817B4-36DA-4AFD-9694-5AD874B98B40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A3817B4-36DA-4AFD-9694-5AD874B98B40}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C528BEB-1B3E-4218-A86B-AB1E07F92BEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C528BEB-1B3E-4218-A86B-AB1E07F92BEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C528BEB-1B3E-4218-A86B-AB1E07F92BEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C528BEB-1B3E-4218-A86B-AB1E07F92BEE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

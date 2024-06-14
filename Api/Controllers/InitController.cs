@@ -19,6 +19,8 @@ namespace Api.Controllers
         [HttpGet]
         public IActionResult Get()
         {
+            throw new NotImplementedException();
+
             var welcomeMessage = _localization["Welcome"].Value;
             return Ok(welcomeMessage);
         }
