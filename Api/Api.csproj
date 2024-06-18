@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AppCommon\AppCommon.csproj" />
     <ProjectReference Include="..\AppMigration.MySql\AppMigration.MySql.csproj" />
     <ProjectReference Include="..\AppMigration.PostgreSql\AppMigration.PostgreSql.csproj" />
     <ProjectReference Include="..\AppMigration.SqlServer\AppMigration.SqlServer.csproj" />
