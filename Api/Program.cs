@@ -6,6 +6,7 @@ using AppIdentity;
 using AppCommon;
 using AppIdentity.Database;
 using Serilog;
+using Infrastructure.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +36,14 @@ builder.Services.AddAppIdentity(builder.Configuration,x=>
          z.MigrationsHistoryTable("__AppIdentity_MigrationTable");
      });
  });
+builder.Services.AddDbContext<ApplicationDbContext>(op => 
+{
+    op.UseSqlServer(AppConfigration.IdentityDbConnection, z =>
+    {
+        z.MigrationsAssembly("AppMigration.SqlServer");
+        z.MigrationsHistoryTable("__App_MigrationTable");
+    });
+});
 var app = builder.Build();
 
 ApplyMigrations(app, typeof(ModuleDbContext), typeof(AppIdentityDbContext));

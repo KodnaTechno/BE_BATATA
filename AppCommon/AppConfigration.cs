@@ -22,6 +22,7 @@ namespace AppCommon
         }
         public static string JWTKey => _configuration["AppIdentity:JWT:Key"];
         public static string IdentityDbConnection => _configuration["AppIdentity:Db:Connection"];
+        public static string AppDbConnection => _configuration["ConnectionStrings:DefaultConnection"];
 
         // Initialize the configuration statically (to be called from Startup.cs)
         public static void Configure(IConfiguration configuration)

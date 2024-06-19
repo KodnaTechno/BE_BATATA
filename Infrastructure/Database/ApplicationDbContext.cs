@@ -2,6 +2,7 @@
 using System;
 using Infrastructure.Database.Domain;
 using Microsoft.EntityFrameworkCore;
+using Infrastructure.Database.Configration;
 
 namespace Infrastructure.Database
 {
@@ -12,5 +13,11 @@ namespace Infrastructure.Database
         }
 
         public DbSet<AppConfig> AppConfigs { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfiguration(new AppConfigConfigration());
+        }
     }
 }
