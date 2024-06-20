@@ -1,16 +1,12 @@
-﻿using Localization.Resources;
+﻿using AppCommon.DTOs.Identity;
+using Localization.Resources;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 
 namespace AppCommon.GlobalHelpers
 {
-    public class FormattedNumberValue
-    {
-        public double? Value { get; set; }
-        public string Formatted { get; set; }
-    }
-
+    
     public static class FormatterExtensions
     {
         // TODO: Make this dynamic after finding a way to read from DB settings and support distributed servers.
@@ -37,12 +33,12 @@ namespace AppCommon.GlobalHelpers
         };
 
 
-        public static FormattedNumberValue FormatCurrency(this int value) => FormatCurrency((double)value);
-        public static FormattedNumberValue FormatCurrency(this float value) => FormatCurrency((double)value);
-        public static FormattedNumberValue FormatCurrency(this long value) => FormatCurrency((double)value);
-        public static FormattedNumberValue FormatCurrency(this decimal value) => FormatCurrency((double)value);
+        public static FormattedNumberValueModel FormatCurrency(this int value) => FormatCurrency((double)value);
+        public static FormattedNumberValueModel FormatCurrency(this float value) => FormatCurrency((double)value);
+        public static FormattedNumberValueModel FormatCurrency(this long value) => FormatCurrency((double)value);
+        public static FormattedNumberValueModel FormatCurrency(this decimal value) => FormatCurrency((double)value);
 
-        public static FormattedNumberValue FormatCurrency(this double value)
+        public static FormattedNumberValueModel FormatCurrency(this double value)
         {
             var Formmated = $"{value} {CurrencySymbol}".Trim();
             if (value > 1000.0)
@@ -53,7 +49,7 @@ namespace AppCommon.GlobalHelpers
                     CurrencyLabels[exp - 1], CurrencySymbol).Replace(".00", "").Trim();
             }
 
-            return new FormattedNumberValue
+            return new FormattedNumberValueModel
             {
                 Value = value,
                 Formatted = Formmated
@@ -61,40 +57,40 @@ namespace AppCommon.GlobalHelpers
         }
 
 
-        public static FormattedNumberValue FormatPercentageWithSymbol(this int value) => FormatPercentageWithSymbol((double)value);
-        public static FormattedNumberValue FormatPercentageWithSymbol(this float value) => FormatPercentageWithSymbol((double)value);
-        public static FormattedNumberValue FormatPercentageWithSymbol(this long value) => FormatPercentageWithSymbol((double)value);
-        public static FormattedNumberValue FormatPercentageWithSymbol(this decimal value) => FormatPercentageWithSymbol((double)value);
+        public static FormattedNumberValueModel FormatPercentageWithSymbol(this int value) => FormatPercentageWithSymbol((double)value);
+        public static FormattedNumberValueModel FormatPercentageWithSymbol(this float value) => FormatPercentageWithSymbol((double)value);
+        public static FormattedNumberValueModel FormatPercentageWithSymbol(this long value) => FormatPercentageWithSymbol((double)value);
+        public static FormattedNumberValueModel FormatPercentageWithSymbol(this decimal value) => FormatPercentageWithSymbol((double)value);
 
-        public static FormattedNumberValue FormatPercentageWithSymbol(this double value)
+        public static FormattedNumberValueModel FormatPercentageWithSymbol(this double value)
         {
-            return new FormattedNumberValue
+            return new FormattedNumberValueModel
             {
                 Value = value,
                 Formatted = $"{value / 100:P1}".Replace(".0", "")
             };
         }
 
-        public static FormattedNumberValue FormatPercentage(this int value) => FormatPercentage((double)value);
-        public static FormattedNumberValue FormatPercentage(this float value) => FormatPercentage((double)value);
-        public static FormattedNumberValue FormatPercentage(this long value) => FormatPercentage((double)value);
-        public static FormattedNumberValue FormatPercentage(this decimal value) => FormatPercentage((double)value);
+        public static FormattedNumberValueModel FormatPercentage(this int value) => FormatPercentage((double)value);
+        public static FormattedNumberValueModel FormatPercentage(this float value) => FormatPercentage((double)value);
+        public static FormattedNumberValueModel FormatPercentage(this long value) => FormatPercentage((double)value);
+        public static FormattedNumberValueModel FormatPercentage(this decimal value) => FormatPercentage((double)value);
 
-        public static FormattedNumberValue FormatPercentage(this double value)
+        public static FormattedNumberValueModel FormatPercentage(this double value)
         {
-            return new FormattedNumberValue
+            return new FormattedNumberValueModel
             {
                 Value = value,
                 Formatted = $"{value / 100:P1}".Replace(".0", "")
             };
         }
 
-        public static FormattedNumberValue FormatNumber(this int value) => FormatNumber((double)value);
-        public static FormattedNumberValue FormatNumber(this float value) => FormatNumber((double)value);
-        public static FormattedNumberValue FormatNumber(this long value) => FormatNumber((double)value);
-        public static FormattedNumberValue FormatNumber(this decimal value) => FormatNumber((double)value);
+        public static FormattedNumberValueModel FormatNumber(this int value) => FormatNumber((double)value);
+        public static FormattedNumberValueModel FormatNumber(this float value) => FormatNumber((double)value);
+        public static FormattedNumberValueModel FormatNumber(this long value) => FormatNumber((double)value);
+        public static FormattedNumberValueModel FormatNumber(this decimal value) => FormatNumber((double)value);
 
-        public static FormattedNumberValue FormatNumber(this double money)
+        public static FormattedNumberValueModel FormatNumber(this double money)
         {
             const int decimals = 2;
             string result = money.ToString();
@@ -107,7 +103,7 @@ namespace AppCommon.GlobalHelpers
                 if (money >= currentVal)
                     result = $"{Math.Round(money / currentVal, decimals)}{suff}";
                 else
-                    return new FormattedNumberValue
+                    return new FormattedNumberValueModel
                     {
                         Value = money,
                         Formatted = result
@@ -115,7 +111,7 @@ namespace AppCommon.GlobalHelpers
 
             }
 
-            return new FormattedNumberValue
+            return new FormattedNumberValueModel
             {
                 Value = money,
                 Formatted = result
