@@ -206,7 +206,7 @@ namespace AppCommon.GlobalHelpers
             return new DateTimeParseResult
             {
                 DisplayValue = displayValue,
-                ActualValue = actualValue.Value
+                RawValue = actualValue.Value
             };
         }
 
@@ -225,7 +225,7 @@ namespace AppCommon.GlobalHelpers
 
         private static DateTimeParseResult FailedParseResult(DateTime? actualValue = null)
         {
-            return new DateTimeParseResult { DisplayValue = EMPTY_DISPLAY, ActualValue = actualValue.Value };
+            return new DateTimeParseResult { DisplayValue = EMPTY_DISPLAY, RawValue = actualValue.Value };
         }
 
         private static TimezoneSetting GetTimeZoneInfo()

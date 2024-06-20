@@ -51,8 +51,8 @@ namespace AppCommon.GlobalHelpers
 
             return new FormattedNumberValueModel
             {
-                Value = value,
-                Formatted = Formmated
+                RawValue = value,
+                DisplayValue = Formmated
             };
         }
 
@@ -66,8 +66,8 @@ namespace AppCommon.GlobalHelpers
         {
             return new FormattedNumberValueModel
             {
-                Value = value,
-                Formatted = $"{value / 100:P1}".Replace(".0", "")
+                RawValue = value,
+                DisplayValue = $"{value / 100:P1}".Replace(".0", "")
             };
         }
 
@@ -80,8 +80,8 @@ namespace AppCommon.GlobalHelpers
         {
             return new FormattedNumberValueModel
             {
-                Value = value,
-                Formatted = $"{value / 100:P1}".Replace(".0", "")
+                RawValue = value,
+                DisplayValue = $"{value / 100:P1}".Replace(".0", "")
             };
         }
 
@@ -105,16 +105,16 @@ namespace AppCommon.GlobalHelpers
                 else
                     return new FormattedNumberValueModel
                     {
-                        Value = money,
-                        Formatted = result
+                        RawValue = money,
+                        DisplayValue = result
                     };
 
             }
 
             return new FormattedNumberValueModel
             {
-                Value = money,
-                Formatted = result
+                RawValue = money,
+                DisplayValue = result
             };
         }
     }
