@@ -7,6 +7,8 @@ using AppCommon;
 using AppIdentity.Database;
 using Serilog;
 using Infrastructure.Database;
+using Import.ServiceFactory;
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,6 +46,18 @@ builder.Services.AddDbContext<ApplicationDbContext>(op =>
         z.MigrationsHistoryTable("__App_MigrationTable");
     });
 });
+
+builder.Services.AddImportServices();
+
+//builder.Services.AddDistributedMemoryCache(); // Adds a default in-memory implementation of IDistributedCache
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout
+    options.Cookie.HttpOnly = true; // Set HttpOnly for security
+    options.Cookie.IsEssential = true; // Make the session cookie essential
+});
+//builder.Services.AddHttpContextAccessor(); // Add IHttpContextAccessor to access session in services
+
 var app = builder.Build();
 
 ApplyMigrations(app, typeof(ModuleDbContext), typeof(AppIdentityDbContext));
@@ -62,6 +76,9 @@ app.UseCulture();
 app.UseAppIdentity();
 
 app.MapControllers();
+
+
+app.UseSession(); // Enable session handling
 
 app.Run();
 

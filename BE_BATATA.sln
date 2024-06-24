@@ -15,15 +15,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Workflow", "Workflow\Workfl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppCommon", "AppCommon\AppCommon.csproj", "{F502F3B5-CDC6-4A4B-8999-0804A4B65A24}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppMigration.SqlServer", "AppMigration.SqlServer\AppMigration.SqlServer.csproj", "{182CAD2B-C6A7-43A1-BA7D-5FB9F177967C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMigration.SqlServer", "AppMigration.SqlServer\AppMigration.SqlServer.csproj", "{182CAD2B-C6A7-43A1-BA7D-5FB9F177967C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppMigration.MySql", "AppMigration.MySql\AppMigration.MySql.csproj", "{D4D77D99-E59D-44EF-8704-D6AC1BBC9484}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMigration.MySql", "AppMigration.MySql\AppMigration.MySql.csproj", "{D4D77D99-E59D-44EF-8704-D6AC1BBC9484}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppMigration.PostgreSql", "AppMigration.PostgreSql\AppMigration.PostgreSql.csproj", "{AD9710D7-891F-4A18-A235-37908849D640}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMigration.PostgreSql", "AppMigration.PostgreSql\AppMigration.PostgreSql.csproj", "{AD9710D7-891F-4A18-A235-37908849D640}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{2A3817B4-36DA-4AFD-9694-5AD874B98B40}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "Application\Application.csproj", "{2A3817B4-36DA-4AFD-9694-5AD874B98B40}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{6C528BEB-1B3E-4218-A86B-AB1E07F92BEE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{6C528BEB-1B3E-4218-A86B-AB1E07F92BEE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Import", "Import\Import.csproj", "{106ED228-10AD-41B8-A026-D6F43EC54485}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +77,10 @@ Global
 		{6C528BEB-1B3E-4218-A86B-AB1E07F92BEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C528BEB-1B3E-4218-A86B-AB1E07F92BEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C528BEB-1B3E-4218-A86B-AB1E07F92BEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{106ED228-10AD-41B8-A026-D6F43EC54485}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{106ED228-10AD-41B8-A026-D6F43EC54485}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{106ED228-10AD-41B8-A026-D6F43EC54485}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{106ED228-10AD-41B8-A026-D6F43EC54485}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
