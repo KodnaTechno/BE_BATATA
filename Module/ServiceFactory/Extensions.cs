@@ -17,7 +17,7 @@ namespace Module.ServiceFactory
                     ConfigureSqlServerDbContext(services, connectionString);
                     break;
                 case "PostgreSQL":
-                    ConfigurePostgreSQLDbContext(services, connectionString);
+                    //ConfigurePostgreSQLDbContext(services, connectionString);
                     break;
                 default:
                     throw new Exception("Invalid database provider");
@@ -28,17 +28,21 @@ namespace Module.ServiceFactory
         {
             services.AddDbContext<ModuleDbContext>(options =>
             {
-                options.UseSqlServer(connectionString);
+                options.UseSqlServer(connectionString, sqlOptions =>
+                {
+                    sqlOptions.MigrationsAssembly("AppMigration.SqlServer");
+                    sqlOptions.MigrationsHistoryTable("__Module_MigrationTable");
+                });
             });
         }
 
-        public static void ConfigurePostgreSQLDbContext(IServiceCollection services, string connectionString)
-        {
-            services.AddDbContext<ModuleDbContext>(options =>
-            {
-                options.UseNpgsql(connectionString);
-            });
-        }
+        //public static void ConfigurePostgreSQLDbContext(IServiceCollection services, string connectionString)
+        //{
+        //    services.AddDbContext<ModuleDbContext>(options =>
+        //    {
+        //        options.UseNpgsql(connectionString);
+        //    });
+        //}
     }
 
 }

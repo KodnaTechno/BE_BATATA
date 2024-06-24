@@ -1,11 +1,6 @@
 ﻿using Infrastructure.Database.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Database.Configration
 {
@@ -13,7 +8,7 @@ namespace Infrastructure.Database.Configration
     {
         public void Configure(EntityTypeBuilder<AppConfig> builder)
         {
-            builder.HasNoKey();
+            builder.HasKey(ac => ac.Id);
         }
     }
 }

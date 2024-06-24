@@ -1,10 +1,23 @@
 ﻿using AppCommon.DTOs;
+using Microsoft.Extensions.Options;
 using System.Globalization;
 
 namespace AppCommon.GlobalHelpers
 {
     public static class DateTimeExtensions
     {
+        private static TimezoneSetting _timezoneSetting = new(); 
+
+        public static void ConfigureTimezone(IOptionsMonitor<TimezoneSetting> timezoneSettings)
+        {
+            timezoneSettings.OnChange(settings =>
+            {
+                _timezoneSetting = settings;
+            });
+
+            _timezoneSetting = timezoneSettings.CurrentValue;
+        }
+
         private const string EMPTY_DISPLAY = "-";
         public const string DATE_FORMAT = "yyyy-MM-dd";
         public const string DATETIME_FORMAT = "yyyy-MM-dd hh:mm tt";
@@ -39,10 +52,8 @@ namespace AppCommon.GlobalHelpers
         public static object FormatTime(this TimeSpan? time)
         {
             CultureInfo cultureInfo = Thread.CurrentThread.CurrentCulture;
-            var timeZone = GetTimeZoneInfo();
-
             TimeSpan? regionTime = time.AdjustToRegionTime();
-            string format = timeZone.TimeFormat;
+            string format = _timezoneSetting.TimeFormat;
             string timespanFormat = ConvertDateTimeFormatToTimeSpanFormat(format);
             string displayValue = "00:00";
             if (regionTime.HasValue)
@@ -184,21 +195,20 @@ namespace AppCommon.GlobalHelpers
 
             CultureInfo cultureInfo = Thread.CurrentThread.CurrentCulture;
             DateTime? adjustedDateTime;
-            var timeZone = GetTimeZoneInfo();
-            timeZone.DateFormat = timeZone.DateFormat.CorrectDateFormat();
+            _timezoneSetting.DateFormat = _timezoneSetting.DateFormat.CorrectDateFormat();
 
             string displayValue;
 
             if (includeTime)
             {
                 adjustedDateTime = dateTime.AdjustToRegionDateTime();
-                string format = $"{timeZone.DateFormat} {timeZone.TimeFormat}";
+                string format = $"{_timezoneSetting.DateFormat} {_timezoneSetting.TimeFormat}";
                 displayValue = adjustedDateTime?.ToString(format, cultureInfo);
             }
             else
             {
                 adjustedDateTime = dateTime;
-                displayValue = adjustedDateTime?.ToString(timeZone.DateFormat, cultureInfo);
+                displayValue = adjustedDateTime?.ToString(_timezoneSetting.DateFormat, cultureInfo);
             }
 
             var actualValue = includeTime ? adjustedDateTime : adjustedDateTime?.Date;
@@ -228,15 +238,9 @@ namespace AppCommon.GlobalHelpers
             return new DateTimeParseResult { DisplayValue = EMPTY_DISPLAY, ActualValue = actualValue.Value };
         }
 
-        private static TimezoneSetting GetTimeZoneInfo()
-        {
-            return null;
-            //return PPlusSettingsManager.Settings?.Timezone ?? throw new InvalidOperationException("Settings or Timezone is null.");
-        }
-
         private static TimeSpan GetBaseUtcOffset()
         {
-            string baseUtcOffsetString = GetTimeZoneInfo().Region?.BaseUtcOffset ?? TimeZoneInfo.Local.GetUtcOffset(DateTime.UtcNow).ToString();
+            string baseUtcOffsetString = _timezoneSetting.Region?.BaseUtcOffset ?? TimeZoneInfo.Local.GetUtcOffset(DateTime.UtcNow).ToString();
             if (!TimeSpan.TryParse(baseUtcOffsetString, out TimeSpan offset))
             {
                 throw new InvalidOperationException($"Invalid UTC offset format: {baseUtcOffsetString}");

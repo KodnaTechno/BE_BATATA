@@ -3,16 +3,35 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Module.Migrations
+namespace AppMigration.SqlServer.Module
 {
     /// <inheritdoc />
-    public partial class InitModule : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
                 name: "module");
+
+            migrationBuilder.CreateTable(
+                name: "Applications",
+                schema: "module",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Icon = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Applications", x => x.Id);
+                });
 
             migrationBuilder.CreateTable(
                 name: "ModuleBlocks",
@@ -33,50 +52,6 @@ namespace Module.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Modules",
-                schema: "module",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Domain = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    Order = table.Column<int>(type: "int", nullable: false),
-                    Details = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UpdatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Modules", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Workspace",
-                schema: "module",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    NormlizedTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Order = table.Column<int>(type: "int", nullable: false),
-                    Details = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UpdatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Workspace", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "WorkspaceData",
                 schema: "module",
                 columns: table => new
@@ -90,6 +65,66 @@ namespace Module.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_WorkspaceData", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Modules",
+                schema: "module",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Domain = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    Order = table.Column<int>(type: "int", nullable: false),
+                    Details = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ApplicationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UpdatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Modules", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Modules_Applications_ApplicationId",
+                        column: x => x.ApplicationId,
+                        principalSchema: "module",
+                        principalTable: "Applications",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Workspace",
+                schema: "module",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NormlizedTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Order = table.Column<int>(type: "int", nullable: false),
+                    Details = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ApplicationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UpdatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Workspace", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Workspace_Applications_ApplicationId",
+                        column: x => x.ApplicationId,
+                        principalSchema: "module",
+                        principalTable: "Applications",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -231,7 +266,7 @@ namespace Module.Migrations
                         principalSchema: "module",
                         principalTable: "Workspace",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -487,6 +522,12 @@ namespace Module.Migrations
                 column: "ModulId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Modules_ApplicationId",
+                schema: "module",
+                table: "Modules",
+                column: "ApplicationId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Property_ModuleId",
                 schema: "module",
                 table: "Property",
@@ -557,6 +598,12 @@ namespace Module.Migrations
                 schema: "module",
                 table: "ValidationRules",
                 column: "PropertyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Workspace_ApplicationId",
+                schema: "module",
+                table: "Workspace",
+                column: "ApplicationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_WorkspaceConnection_SourceWorkspaceId",
@@ -674,6 +721,10 @@ namespace Module.Migrations
 
             migrationBuilder.DropTable(
                 name: "Workspace",
+                schema: "module");
+
+            migrationBuilder.DropTable(
+                name: "Applications",
                 schema: "module");
         }
     }

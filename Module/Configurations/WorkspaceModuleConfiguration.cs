@@ -8,8 +8,15 @@ namespace Module.Configurations
     {
         public void Configure(EntityTypeBuilder<WorkspaceModule> builder)
         {
-            builder.HasOne(e => e.Workspace).WithMany(e => e.WorkspaceModules).HasForeignKey(e => e.WorkspaceId);
-            builder.HasOne(e => e.Module).WithMany(e => e.WorkspaceModules).HasForeignKey(e => e.ModuleId);
+            builder.HasOne(e => e.Workspace)
+                .WithMany(e => e.WorkspaceModules)
+                .HasForeignKey(e => e.WorkspaceId)
+                .OnDelete(DeleteBehavior.Restrict); 
+
+            builder.HasOne(e => e.Module)
+                   .WithMany(e => e.WorkspaceModules)
+                   .HasForeignKey(e => e.ModuleId)
+                   .OnDelete(DeleteBehavior.Cascade);
         }
     }
 

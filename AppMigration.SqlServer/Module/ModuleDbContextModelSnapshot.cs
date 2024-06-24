@@ -8,7 +8,7 @@ using Module;
 
 #nullable disable
 
-namespace Module.Migrations
+namespace AppMigration.SqlServer.Module
 {
     [DbContext(typeof(ModuleDbContext))]
     partial class ModuleDbContextModelSnapshot : ModelSnapshot
@@ -18,7 +18,7 @@ namespace Module.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("module")
-                .HasAnnotation("ProductVersion", "8.0.5")
+                .HasAnnotation("ProductVersion", "9.0.0-preview.4.24267.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -161,10 +161,45 @@ namespace Module.Migrations
                     b.ToTable("WorkspaceData", "module");
                 });
 
+            modelBuilder.Entity("Module.Domain.Schema.Application", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Icon")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Applications", "module");
+                });
+
             modelBuilder.Entity("Module.Domain.Schema.Module", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ApplicationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTimeOffset>("CreatedAt")
@@ -202,6 +237,8 @@ namespace Module.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ApplicationId");
 
                     b.ToTable("Modules", "module");
                 });
@@ -451,6 +488,9 @@ namespace Module.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("ApplicationId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
@@ -480,6 +520,8 @@ namespace Module.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ApplicationId");
 
                     b.ToTable("Workspace", "module");
                 });
@@ -627,6 +669,17 @@ namespace Module.Migrations
                     b.Navigation("WorkspaceConnection");
                 });
 
+            modelBuilder.Entity("Module.Domain.Schema.Module", b =>
+                {
+                    b.HasOne("Module.Domain.Schema.Application", "Application")
+                        .WithMany("Modules")
+                        .HasForeignKey("ApplicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Application");
+                });
+
             modelBuilder.Entity("Module.Domain.Schema.ModuleBlockModule", b =>
                 {
                     b.HasOne("Module.Domain.Schema.ModuleBlock", "ModuleBlock")
@@ -716,6 +769,17 @@ namespace Module.Migrations
                     b.Navigation("Property");
                 });
 
+            modelBuilder.Entity("Module.Domain.Schema.Workspace", b =>
+                {
+                    b.HasOne("Module.Domain.Schema.Application", "Application")
+                        .WithMany("Workspaces")
+                        .HasForeignKey("ApplicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Application");
+                });
+
             modelBuilder.Entity("Module.Domain.Schema.WorkspaceConnection", b =>
                 {
                     b.HasOne("Module.Domain.Schema.Workspace", "SourceWorkspace")
@@ -744,7 +808,7 @@ namespace Module.Migrations
                     b.HasOne("Module.Domain.Schema.Workspace", "Workspace")
                         .WithMany("WorkspaceModules")
                         .HasForeignKey("WorkspaceId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Module");
@@ -781,6 +845,13 @@ namespace Module.Migrations
                     b.Navigation("ProperatyData");
 
                     b.Navigation("WorkspaceConnections");
+                });
+
+            modelBuilder.Entity("Module.Domain.Schema.Application", b =>
+                {
+                    b.Navigation("Modules");
+
+                    b.Navigation("Workspaces");
                 });
 
             modelBuilder.Entity("Module.Domain.Schema.Module", b =>

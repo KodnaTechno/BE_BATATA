@@ -1,52 +1,62 @@
 using Localization.ServiceFactory;
-using Microsoft.EntityFrameworkCore;
 using Module;
-using Module.ServiceFactory;
 using AppIdentity;
-using AppCommon;
 using AppIdentity.Database;
 using Serilog;
 using Infrastructure.Database;
+using Api.Extensions;
+using Infrastructure.Database.Configration;
+using Winton.Extensions.Configuration.Consul;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-
 // Configure Serilog
-builder.Host.UseSerilog((hostingContext, services, loggerConfiguration) => loggerConfiguration
-    .ReadFrom.Configuration(hostingContext.Configuration)
-    .Enrich.FromLogContext());
+builder.Host.UseSerilog((hostingContext, services, loggerConfiguration) =>
+    loggerConfiguration
+        .ReadFrom.Configuration(hostingContext.Configuration)
+        .Enrich.FromLogContext());
 
 
+// Integrate Consul
+try
+{
+    builder.Configuration.AddConsul("config/app", options =>
+    {
+        options.ConsulConfigurationOptions = cco =>
+        {
+            cco.Address = new Uri(builder.Configuration["Consul:Host"]);
+        };
+        options.ReloadOnChange = true;
+        options.Optional = true;
 
+    });
+
+}
+catch 
+{
+
+}
+
+
+// Add services to the container.
 builder.Services.AddControllers();
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddCulture();
-AppConfigration.Configure(builder.Configuration);
-builder.Services.AddModule(builder.Configuration);
-builder.Services.AddAppIdentity(builder.Configuration,x=>
- {
-     x.UseSqlServer(AppConfigration.IdentityDbConnection, z =>
-     {
-         z.MigrationsAssembly("AppMigration.SqlServer");
-         z.MigrationsHistoryTable("__AppIdentity_MigrationTable");
-     });
- });
-builder.Services.AddDbContext<ApplicationDbContext>(op => 
-{
-    op.UseSqlServer(AppConfigration.IdentityDbConnection, z =>
-    {
-        z.MigrationsAssembly("AppMigration.SqlServer");
-        z.MigrationsHistoryTable("__App_MigrationTable");
-    });
-});
+// Register custom services and configurations
+builder.Services.AddCustomServices(builder.Configuration);
+
 var app = builder.Build();
 
-ApplyMigrations(app, typeof(ModuleDbContext), typeof(AppIdentityDbContext));
+// Apply migrations
+app.ApplyMigrations(typeof(ModuleDbContext), typeof(AppIdentityDbContext), typeof(ApplicationDbContext));
+
+app.SeedDatabaseAsync().Wait();
+
+
+// Initialize and configure timezone settings
+app.ConfigureTimezoneSettings();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -56,21 +66,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseCulture();
-
 app.UseAppIdentity();
-
 app.MapControllers();
 
 app.Run();
-
-static void ApplyMigrations(WebApplication app, params Type[] dbContexts)
-{
-    using var scope = app.Services.CreateScope();
-    foreach (var dbContextType in dbContexts)
-    {
-        var dbContext = (DbContext)scope.ServiceProvider.GetRequiredService(dbContextType);
-        dbContext.Database.Migrate();
-    }
-}
