@@ -70,4 +70,5 @@ app.UseCulture();
 app.UseAppIdentity();
 app.MapControllers();
 
+app.UseSession(); // Enable session handling
 app.Run();

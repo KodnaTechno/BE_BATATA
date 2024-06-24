@@ -37,22 +37,31 @@ namespace AppCommon.GlobalHelpers
         public static FormattedNumberValueModel FormatCurrency(this float value) => FormatCurrency((double)value);
         public static FormattedNumberValueModel FormatCurrency(this long value) => FormatCurrency((double)value);
         public static FormattedNumberValueModel FormatCurrency(this decimal value) => FormatCurrency((double)value);
+        public static FormattedNumberValueModel FormatCurrency(this int? value) => FormatCurrency((double?)value);
+        public static FormattedNumberValueModel FormatCurrency(this float? value) => FormatCurrency((double?)value);
+        public static FormattedNumberValueModel FormatCurrency(this long? value) => FormatCurrency((double?)value);
+        public static FormattedNumberValueModel FormatCurrency(this decimal? value) => FormatCurrency((double?)value);
 
-        public static FormattedNumberValueModel FormatCurrency(this double value)
+        public static FormattedNumberValueModel FormatCurrency(this double? value)
         {
+            if (value == null)
+            {
+                return DefaultFormattedNumberValue();
+            }
+            var doubleValue = (double)value;
             var Formmated = $"{value} {CurrencySymbol}".Trim();
             if (value > 1000.0)
             {
-                int exp = (int)(Math.Log(value) / Math.Log(1000));
+                int exp = (int)(Math.Log(doubleValue) / Math.Log(1000));
                 Formmated = string.Format(Messages.Currency_Format,
-                    Math.Round(value / Math.Pow(1000, exp), 2),
+                    Math.Round(doubleValue / Math.Pow(1000, exp), 2),
                     CurrencyLabels[exp - 1], CurrencySymbol).Replace(".00", "").Trim();
             }
 
             return new FormattedNumberValueModel
             {
-                Value = value,
-                Formatted = Formmated
+                RawValue = value,
+                DisplayValue = Formmated
             };
         }
 
@@ -61,13 +70,21 @@ namespace AppCommon.GlobalHelpers
         public static FormattedNumberValueModel FormatPercentageWithSymbol(this float value) => FormatPercentageWithSymbol((double)value);
         public static FormattedNumberValueModel FormatPercentageWithSymbol(this long value) => FormatPercentageWithSymbol((double)value);
         public static FormattedNumberValueModel FormatPercentageWithSymbol(this decimal value) => FormatPercentageWithSymbol((double)value);
+        public static FormattedNumberValueModel FormatPercentageWithSymbol(this int? value) => FormatPercentageWithSymbol((double?)value);
+        public static FormattedNumberValueModel FormatPercentageWithSymbol(this float? value) => FormatPercentageWithSymbol((double?)value);
+        public static FormattedNumberValueModel FormatPercentageWithSymbol(this long? value) => FormatPercentageWithSymbol((double?)value);
+        public static FormattedNumberValueModel FormatPercentageWithSymbol(this decimal? value) => FormatPercentageWithSymbol((double?)value);
 
-        public static FormattedNumberValueModel FormatPercentageWithSymbol(this double value)
+        public static FormattedNumberValueModel FormatPercentageWithSymbol(this double? value)
         {
+            if (value == null)
+            {
+                return DefaultFormattedNumberValue();
+            }
             return new FormattedNumberValueModel
             {
-                Value = value,
-                Formatted = $"{value / 100:P1}".Replace(".0", "")
+                RawValue = value,
+                DisplayValue = $"{value / 100:P1}".Replace(".0", "")
             };
         }
 
@@ -75,13 +92,21 @@ namespace AppCommon.GlobalHelpers
         public static FormattedNumberValueModel FormatPercentage(this float value) => FormatPercentage((double)value);
         public static FormattedNumberValueModel FormatPercentage(this long value) => FormatPercentage((double)value);
         public static FormattedNumberValueModel FormatPercentage(this decimal value) => FormatPercentage((double)value);
+        public static FormattedNumberValueModel FormatPercentage(this int? value) => FormatPercentage((double?)value);
+        public static FormattedNumberValueModel FormatPercentage(this float? value) => FormatPercentage((double?)value);
+        public static FormattedNumberValueModel FormatPercentage(this long? value) => FormatPercentage((double?)value);
+        public static FormattedNumberValueModel FormatPercentage(this decimal? value) => FormatPercentage((double?)value);
 
-        public static FormattedNumberValueModel FormatPercentage(this double value)
+        public static FormattedNumberValueModel FormatPercentage(this double? value)
         {
+            if (value == null)
+            {
+                return DefaultFormattedNumberValue();
+            }
             return new FormattedNumberValueModel
             {
-                Value = value,
-                Formatted = $"{value / 100:P1}".Replace(".0", "")
+                RawValue = value,
+                DisplayValue = $"{value / 100:P1}".Replace(".0", "")
             };
         }
 
@@ -89,9 +114,18 @@ namespace AppCommon.GlobalHelpers
         public static FormattedNumberValueModel FormatNumber(this float value) => FormatNumber((double)value);
         public static FormattedNumberValueModel FormatNumber(this long value) => FormatNumber((double)value);
         public static FormattedNumberValueModel FormatNumber(this decimal value) => FormatNumber((double)value);
+        public static FormattedNumberValueModel FormatNumber(this int? value) => FormatNumber((double?)value);
+        public static FormattedNumberValueModel FormatNumber(this float? value) => FormatNumber((double?)value);
+        public static FormattedNumberValueModel FormatNumber(this long? value) => FormatNumber((double?)value);
+        public static FormattedNumberValueModel FormatNumber(this decimal? value) => FormatNumber((double?)value);
 
-        public static FormattedNumberValueModel FormatNumber(this double money)
+        public static FormattedNumberValueModel FormatNumber(this double? money)
         {
+            if (money == null)
+            {
+                return DefaultFormattedNumberValue();
+            }
+            var doubleMoney = (double)money;
             const int decimals = 2;
             string result = money.ToString();
 
@@ -101,20 +135,29 @@ namespace AppCommon.GlobalHelpers
                 string suff = Enum.GetName(typeof(Suffixes), (int)suffix) ?? string.Empty;
 
                 if (money >= currentVal)
-                    result = $"{Math.Round(money / currentVal, decimals)}{suff}";
+                    result = $"{Math.Round(doubleMoney / currentVal, decimals)}{suff}";
                 else
                     return new FormattedNumberValueModel
                     {
-                        Value = money,
-                        Formatted = result
+                        RawValue = money,
+                        DisplayValue = result
                     };
 
             }
 
             return new FormattedNumberValueModel
             {
-                Value = money,
-                Formatted = result
+                RawValue = money,
+                DisplayValue = result
+            };
+        }
+
+        public static FormattedNumberValueModel DefaultFormattedNumberValue()
+        {
+            return new FormattedNumberValueModel
+            {
+                RawValue = null,
+                DisplayValue = "--"
             };
         }
     }

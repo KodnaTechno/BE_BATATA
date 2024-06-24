@@ -26,6 +26,7 @@
     <ProjectReference Include="..\AppMigration.PostgreSql\AppMigration.PostgreSql.csproj" />
     <ProjectReference Include="..\AppMigration.SqlServer\AppMigration.SqlServer.csproj" />
     <ProjectReference Include="..\Identity\AppIdentity.csproj" />
+    <ProjectReference Include="..\Import\Import.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
     <ProjectReference Include="..\Localization\Localization.csproj" />
     <ProjectReference Include="..\Module\Module.csproj" />

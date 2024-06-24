@@ -8,7 +8,7 @@ namespace AppCommon.DTOs.Identity
 {
     public class FormattedNumberValueModel
     {
-        public double? Value { get; set; }
-        public string Formatted { get; set; }
+        public double? RawValue { get; set; }
+        public string DisplayValue { get; set; }
     }
 }
