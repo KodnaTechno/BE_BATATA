@@ -5,8 +5,8 @@ using AppIdentity.Database;
 using Serilog;
 using Infrastructure.Database;
 using Api.Extensions;
-using Infrastructure.Database.Configration;
 using Winton.Extensions.Configuration.Consul;
+
 
 var builder = WebApplication.CreateBuilder(args);
 

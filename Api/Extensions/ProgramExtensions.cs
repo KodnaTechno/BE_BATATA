@@ -9,6 +9,7 @@ using AppIdentity;
 using Infrastructure.Database.Configration;
 using AppCommon.GlobalHelpers;
 using Consul;
+using Import.ServiceFactory;
 
 namespace Api.Extensions
 {
@@ -47,6 +48,17 @@ namespace Api.Extensions
             }));
 
             services.AddScoped<AppConfigSeeder>();
+
+            services.AddImportServices();
+
+            //builder.Services.AddDistributedMemoryCache(); // Adds a default in-memory implementation of IDistributedCache
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout
+                options.Cookie.HttpOnly = true; // Set HttpOnly for security
+                options.Cookie.IsEssential = true; // Make the session cookie essential
+            });
+            //builder.Services.AddHttpContextAccessor();
         }
 
         public static void ApplyMigrations(this IApplicationBuilder app, params Type[] dbContexts)
