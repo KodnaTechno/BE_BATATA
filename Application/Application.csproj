@@ -3,25 +3,37 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Features\ControlPanel\Application\Commands\" />
-    <Folder Include="Features\ControlPanel\Application\Events\" />
-    <Folder Include="Features\ControlPanel\Application\Handlers\" />
-    <Folder Include="Features\ControlPanel\Application\NewFolder\" />
+    <Compile Remove="Features\ControlPanel\Workspace\Events\**" />
+    <EmbeddedResource Remove="Features\ControlPanel\Workspace\Events\**" />
+    <None Remove="Features\ControlPanel\Workspace\Events\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Common\Behaviors\" />
+    <Folder Include="Common\Exceptions\" />
+    <Folder Include="Common\Constants\" />
+    <Folder Include="Services\Caching\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Consul" Version="1.7.14.3" />
+    <PackageReference Include="Hangfire.AspNetCore" Version="1.8.14" />
+    <PackageReference Include="Hangfire.Core" Version="1.8.14" />
+    <PackageReference Include="Hangfire.SqlServer" Version="1.8.14" />
+    <PackageReference Include="MediatR" Version="12.4.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Riok.Mapperly" Version="4.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\AppCommon\AppCommon.csproj" />
+    <ProjectReference Include="..\Events\Events.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+    <ProjectReference Include="..\Module\Module.csproj" />
   </ItemGroup>
 
 </Project>

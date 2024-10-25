@@ -13,11 +13,13 @@ namespace Infrastructure.Database
         }
 
         public DbSet<AppConfig> AppConfigs { get; set; }
+        public DbSet<EventLog> EventLogs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfiguration(new AppConfigConfigration());
+            modelBuilder.ApplyConfiguration(new EventLogConfigration());
         }
     }
 }

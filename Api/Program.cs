@@ -6,6 +6,9 @@ using Serilog;
 using Infrastructure.Database;
 using Api.Extensions;
 using Winton.Extensions.Configuration.Consul;
+using Api.Middlewares;
+using Hangfire.Dashboard;
+using Hangfire;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -70,5 +73,14 @@ app.UseCulture();
 app.UseAppIdentity();
 app.MapControllers();
 
+//app.UseExceptionHandlingMiddleware();
+
+// Add Serilog request logging middleware
+app.UseMiddleware<RequestResponseLoggingMiddleware>(); // Add custom middleware here
+
+
 app.UseSession(); // Enable session handling
+
+app.UseHangfireDashboard("/hangfire");
+
 app.Run();

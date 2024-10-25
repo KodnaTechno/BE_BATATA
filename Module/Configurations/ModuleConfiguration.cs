@@ -8,7 +8,12 @@ namespace Module.Configurations
         public void Configure(EntityTypeBuilder<Domain.Schema.Module> builder)
         {
             builder.Property(e => e.Type).HasConversion<string>();
-            builder.HasOne(e => e.Application).WithMany(e => e.Modules).HasForeignKey(e => e.ApplicationId);
+
+            builder.HasOne(e => e.Application)
+                .WithMany(e => e.Modules)
+                .HasForeignKey(e => e.ApplicationId)
+                .IsRequired(false);
+
             builder.HasMany(e => e.WorkspaceModules).WithOne(e => e.Module).HasForeignKey(e => e.ModuleId);
         }
     }

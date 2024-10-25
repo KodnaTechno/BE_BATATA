@@ -1,3 +1,13 @@
 ﻿{
-  "Welcome": "Welcome to E School"
+  "Welcome": "Welcome to E School",
+  "VAL_001": "Validation error occurred",
+  "NF_001": "Resource not found",
+  "AUTH_001": "Unauthorized access",
+  "SRV_001": "Internal server error occurred",
+  "REQ_001": "Bad request",
+  "AUTH_002": "Access forbidden",
+  "VAL_002": "Duplicate entry detected",
+  "OPR_001": "Invalid operation",
+  "VAL_003": "Invalid input data",
+  "DB_001": "Database operation failed"
 }
