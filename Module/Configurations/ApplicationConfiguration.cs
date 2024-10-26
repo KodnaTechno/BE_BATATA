@@ -8,8 +8,15 @@ namespace Module.Configurations
     {
         public void Configure(EntityTypeBuilder<Application> builder)
         {
-            builder.HasMany(e => e.Workspaces).WithOne(e => e.Application).HasForeignKey(e => e.ApplicationId);
-            builder.HasMany(e => e.Modules).WithOne(e => e.Application).HasForeignKey(e => e.ApplicationId);
+            builder.HasMany(e => e.Workspaces)
+               .WithOne(e => e.Application)
+               .HasForeignKey(e => e.ApplicationId)
+               .IsRequired(false); 
+
+            builder.HasMany(e => e.Modules)
+                   .WithOne(e => e.Application)
+                   .HasForeignKey(e => e.ApplicationId)
+                   .IsRequired(false); 
         }
     }
 

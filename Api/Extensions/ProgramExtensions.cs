@@ -10,6 +10,9 @@ using Infrastructure.Database.Configration;
 using AppCommon.GlobalHelpers;
 using Consul;
 using Import.ServiceFactory;
+using Application;
+using Infrastructure.DependencyInjection;
+using Hangfire;
 
 namespace Api.Extensions
 {
@@ -22,7 +25,7 @@ namespace Api.Extensions
             services.AddModule(configuration);
             services.AddAppIdentity(configuration, options =>
             {
-                options.UseSqlServer(AppConfigration.AppDbConnection, sqlOptions =>
+                options.UseSqlServer(AppConfigration.IdentityDbConnection, sqlOptions =>
                 {
                     sqlOptions.MigrationsAssembly("AppMigration.SqlServer");
                     sqlOptions.MigrationsHistoryTable("__AppIdentity_MigrationTable");
@@ -32,7 +35,7 @@ namespace Api.Extensions
 
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseSqlServer(AppConfigration.IdentityDbConnection, sqlOptions =>
+                options.UseSqlServer(AppConfigration.AppDbConnection, sqlOptions =>
                 {
                     sqlOptions.MigrationsAssembly("AppMigration.SqlServer");
                     sqlOptions.MigrationsHistoryTable("__App_MigrationTable");
@@ -51,14 +54,21 @@ namespace Api.Extensions
 
             services.AddImportServices();
 
-            //builder.Services.AddDistributedMemoryCache(); // Adds a default in-memory implementation of IDistributedCache
             services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout
                 options.Cookie.HttpOnly = true; // Set HttpOnly for security
                 options.Cookie.IsEssential = true; // Make the session cookie essential
             });
-            //builder.Services.AddHttpContextAccessor();
+
+            services.AddHttpContextAccessor();
+            services.AddApplication();
+
+            services.AddFlexibleCaching(configuration);
+
+            services.AddHangfire(config => config.UseSqlServerStorage(configuration.GetConnectionString("HangfireConnection")));
+            services.AddHangfireServer();
+
         }
 
         public static void ApplyMigrations(this IApplicationBuilder app, params Type[] dbContexts)

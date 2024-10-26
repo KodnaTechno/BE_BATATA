@@ -2,7 +2,8 @@
 {
     public enum ModuleTypeEnum
     {
-        Basic,
-        Custom
+        Basic, 
+        Custom,
+        Internal
     }
 }
