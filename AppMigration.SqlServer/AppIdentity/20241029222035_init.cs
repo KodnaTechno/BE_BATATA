@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace AppMigration.SqlServer.Migrations
+namespace AppMigration.SqlServer.AppIdentity
 {
     /// <inheritdoc />
     public partial class init : Migration
