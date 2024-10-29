@@ -1,5 +1,3 @@
-using System.Linq.Dynamic.Core;
-using System.Linq.Expressions;
 using AppIdentity.Database;
 using AppIdentity.Domain;
 using AppIdentity.IServices;
@@ -49,9 +47,9 @@ public class GroupProvider : IGroupProvider
     {
         return _dbContext.AppGroups.FirstOrDefault(g => g.Name == groupName) !=null;
     }
-    public IEnumerable<AppGroup> GetGroup(Expression<AppGroup> expression)
+    public IEnumerable<AppGroup> GetGroup(Func<AppGroup, bool>? predicate = null)
     {
-        return _dbContext.AppGroups.Where(expression);
+        return _dbContext.AppGroups.Where(predicate);
     }
 
     public IEnumerable<AppUser> GetGroupUsers(string groupName)

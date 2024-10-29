@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace AppMigration.SqlServer.AppIdentity
+namespace AppMigration.SqlServer.Migrations
 {
     [DbContext(typeof(AppIdentityDbContext))]
     partial class AppIdentityDbContextModelSnapshot : ModelSnapshot
@@ -19,7 +19,7 @@ namespace AppMigration.SqlServer.AppIdentity
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("identity")
-                .HasAnnotation("ProductVersion", "9.0.0-preview.4.24267.1")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -33,28 +33,25 @@ namespace AppMigration.SqlServer.AppIdentity
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Category")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CategoryName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ModuleKey")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ModuleName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ModuleKey")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[ModuleKey] IS NOT NULL");
 
                     b.ToTable("appAccessibility", "identity");
                 });
@@ -91,7 +88,6 @@ namespace AppMigration.SqlServer.AppIdentity
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("AppName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
@@ -104,11 +100,9 @@ namespace AppMigration.SqlServer.AppIdentity
                         .HasColumnType("datetime2");
 
                     b.Property<string>("OwnerEntity")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecretKey")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("AppId");
@@ -131,7 +125,6 @@ namespace AppMigration.SqlServer.AppIdentity
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -180,7 +173,6 @@ namespace AppMigration.SqlServer.AppIdentity
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -206,18 +198,15 @@ namespace AppMigration.SqlServer.AppIdentity
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Command")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("DisplayName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ModuleId")
                         .HasColumnType("int");
 
                     b.Property<string>("ModuleType")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -226,7 +215,7 @@ namespace AppMigration.SqlServer.AppIdentity
 
                     b.HasIndex("Command", "ModuleId")
                         .IsUnique()
-                        .HasFilter("[ModuleId] IS NOT NULL");
+                        .HasFilter("[Command] IS NOT NULL AND [ModuleId] IS NOT NULL");
 
                     b.ToTable("appPermissions", "identity");
                 });
@@ -241,7 +230,6 @@ namespace AppMigration.SqlServer.AppIdentity
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ExtraInfo")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ModuleId")
@@ -263,11 +251,9 @@ namespace AppMigration.SqlServer.AppIdentity
                             b1.IsRequired();
 
                             b1.Property<string>("Ar")
-                                .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("En")
-                                .IsRequired()
                                 .HasColumnType("nvarchar(max)");
                         });
 
@@ -327,7 +313,6 @@ namespace AppMigration.SqlServer.AppIdentity
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DisplayName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
@@ -338,11 +323,9 @@ namespace AppMigration.SqlServer.AppIdentity
                         .HasColumnType("bit");
 
                     b.Property<string>("Ext")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ExtraInfo")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Image")
@@ -358,7 +341,6 @@ namespace AppMigration.SqlServer.AppIdentity
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Mobile")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedEmail")
@@ -379,7 +361,6 @@ namespace AppMigration.SqlServer.AppIdentity
                         .HasColumnType("bit");
 
                     b.Property<string>("ProviderExtraInfo")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
@@ -423,7 +404,6 @@ namespace AppMigration.SqlServer.AppIdentity
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ClaimValueRef")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
@@ -431,7 +411,6 @@ namespace AppMigration.SqlServer.AppIdentity
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Username")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -449,7 +428,7 @@ namespace AppMigration.SqlServer.AppIdentity
                     b.Property<string>("RoleId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("ModuleId")
+                    b.Property<int?>("ModuleId")
                         .HasColumnType("int");
 
                     b.HasKey("UserId", "RoleId", "ModuleId");
@@ -574,8 +553,7 @@ namespace AppMigration.SqlServer.AppIdentity
                     b.HasOne("AppIdentity.Domain.AppUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Group");
 

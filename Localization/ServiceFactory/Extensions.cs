@@ -27,23 +27,8 @@ namespace Localization.ServiceFactory
             });
         }
 
-        public static IApplicationBuilder UseCultureMiddleware(this IApplicationBuilder builder)
-        {
-            var supportedCultures = new[] { "en-US", "ar-EG" };
-            var defaultCulture = "en-US";
-
-            return builder.Use(next =>
-            {
-                var middleware = new CultureMiddleware(next, supportedCultures, defaultCulture);
-                return async ctx =>
-                {
-                    await middleware.InvokeAsync(ctx);
-                };
-            });
-        }
         public static void UseCulture(this IApplicationBuilder app)
         {
-            app.UseCultureMiddleware();
 
             var supportedCultures = new[] { "en-US", "ar-EG" };
 

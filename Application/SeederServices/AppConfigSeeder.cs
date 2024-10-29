@@ -57,16 +57,23 @@ namespace Infrastructure.Database.Configration
 
                     await _context.AppConfigs.AddAsync(config);
 
-                    // Consul configuration update
-                    var consulResponse = await _consulClient.KV.Put(new KVPair($"config/app/{setting.Key}")
+                    try
                     {
-                        Value = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(setting.Value))
-                    });
+                        // Consul configuration update
+                        var consulResponse = await _consulClient.KV.Put(new KVPair($"config/app/{setting.Key}")
+                        {
+                            Value = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(setting.Value))
+                        });
 
-                    if (!consulResponse.Response)
-                    {
-                        throw new Exception($"Failed to write {setting.Key} to Consul");
+                        if (!consulResponse.Response)
+                        {
+                            throw new Exception($"Failed to write {setting.Key} to Consul");
+                        }
                     }
+                    catch 
+                    {
+                    }
+                   
                 }
             }
 

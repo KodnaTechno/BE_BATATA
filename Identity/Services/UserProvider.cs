@@ -1,10 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq.Dynamic.Core;
-using System.Linq.Expressions;
-using System.Security.Claims;
 using AppIdentity.Database;
 using AppIdentity.Domain;
-using AppIdentity.Exceptions;
 using AppIdentity.IServices;
 using AppIdentity.Resources;
 using Microsoft.AspNetCore.Http;

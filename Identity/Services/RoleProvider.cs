@@ -1,7 +1,4 @@
-using System.Linq;
-using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
-using System.Reflection;
 using AppIdentity.Database;
 using AppIdentity.Domain;
 using AppIdentity.IServices;
@@ -69,9 +66,9 @@ public class RoleProvider : IRoleProvider
     }
 
     
-    public IEnumerable<AppRole> Get(Expression<AppRole> expression)
+    public IEnumerable<AppRole> Get(Func<AppRole, bool>? predicate = null)
     {
-        return _roleManager.Roles.Where(expression);
+        return _roleManager.Roles.Where(predicate);
     }
     
     public IEnumerable<AppRole> GetAll(Func<AppRole, bool>? predicate = null)

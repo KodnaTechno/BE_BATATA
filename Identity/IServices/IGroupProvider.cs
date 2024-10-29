@@ -9,7 +9,7 @@ public interface IGroupProvider
     public IEnumerable<AppGroup> GetGroups(Func<AppGroup, bool>? predicate = null);
     public AppGroup GetGroup(int groupId);
     public IEnumerable<AppGroup> GetGroupsWithDetails();
-    public IEnumerable<AppGroup> GetGroup(Expression<AppGroup> expression);
+    public IEnumerable<AppGroup> GetGroup(Func<AppGroup, bool>? predicate = null);
     public IEnumerable<AppUser> GetGroupUsers(int groupId);
     public IEnumerable<AppUser> GetGroupUsers(string groupName);
     

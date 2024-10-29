@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace AppMigration.SqlServer.AppIdentity
+namespace AppMigration.SqlServer.Migrations
 {
     /// <inheritdoc />
-    public partial class fstcommit : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -21,10 +21,10 @@ namespace AppMigration.SqlServer.AppIdentity
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ModuleKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ModuleName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CategoryName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ModuleKey = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ModuleName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Category = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CategoryName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -38,12 +38,12 @@ namespace AppMigration.SqlServer.AppIdentity
                 columns: table => new
                 {
                     AppId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    SecretKey = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AppName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SecretKey = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AppName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastUpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    OwnerEntity = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    OwnerEntity = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -57,7 +57,7 @@ namespace AppMigration.SqlServer.AppIdentity
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsActivated = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -74,9 +74,9 @@ namespace AppMigration.SqlServer.AppIdentity
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ModuleId = table.Column<int>(type: "int", nullable: true),
                     SourceId = table.Column<int>(type: "int", nullable: true),
-                    ExtraInfo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DisplayName_Ar = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DisplayName_En = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ExtraInfo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DisplayName_Ar = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DisplayName_En = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -92,13 +92,13 @@ namespace AppMigration.SqlServer.AppIdentity
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    DisplayName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Stars = table.Column<int>(type: "int", nullable: false),
-                    Mobile = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Ext = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Mobile = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Ext = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsExternal = table.Column<bool>(type: "bit", nullable: false),
-                    ExtraInfo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProviderExtraInfo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ExtraInfo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProviderExtraInfo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -177,10 +177,10 @@ namespace AppMigration.SqlServer.AppIdentity
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    DisplayName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ModuleId = table.Column<int>(type: "int", nullable: true),
-                    ModuleType = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Command = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ModuleType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Command = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     AppRoleId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
@@ -201,7 +201,7 @@ namespace AppMigration.SqlServer.AppIdentity
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     GroupId = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
@@ -236,8 +236,8 @@ namespace AppMigration.SqlServer.AppIdentity
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ClaimValueRef = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClaimValueRef = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -388,7 +388,8 @@ namespace AppMigration.SqlServer.AppIdentity
                 schema: "identity",
                 table: "appAccessibility",
                 column: "ModuleKey",
-                unique: true);
+                unique: true,
+                filter: "[ModuleKey] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_appAccessibilityGroup_AppAccessibilityId",
@@ -444,7 +445,7 @@ namespace AppMigration.SqlServer.AppIdentity
                 table: "appPermissions",
                 columns: new[] { "Command", "ModuleId" },
                 unique: true,
-                filter: "[ModuleId] IS NOT NULL");
+                filter: "[Command] IS NOT NULL AND [ModuleId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_appRolePermission_AppPermissionId",

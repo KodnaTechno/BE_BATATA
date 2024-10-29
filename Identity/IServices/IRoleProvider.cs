@@ -12,7 +12,7 @@ public interface IRoleProvider
     public List<AppRole> AddRange(List<AddRoleRes> addRoleResList);
     public AppRole Get(string roleId);
     public AppRole GetByName(string roleId);
-    public IEnumerable<AppRole> Get(Expression<AppRole> expression);
+    public IEnumerable<AppRole> Get(Func<AppRole, bool>? predicate = null);
     public IEnumerable<AppRole> GetAll(Func<AppRole, bool>? predicate = null);
     public IEnumerable<AppRole> GetRolesByModuleId(int moduleId);
     public IEnumerable<AppRole> GetRolesByModuleIds(List<int> moduleIds);

@@ -144,7 +144,7 @@ namespace Api.Extensions
             // Add the Hangfire server
             services.AddHangfireServer(options =>
             {
-                options.WorkerCount = configuration.GetValue<int>("Hangfire:WorkerCount", 1);
+                options.WorkerCount = configuration.GetValue<int>("Hangfire:WorkerCount", 6);
             });
         }
 

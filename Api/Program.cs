@@ -7,6 +7,7 @@ using Api.Extensions;
 using Api.Middlewares;
 using Hangfire;
 using AppCommon.GlobalHelpers;
+using FileStorge.Providers.Database;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,7 +28,7 @@ var app = builder.Build();
 ServiceActivator.Configure(app.Services);
 
 
-app.ApplyMigrations(typeof(ModuleDbContext), typeof(AppIdentityDbContext), typeof(ApplicationDbContext));
+app.ApplyMigrations(typeof(ModuleDbContext), typeof(AppIdentityDbContext), typeof(ApplicationDbContext), typeof(FileDbContext));
 
 app.SeedDatabaseAsync().Wait();
 
@@ -41,6 +42,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCultureMiddleware();
 app.UseCulture();
 app.UseAppIdentity();
 app.MapControllers();
