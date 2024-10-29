@@ -27,7 +27,7 @@ public class CultureMiddleware
                 .OrderByDescending(s => s.Quality)
                 .ToList();
 
-            if (culturesWithQuality.Any())
+            if (culturesWithQuality.Count != 0)
             {
                 cultureToSet = culturesWithQuality.First().String;
             }

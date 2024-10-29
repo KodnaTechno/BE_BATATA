@@ -305,7 +305,7 @@ namespace Module.Service
     {
         public List<string> Errors { get; } = new List<string>();
 
-        public bool IsValid => !Errors.Any();
+        public bool IsValid => Errors.Count == 0;
 
         public void AddResult(bool isValid, string errorMessage)
         {

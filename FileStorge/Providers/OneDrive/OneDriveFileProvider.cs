@@ -7,14 +7,12 @@ public class OneDriveFileProvider : IDocumentProvider
 {
     private readonly GraphServiceClient _graphClient;
     private readonly string _driveId;
-    private readonly string _oneDrivePath;
     private readonly IDocumentVerification _documentVerification;
 
-    public OneDriveFileProvider(string clientId, string clientSecret, string tenantId, string driveId, string oneDrivePath, IDocumentVerification documentVerification)
+    public OneDriveFileProvider(string clientId, string clientSecret, string tenantId, string driveId, IDocumentVerification documentVerification)
     {
         _driveId = driveId;
-        _oneDrivePath = oneDrivePath;
-        _documentVerification = documentVerification == null ? new DocumentVerification() : documentVerification;
+        _documentVerification = documentVerification ?? new DocumentVerification();
         var scopes = new[] { "https://graph.microsoft.com/.default" };
 
         var confidentialClientApplication = ConfidentialClientApplicationBuilder
@@ -39,7 +37,7 @@ public class OneDriveFileProvider : IDocumentProvider
         _graphClient.HttpProvider.OverallTimeout = TimeSpan.FromMinutes(30);
     }
 
-    public OneDriveFileProvider(string clientId, string clientSecret, string tenantId, string driveId, string oneDrivePath) :this(clientId, clientSecret, tenantId, driveId, oneDrivePath, null)
+    public OneDriveFileProvider(string clientId, string clientSecret, string tenantId, string driveId) :this(clientId, clientSecret, tenantId, driveId, null)
     {
         
         

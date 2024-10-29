@@ -32,7 +32,7 @@
                 .ToList();
         }
 
-        private static FileTypeVerifyResult Unknown = new FileTypeVerifyResult
+        private static readonly FileTypeVerifyResult Unknown = new()
         {
             Name = "Unknown",
             Description = "Unknown File Type",

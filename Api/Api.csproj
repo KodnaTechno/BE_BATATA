@@ -7,15 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Consul" Version="1.7.14.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.6">
+    <PackageReference Include="Consul" Version="1.7.14.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
     <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
     <PackageReference Include="Serilog.Sinks.Seq" Version="8.0.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0" />
     <PackageReference Include="Winton.Extensions.Configuration.Consul" Version="3.4.0" />
   </ItemGroup>
 
@@ -25,6 +25,7 @@
     <ProjectReference Include="..\AppMigration.MySql\AppMigration.MySql.csproj" />
     <ProjectReference Include="..\AppMigration.PostgreSql\AppMigration.PostgreSql.csproj" />
     <ProjectReference Include="..\AppMigration.SqlServer\AppMigration.SqlServer.csproj" />
+    <ProjectReference Include="..\FileStorge\FileStorge.csproj" />
     <ProjectReference Include="..\Identity\AppIdentity.csproj" />
     <ProjectReference Include="..\Import\Import.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />

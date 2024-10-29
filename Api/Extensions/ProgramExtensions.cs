@@ -13,6 +13,12 @@ using Import.ServiceFactory;
 using Application;
 using Infrastructure.DependencyInjection;
 using Hangfire;
+using Hangfire.SqlServer;
+using System.Reflection;
+using Api.Jobs;
+using Serilog;
+using Winton.Extensions.Configuration.Consul;
+using FileStorge;
 
 namespace Api.Extensions
 {
@@ -66,9 +72,10 @@ namespace Api.Extensions
 
             services.AddFlexibleCaching(configuration);
 
-            services.AddHangfire(config => config.UseSqlServerStorage(configuration.GetConnectionString("HangfireConnection")));
-            services.AddHangfireServer();
+            services.AddHangfire(configuration);
 
+
+            services.AddFileProvider(configuration);
         }
 
         public static void ApplyMigrations(this IApplicationBuilder app, params Type[] dbContexts)
@@ -95,4 +102,152 @@ namespace Api.Extensions
             DateTimeExtensions.ConfigureTimezone(timezoneSettings);
         }
     }
+
+
+
+
+    public static class HangfireConfiguration
+    {
+        public static void AddHangfire(this IServiceCollection services, IConfiguration configuration)
+        {
+            var provider = configuration["DatabaseProvider"]?.ToLower() ?? "sqlserver";
+            var connectionString = configuration.GetConnectionString("HangfireConnection");
+
+            if (string.IsNullOrEmpty(connectionString))
+                throw new InvalidOperationException("Hangfire connection string is not configured.");
+
+            services.AddHangfire(config =>
+            {
+                config.SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+                    .UseSimpleAssemblyNameTypeSerializer()
+                    .UseRecommendedSerializerSettings();
+
+                switch (provider)
+                {
+                    case "sqlserver":
+                        ConfigureSqlServer(config, connectionString);
+                        break;
+
+                    case "mysql":
+                        ConfigureMySQL(config, connectionString);
+                        break;
+
+                    case "postgresql":
+                        ConfigurePostgreSQL(config, connectionString);
+                        break;
+
+                    default:
+                        throw new ArgumentException($"Unsupported database provider: {provider}");
+                }
+            });
+
+            // Add the Hangfire server
+            services.AddHangfireServer(options =>
+            {
+                options.WorkerCount = configuration.GetValue<int>("Hangfire:WorkerCount", 1);
+            });
+        }
+
+        private static void ConfigureSqlServer(IGlobalConfiguration config, string connectionString)
+        {
+            config.UseSqlServerStorage(connectionString, new SqlServerStorageOptions
+            {
+                CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                QueuePollInterval = TimeSpan.FromSeconds(15),
+                UseRecommendedIsolationLevel = true,
+                DisableGlobalLocks = true
+            });
+        }
+
+        private static void ConfigureMySQL(IGlobalConfiguration config, string connectionString)
+        {
+            //config.UseStorage(new MySqlStorage(connectionString, new MySqlStorageOptions
+            //{
+            //    TablesPrefix = "Hangfire",
+            //    QueuePollInterval = TimeSpan.FromSeconds(15),
+            //    JobExpirationCheckInterval = TimeSpan.FromHours(1),
+            //    CountersAggregateInterval = TimeSpan.FromMinutes(5),
+            //    PrepareSchemaIfNecessary = true,
+            //    DashboardJobListLimit = 50000,
+            //    TransactionTimeout = TimeSpan.FromMinutes(1),
+            //    QueuesCleaner = true
+            //}));
+        }
+
+        private static void ConfigurePostgreSQL(IGlobalConfiguration config, string connectionString)
+        {
+            //config.UsePostgreSqlStorage(connectionString, new PostgreSqlStorageOptions
+            //{
+            //    QueuePollInterval = TimeSpan.FromSeconds(15),
+            //    SchemaName = "hangfire"
+            //});
+        }
+
+        public static void ActivateHangfireJobs()
+        {
+            var baseJobType = typeof(BaseJob);
+            var jobTypes = Assembly.GetExecutingAssembly().GetTypes()
+                .Where(t => t.IsClass && !t.IsAbstract && baseJobType.IsAssignableFrom(t));
+
+            foreach (var jobType in jobTypes)
+            {
+                var jobInstance = Activator.CreateInstance(jobType) as BaseJob;
+                jobInstance?.Define();
+            }
+        }
+    }
+
+
+
+    public static class SerilogExtensions
+    {
+        public static WebApplicationBuilder AddSerilogConfiguration(this WebApplicationBuilder builder)
+        {
+            builder.Host.UseSerilog((hostingContext, services, loggerConfiguration) =>
+            {
+                loggerConfiguration
+                    .ReadFrom.Configuration(hostingContext.Configuration)
+                    .Enrich.FromLogContext();
+            });
+
+            return builder;
+        }
+    }
+
+
+    public static class ConsulExtensions
+    {
+        public static WebApplicationBuilder AddConsulConfiguration(this WebApplicationBuilder builder)
+        {
+            var consulHost = builder.Configuration["Consul:Host"];
+
+            try
+            {
+                builder.Configuration.AddConsul("config/app", options =>
+                {
+                    options.ConsulConfigurationOptions = cco =>
+                    {
+                        cco.Address = new Uri(consulHost);
+                    };
+                    options.Optional = true;
+                    options.ReloadOnChange = true;
+                    options.PollWaitTime = TimeSpan.FromSeconds(5);
+                });
+
+                builder.Services.AddSingleton<IConsulClient>(p => new ConsulClient(cfg =>
+                {
+                    cfg.Address = new Uri(consulHost);
+                }));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to configure Consul: {ex.Message}");
+            }
+            return builder;
+        }
+    }
+
+
+
 }

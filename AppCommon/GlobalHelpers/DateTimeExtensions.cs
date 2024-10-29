@@ -62,7 +62,7 @@ namespace AppCommon.GlobalHelpers
             return new
             {
                 DisplayValue = displayValue,
-                ActualValue = regionTime
+                RawValue = regionTime
             };
         }
 
@@ -308,9 +308,9 @@ namespace AppCommon.GlobalHelpers
 
             // Preprocess holidays into a hash set for faster checking
             var holidayDates = new HashSet<DateTime>();
-            foreach (var holiday in holidays)
+            foreach (var (from, to) in holidays)
             {
-                for (DateTime date = holiday.from; date <= holiday.to; date = date.AddDays(1))
+                for (DateTime date = from; date <= to; date = date.AddDays(1))
                 {
                     holidayDates.Add(date);
                 }

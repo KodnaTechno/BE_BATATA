@@ -22,7 +22,7 @@ namespace FileStorge.Providers.Mongodb
             var mongoDatabase = mongoClient.GetDatabase(database);
             _bucket = new GridFSBucket(mongoDatabase);
 
-            _documentVerification = documentVerification == null ? new DocumentVerification() : documentVerification;
+            _documentVerification = documentVerification ?? new DocumentVerification();
         }
 
 

@@ -24,9 +24,9 @@ namespace FileStorge.VerificationProviders
             Description = "Docx Document";
             AddExtensions("Docx", "docx");
             AddSignatures(
-                new byte[] { 0x50, 0x4B, 0x03, 0x04 },
-                new byte[] { 0x50, 0x4B, 0x05, 0x06 },
-                new byte[] { 0x50, 0x4B, 0x07, 0x08 }
+                [0x50, 0x4B, 0x03, 0x04],
+                [0x50, 0x4B, 0x05, 0x06],
+                [0x50, 0x4B, 0x07, 0x08]
             );
         }
     }
