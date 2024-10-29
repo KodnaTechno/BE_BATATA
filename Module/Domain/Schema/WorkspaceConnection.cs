@@ -10,6 +10,7 @@
         public double Weight { get; set; }
         public bool IsOptional { get; set; }
         public string Metadata { get; set; }
+        public bool AllowManySource { get; set; }
 
     }
 }
