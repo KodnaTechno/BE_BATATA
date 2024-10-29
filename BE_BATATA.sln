@@ -27,7 +27,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastru
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Import", "Import\Import.csproj", "{106ED228-10AD-41B8-A026-D6F43EC54485}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Events", "Events\Events.csproj", "{523112D9-4C6D-4983-A6CA-76DD601F756E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Events", "Events\Events.csproj", "{523112D9-4C6D-4983-A6CA-76DD601F756E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileStorge", "FileStorge\FileStorge.csproj", "{7F34BDC8-3F84-4BD4-BC3A-F5CD6CE58879}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -87,6 +89,10 @@ Global
 		{523112D9-4C6D-4983-A6CA-76DD601F756E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{523112D9-4C6D-4983-A6CA-76DD601F756E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{523112D9-4C6D-4983-A6CA-76DD601F756E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F34BDC8-3F84-4BD4-BC3A-F5CD6CE58879}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F34BDC8-3F84-4BD4-BC3A-F5CD6CE58879}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F34BDC8-3F84-4BD4-BC3A-F5CD6CE58879}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F34BDC8-3F84-4BD4-BC3A-F5CD6CE58879}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
