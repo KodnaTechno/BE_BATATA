@@ -27,6 +27,7 @@ public class RoleProvider : IRoleProvider
             Name = addRoleRes.Name,
             NormalizedName = addRoleRes.NormalizedName, // addRoleRes.Name.Normalize(),
             ModuleId = addRoleRes.ModuleId,
+            ModuleType = addRoleRes.ModuleType,
             SourceId = addRoleRes.SourceId,
             ExtraInfo = addRoleRes.ExtraInfo == null ? new List<KeyValuePair<string, string>>() : addRoleRes.ExtraInfo,
             DisplayName = addRoleRes.DisplayName,
@@ -43,6 +44,7 @@ public class RoleProvider : IRoleProvider
             Name = addRoleRes.Name,
             NormalizedName = addRoleRes.NormalizedName,
             ModuleId = addRoleRes.ModuleId,
+            ModuleType = addRoleRes.ModuleType,
             SourceId = addRoleRes.SourceId,
             ExtraInfo = addRoleRes.ExtraInfo ?? new(),
             DisplayName = addRoleRes.DisplayName,
@@ -55,9 +57,9 @@ public class RoleProvider : IRoleProvider
     }
 
 
-    public AppRole Get(string roleId)
+    public AppRole Get(Guid roleId)
     {
-        return _roleManager.FindByIdAsync(roleId).Result;
+        return _roleManager.FindByIdAsync(roleId.ToString()).Result;
     }
     
     public AppRole GetByName(string name)
@@ -84,14 +86,19 @@ public class RoleProvider : IRoleProvider
     }
 
 
-    public IEnumerable<AppRole> GetRolesByModuleId(int moduleId)
+    public IEnumerable<AppRole> GetRolesByModuleId(Guid moduleId)
     {
         return _roleManager.Roles.Where(r => r.ModuleId == moduleId);
     }
 
-    public IEnumerable<AppRole> GetRolesByModuleIds(List<int> moduleIds)
+    public IEnumerable<AppRole> GetRolesByModuleIds(List<Guid> moduleIds)
     {
         return _roleManager.Roles.Where(r => r.ModuleId != null && moduleIds.Contains(r.ModuleId.Value));
+    }
+
+    public IEnumerable<AppRole> GetRolesByWorkspaceModuleIds(List<Guid> moduleIds)
+    {
+        return _roleManager.Roles.Where(r => r.ModuleType == Domain.Enums.RoleModulesEnum.WorkspaceModule && r.ModuleId != null && moduleIds.Contains(r.ModuleId.Value));
     }
 
     public IEnumerable<AppRole> GetRolesBySourceId(int sourceId)
@@ -109,18 +116,19 @@ public class RoleProvider : IRoleProvider
         return _roleManager.Roles.Where(r => r.SourceId != null && sourceIds.Contains(r.SourceId.Value));
     }
 
-    public IEnumerable<AppRole> GetRolesByModuleIdAndSourceId(int moduleId, int sourceId)
+    public IEnumerable<AppRole> GetRolesByModuleIdAndSourceId(Guid moduleId, int sourceId)
     {
         return _roleManager.Roles.Where(r => r.SourceId == sourceId && r.ModuleId == moduleId);
     }
 
-    public AppResult<AppRole> UpdateRole(string roleId, UpdateRoleRes updateRoleRes)
+    public AppResult<AppRole> UpdateRole(Guid roleId, UpdateRoleRes updateRoleRes)
     {
-        var role = _roleManager.FindByIdAsync(roleId).Result;
+        var role = _roleManager.FindByIdAsync(roleId.ToString()).Result;
         if(roleId == null) return new AppResult<AppRole> {Succeeded = false, Message = "Role not found", Data = null};
         role.Name = updateRoleRes.Name;
         role.NormalizedName = updateRoleRes.Name.Normalize();
         role.ModuleId = updateRoleRes.ModuleId;
+        role.ModuleType = role.ModuleType;
         role.SourceId = updateRoleRes.SourceId;
         role.DisplayName = updateRoleRes.DisplayName;
         var result = _roleManager.UpdateAsync(role).Result;
@@ -128,9 +136,9 @@ public class RoleProvider : IRoleProvider
         return new AppResult<AppRole> {Succeeded = true, Message = "", Data = role}; 
     }
 
-    public AppResult<AppRole> UpdateRoleExtraInfo(string roleId, List<KeyValuePair<string, string>> extraInfo)
+    public AppResult<AppRole> UpdateRoleExtraInfo(Guid roleId, List<KeyValuePair<string, string>> extraInfo)
     {
-        var role = _roleManager.FindByIdAsync(roleId).Result;
+        var role = _roleManager.FindByIdAsync(roleId.ToString()).Result;
         if(roleId == null) return new AppResult<AppRole> {Succeeded = false, Message = "Role not found", Data = null};
         role.ExtraInfo = extraInfo;
         var result = _roleManager.UpdateAsync(role).Result;
@@ -139,10 +147,10 @@ public class RoleProvider : IRoleProvider
     }
 
 
-    public AppResult<AppRole> DeleteRole(string roleId)
+    public AppResult<AppRole> DeleteRole(Guid roleId)
     {
-        var role = _roleManager.FindByIdAsync(roleId).Result;
-        if(roleId is null) return new AppResult<AppRole> {Succeeded = false, Message = "Role not found", Data = null};
+        var role = _roleManager.FindByIdAsync(roleId.ToString()).Result;
+        if(roleId == Guid.Empty) return new AppResult<AppRole> {Succeeded = false, Message = "Role not found", Data = null};
 
         var appRolePermissions = _dbContext.AppRolePermissions.Where(x => x.RoleId == roleId);
         _dbContext.RemoveRange(appRolePermissions);
@@ -157,7 +165,7 @@ public class RoleProvider : IRoleProvider
         return new AppResult<AppRole> {Succeeded = true, Message = "", Data = role};
     }
 
-    public AppResult<AppRole> DeleteRoles(List<string> roleIds)
+    public AppResult<AppRole> DeleteRoles(List<Guid> roleIds)
     {
         var roles = _dbContext.AppRoles.Where(x => roleIds.Contains(x.Id)).ToList();
         if(!roles.Any()) return new AppResult<AppRole> {Succeeded = false, Message = "Roles not found", Data = null};
@@ -263,7 +271,7 @@ public class RoleProvider : IRoleProvider
         return new AppResult<AppPermission>(){Succeeded = true, Message = "", Data = null};
     }
 
-    public IEnumerable<AppPermission> GetPermissions(int moduleId)
+    public IEnumerable<AppPermission> GetPermissions(Guid moduleId)
     {
         return _dbContext.AppPermissions
             .Include(x=>x.RolePermissions)            
@@ -292,7 +300,7 @@ public class RoleProvider : IRoleProvider
 
     #region Role Permissions
 
-    public AppResult<AppRolePermission> AddRolePermission(string roleId, int permissionId)
+    public AppResult<AppRolePermission> AddRolePermission(Guid roleId, int permissionId)
     {
         var rolePermission = new AppRolePermission
         {
@@ -304,13 +312,13 @@ public class RoleProvider : IRoleProvider
         return new AppResult<AppRolePermission>(){Succeeded = true, Message = "", Data = result};
     }
 
-    public bool IsRolePermissionExist(string roleId, int permissionId)
+    public bool IsRolePermissionExist(Guid roleId, int permissionId)
     {
         var permission = _dbContext.AppRolePermissions.
             FirstOrDefault(rp => rp.AppPermissionId == permissionId && rp.RoleId == roleId);
         return permission != null ? true : false;            
     }
-    public AppResult<AppRolePermission> DeleteRolePermission(string roleId, int permissionId)
+    public AppResult<AppRolePermission> DeleteRolePermission(Guid roleId, int permissionId)
     {
         var permission = _dbContext.AppRolePermissions.FirstOrDefault(rp => rp.AppPermissionId == permissionId 
                                                                             && rp.RoleId == roleId);
@@ -329,7 +337,7 @@ public class RoleProvider : IRoleProvider
     }
 
 
-    public IEnumerable<AppRolePermission> GetRolePermissions(string roleId)
+    public IEnumerable<AppRolePermission> GetRolePermissions(Guid roleId)
     { 
         var rolePermissions = _dbContext
             .AppRolePermissions
@@ -344,7 +352,7 @@ public class RoleProvider : IRoleProvider
         return _dbContext.AppRolePermissions.Where(predicate);
     }
 
-    public IEnumerable<AppRolePermission> GetRolePermissionsByModuleId(string roleId, int moduleId)
+    public IEnumerable<AppRolePermission> GetRolePermissionsByModuleId(Guid roleId, Guid moduleId)
     {
         var rolePermissions = _dbContext
             .AppRolePermissions
@@ -354,7 +362,7 @@ public class RoleProvider : IRoleProvider
         return rolePermissions;
     }
     
-    public IEnumerable<AppRolePermission> GetRolePermissionsByModuleIds(List<int> moduleIds)
+    public IEnumerable<AppRolePermission> GetRolePermissionsByModuleIds(List<Guid> moduleIds)
     {
         var rolePermissions = _dbContext
             .AppRolePermissions.AsNoTracking().AsSplitQuery()
@@ -434,14 +442,14 @@ public class RoleProvider : IRoleProvider
 
     #endregion
 
-    public bool HasPermissionForRole(string roleId, string command, int moduleId)
+    public bool HasPermissionForRole(Guid roleId, string command, Guid moduleId)
     {
         return _dbContext.AppRolePermissions
             .Any(rp => rp.RoleId == roleId
                        && rp.AppPermission.Command == command
                        && rp.AppPermission.ModuleId == moduleId);
     }
-    public bool HasPermissionForGroup(int groupId, string command, int moduleId)
+    public bool HasPermissionForGroup(int groupId, string command, Guid moduleId)
     {
         return _dbContext.AppGroupPermissions
             .Any(rp => rp.GroupId == groupId
@@ -449,7 +457,7 @@ public class RoleProvider : IRoleProvider
                        && rp.AppPermission.ModuleId == moduleId);
     }
 
-    public bool HasPermissionForRoles(List<string> roleIds, string command, int moduleId)
+    public bool HasPermissionForRoles(List<Guid> roleIds, string command, Guid moduleId)
     {
         return _dbContext.AppRolePermissions
             .Any(rp => roleIds.Contains(rp.RoleId)
@@ -457,7 +465,7 @@ public class RoleProvider : IRoleProvider
                        && rp.AppPermission.ModuleId == moduleId);
     }
 
-    public bool HasPermissionForGroups(List<int> groupIds, string command, int moduleId)
+    public bool HasPermissionForGroups(List<int> groupIds, string command, Guid moduleId)
     {
         return _dbContext.AppGroupPermissions
             .Any(rp => groupIds.Contains(rp.GroupId)
@@ -466,7 +474,7 @@ public class RoleProvider : IRoleProvider
     }
 
 
-    public IEnumerable<string> GetRolesByUserId(string userId, int moduleId)
+    public IEnumerable<Guid> GetRolesByUserId(Guid userId, Guid moduleId)
     {
         var roles = _dbContext.Roles.Where(r => r.ModuleId == moduleId).Select(r=>r.Id).ToList();
         return _dbContext.AppUserRoles            
@@ -474,14 +482,14 @@ public class RoleProvider : IRoleProvider
             .Select(x => x.RoleId)
             .ToList();
     }
-    public IEnumerable<string> GetRolesByUserId(string userId)
+    public IEnumerable<Guid> GetRolesByUserId(Guid userId)
     {
         return _dbContext.AppUserRoles.Where(x => x.UserId == userId)
             .Select(x => x.RoleId)
             .ToList();
     }
     
-    public AppResult<AppUserRole> AddUserRole(string userId, string roleId)
+    public AppResult<AppUserRole> AddUserRole(Guid userId, Guid roleId)
     {
         var userRole = new AppUserRole()
         {
@@ -493,7 +501,7 @@ public class RoleProvider : IRoleProvider
         return new AppResult<AppUserRole>() {Succeeded = true, Message = "", Data = result};
     }
 
-    public AppResult<AppUserRole> RemoveUserRole(string userId, string roleId)
+    public AppResult<AppUserRole> RemoveUserRole(Guid userId, Guid roleId)
     {
         var record = _dbContext.AppUserRoles
             .FirstOrDefault(x => x.UserId == userId && x.RoleId == roleId);
@@ -516,19 +524,26 @@ public class RoleProvider : IRoleProvider
         _dbContext.SaveChanges();
         return new AppResult<AppUserRole>() { Succeeded = true, Message = "", Data = result };
     }
-    public IEnumerable<AppRole> GetUserRolesByModuleId(string userId, int moduleId)
+    public IEnumerable<AppRole> GetUserRolesByModuleId(Guid userId, Guid moduleId)
     {
         var moduleRoles = _dbContext.AppUserRoles.Where(r => r.ModuleId == moduleId
         && r.UserId == userId).Select(r=>r.RoleId).ToList();
         return _roleManager.Roles.Where(r => moduleRoles.Contains(r.Id));
     }
 
-    public bool HasRoleForModule(string userId, int moduleId)
+    public bool HasRoleForModule(Guid userId, Guid moduleId)
     {
         return _dbContext.AppUserRoles.Any(r => r.ModuleId == moduleId
                                                 && r.UserId == userId);
     }
-    public bool RemoveUserRolesByModuleId(int moduleId)
+    public bool RemoveUserRolesByModuleId(Guid moduleId)
+    {
+        var appUserRoles = _dbContext.AppUserRoles.Where(r => r.ModuleId == moduleId);
+        _dbContext.RemoveRange(appUserRoles);
+        return true;
+    }
+
+    public bool RemoveUserRolesByWorkSpaceModuleId(Guid moduleId)
     {
         var appUserRoles = _dbContext.AppUserRoles.Where(r => r.ModuleId == moduleId);
         _dbContext.RemoveRange(appUserRoles);
