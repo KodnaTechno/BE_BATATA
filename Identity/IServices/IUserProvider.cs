@@ -13,8 +13,8 @@ public interface IUserProvider
     public Task<AppResult<AppUser>> Update(UpdateUserReq userToUpdate);
     public Task<AppResult<AppUser>> Get(string userName);
 
-    public Task<AppResult<AppUser>> GetById(string userId);
-    public Task<AppResult<List<AppUser>>> GetByIds(List<string> userIds);
+    public Task<AppResult<AppUser>> GetById(Guid userId);
+    public Task<AppResult<List<AppUser>>> GetByIds(List<Guid> userIds);
 
     public Task<AppResult<AppUser>> GetByEmail(string email);
     public IEnumerable<AppUser> Users();

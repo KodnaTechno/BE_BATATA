@@ -244,7 +244,7 @@ public class AccessibilityProvider : IAccessibilityProvider
                 .Any(a => a.User.UserName == username)))
             .AsEnumerable();
     }
-    public IEnumerable<AccessibilityPermissions> GetAccessibilityPermissionsForUserByUserId(string userId)
+    public IEnumerable<AccessibilityPermissions> GetAccessibilityPermissionsForUserByUserId(Guid userId)
     {
         return _dbContext.AppAccessibilities.AsSplitQuery().AsNoTracking()
             .Select(x => new AccessibilityPermissions(x, x.AccessibilityGroups
@@ -254,7 +254,7 @@ public class AccessibilityProvider : IAccessibilityProvider
             .AsEnumerable();
     }
 
-    public bool HasUserPermissionForModule(string userId, string moduleKey)
+    public bool HasUserPermissionForModule(Guid userId, string moduleKey)
     {
         var hasPermission = _dbContext.AppAccessibilities
             .AsNoTracking()

@@ -4,6 +4,7 @@
     {
         Basic, 
         Custom,
-        Internal
+        Internal,
+        Team
     }
 }

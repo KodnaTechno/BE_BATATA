@@ -7,7 +7,7 @@ public class AppPermission
 {
     public int Id { get; set; }
     public string DisplayName { get; set; }
-    public int? ModuleId { get; set; }
+    public Guid? ModuleId { get; set; }
     
     public string ModuleType { get; set; }
     public string Command { get; set; }

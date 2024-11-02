@@ -10,21 +10,21 @@ public interface IRoleProvider
     public AppResult<AppRole> Add(AddRoleRes addRoleRes);
     
     public List<AppRole> AddRange(List<AddRoleRes> addRoleResList);
-    public AppRole Get(string roleId);
-    public AppRole GetByName(string roleId);
+    public AppRole Get(Guid roleId);
+    public AppRole GetByName(string rolename);
     public IEnumerable<AppRole> Get(Func<AppRole, bool>? predicate = null);
     public IEnumerable<AppRole> GetAll(Func<AppRole, bool>? predicate = null);
-    public IEnumerable<AppRole> GetRolesByModuleId(int moduleId);
-    public IEnumerable<AppRole> GetRolesByModuleIds(List<int> moduleIds);
+    public IEnumerable<AppRole> GetRolesByModuleId(Guid moduleId);
+    public IEnumerable<AppRole> GetRolesByModuleIds(List<Guid> moduleIds);
     public IEnumerable<AppRole> GetRolesBySourceId(int sourceId);
     public Task<List<AppRole>> GetRolesBySourceIdAsync(int sourceId);
     public IEnumerable<AppRole> GetRolesBySourceIds(List<int> sourceIds);
-    public IEnumerable<AppRole> GetRolesByModuleIdAndSourceId(int moduleId, int sourceId);
-    public AppResult<AppRole> UpdateRole(string roleId, UpdateRoleRes updateRoleRes);
-    public AppResult<AppRole> UpdateRoleExtraInfo(string roleId, List<KeyValuePair<string, string>> extraInfo);
+    public IEnumerable<AppRole> GetRolesByModuleIdAndSourceId(Guid moduleId, int sourceId);
+    public AppResult<AppRole> UpdateRole(Guid roleId, UpdateRoleRes updateRoleRes);
+    public AppResult<AppRole> UpdateRoleExtraInfo(Guid roleId, List<KeyValuePair<string, string>> extraInfo);
     
-    public AppResult<AppRole> DeleteRole(string roleId);
-    public AppResult<AppRole> DeleteRoles(List<string> roleIds);
+    public AppResult<AppRole> DeleteRole(Guid roleId);
+    public AppResult<AppRole> DeleteRoles(List<Guid> roleIds);
     #endregion
     
     #region Permission
@@ -35,22 +35,22 @@ public interface IRoleProvider
     public AppResult<AppPermission> UpdatePermission(int permissionId, PermissionRes permissionRes);
     public AppResult<AppPermission> DeletePermission(int permissionId);
     public AppResult<AppPermission> DeletePermissions(List<int> permissions);
-    public IEnumerable<AppPermission> GetPermissions(int moduleId);
+    public IEnumerable<AppPermission> GetPermissions(Guid moduleId);
     public IEnumerable<AppPermission> GetPermissionsbyCommandName(string commandName);
     public AppPermission GetPermission(int permissionId);
     public List<AppPermission> GetPermissions(Func<AppPermission, bool>? predicate = null);
     #endregion
 
     #region RolePermission
-    public AppResult<AppRolePermission> AddRolePermission(string roleId, int permissionId);
-    public bool IsRolePermissionExist(string roleId, int permissionId);
-    public AppResult<AppRolePermission> DeleteRolePermission(string roleId, int permissionId);
+    public AppResult<AppRolePermission> AddRolePermission(Guid roleId, int permissionId);
+    public bool IsRolePermissionExist(Guid roleId, int permissionId);
+    public AppResult<AppRolePermission> DeleteRolePermission(Guid roleId, int permissionId);
     public AppResult<AppRolePermission> DeleteRolePermission(string rolePermissionId);
-    public IEnumerable<AppRolePermission> GetRolePermissions(string roleId);
+    public IEnumerable<AppRolePermission> GetRolePermissions(Guid roleId);
     
     public IEnumerable<AppRolePermission> GetRolePermissions(Func<AppRolePermission, bool>? predicate = null);
-    public IEnumerable<AppRolePermission> GetRolePermissionsByModuleId(string roleId, int moduleId);
-    public IEnumerable<AppRolePermission> GetRolePermissionsByModuleIds(List<int> moduleIds);
+    public IEnumerable<AppRolePermission> GetRolePermissionsByModuleId(Guid roleId, Guid moduleId);
+    public IEnumerable<AppRolePermission> GetRolePermissionsByModuleIds(List<Guid> moduleIds);
     #endregion
     
     #region GroupPermission
@@ -64,19 +64,19 @@ public interface IRoleProvider
     
     #endregion
 
-    public bool HasPermissionForRole(string roleId, string command, int moduleId);
-    public bool HasPermissionForGroup(int groupId, string command, int moduleId);
-    public bool HasPermissionForRoles(List<string> roleIds, string command, int moduleId);
-    public bool HasPermissionForGroups(List<int> groupIds, string command, int moduleId);
-    public IEnumerable<string> GetRolesByUserId(string userId);
+    public bool HasPermissionForRole(Guid roleId, string command, Guid moduleId);
+    public bool HasPermissionForGroup(int groupId, string command, Guid moduleId);
+    public bool HasPermissionForRoles(List<Guid> roleIds, string command, Guid moduleId);
+    public bool HasPermissionForGroups(List<int> groupIds, string command, Guid moduleId);
+    public IEnumerable<Guid> GetRolesByUserId(Guid userId);
     public IEnumerable<AppRole> GetAppRoles(Expression<Func<AppRole, bool>>? exp=null);
-    public IEnumerable<string> GetRolesByUserId(string userId, int moduleId);
-    public AppResult<AppUserRole> AddUserRole(string userId, string roleId);
-    public AppResult<AppUserRole> RemoveUserRole(string userId, string roleId);
+    public IEnumerable<Guid> GetRolesByUserId(Guid userId, Guid moduleId);
+    public AppResult<AppUserRole> AddUserRole(Guid userId, Guid roleId);
+    public AppResult<AppUserRole> RemoveUserRole(Guid userId, Guid roleId);
     public AppResult<AppUserRole> AddUserRole(AddAppUserRoleRes roleUserRes);
-    public IEnumerable<AppRole> GetUserRolesByModuleId(string userId, int moduleId);
-    public bool HasRoleForModule(string userId, int moduleId);
+    public IEnumerable<AppRole> GetUserRolesByModuleId(Guid userId, Guid moduleId);
+    public bool HasRoleForModule(Guid userId, Guid moduleId);
 
-    public bool RemoveUserRolesByModuleId(int moduleId);
-
+    public bool RemoveUserRolesByModuleId(Guid moduleId);
+    IEnumerable<AppRole> GetRolesByWorkspaceModuleIds(List<Guid> moduleIds);
 }

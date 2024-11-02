@@ -6,8 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AppIdentity.Database;
 
-public class AppIdentityDbContext : IdentityDbContext<AppUser, AppRole, string, AppUserClaim,
-    AppUserRole, IdentityUserLogin<string>, AppRolePermission, IdentityUserToken<string>>
+public class AppIdentityDbContext : IdentityDbContext<AppUser, AppRole, Guid, AppUserClaim,
+    AppUserRole, IdentityUserLogin<Guid>, AppRolePermission, IdentityUserToken<Guid>>
 {
     public AppIdentityDbContext(DbContextOptions<AppIdentityDbContext> options)
         : base(options)

@@ -11,6 +11,6 @@ namespace AppCommon.DTOs.Identity
         public bool Successful { get; set; }
         public string Error { get; set; }
         public string Token { get; set; }
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
     }
 }

@@ -3,7 +3,7 @@ using Microsoft.VisualBasic;
 
 namespace AppIdentity.Domain;
 
-public class AppRolePermission : IdentityRoleClaim<string>
+public class AppRolePermission : IdentityRoleClaim<Guid>
 {
     public int AppPermissionId { get; set; }
     public AppPermission AppPermission { get; set; }

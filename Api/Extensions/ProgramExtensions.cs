@@ -16,6 +16,7 @@ using Winton.Extensions.Configuration.Consul;
 using FileStorge;
 using Events;
 using Application.SeederServices;
+using Application.Services;
 
 namespace Api.Extensions
 {
@@ -54,6 +55,8 @@ namespace Api.Extensions
             }));
 
             services.AddScoped<AppConfigSeeder>();
+
+            services.AddScoped<ApplicationManager>();
 
             services.AddImportServices();
 
