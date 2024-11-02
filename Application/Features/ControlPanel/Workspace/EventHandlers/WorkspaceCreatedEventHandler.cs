@@ -13,11 +13,11 @@ namespace Application.Features.ControlPanel.Workspace.EventHandlers
             _backgroundJobClient = backgroundJobClient;
         }
 
-        public async Task Handle(WorkspaceCreatedEvent notification, CancellationToken cancellationToken)
+        public Task Handle(WorkspaceCreatedEvent notification, CancellationToken cancellationToken)
         {
-            _backgroundJobClient.Enqueue(() => Console.WriteLine($"Title is {notification.Title}"));
+            _backgroundJobClient.Enqueue<IWorkspaceJob>(job => job.ProcessWorkspaceCreatedEvent(notification));
 
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         }
     }
 }

@@ -4,7 +4,7 @@ using Module;
 using AppCommon.GlobalHelpers;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace Api.Jobs
+namespace Hangfire.Api.Jobs
 {
     public class SoftDeleteCleanupJob : BaseJob
     {

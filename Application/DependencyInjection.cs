@@ -1,6 +1,6 @@
 ﻿using Application.Features.ControlPanel.Workspace.Mapping;
 using Application.Services.EventsLogger;
-using MediatR;
+using JobsProcessor;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -17,6 +17,9 @@ namespace Application
 
             services.AddScoped<IEventLogger, DbEventLogger>();
             services.AddSingleton<WorkspaceMapper>();
+
+
+            services.AddJobsProcessor();
 
             return services;
         }

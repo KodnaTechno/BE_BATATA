@@ -6,5 +6,7 @@ namespace Module.Domain.Data
     {
         public Guid ModulId { get; set; }
         public virtual Schema.Module Module{ get; set; }
+
+
     }
 }

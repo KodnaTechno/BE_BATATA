@@ -1,16 +1,12 @@
 ﻿using AppCommon.DTOs;
 using Consul;
+using Infrastructure.Database;
 using Infrastructure.Database.Domain;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace Infrastructure.Database.Configration
+namespace Application.SeederServices
 {
     public class AppConfigSeeder
     {
@@ -70,10 +66,10 @@ namespace Infrastructure.Database.Configration
                             throw new Exception($"Failed to write {setting.Key} to Consul");
                         }
                     }
-                    catch 
+                    catch
                     {
                     }
-                   
+
                 }
             }
 
