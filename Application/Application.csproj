@@ -16,6 +16,7 @@
     <Folder Include="Common\Behaviors\" />
     <Folder Include="Common\Exceptions\" />
     <Folder Include="Common\Constants\" />
+    <Folder Include="Features\ControlPanel\Modules\Queries\" />
     <Folder Include="Services\Caching\" />
   </ItemGroup>
 
@@ -32,6 +33,7 @@
   <ItemGroup>
     <ProjectReference Include="..\AppCommon\AppCommon.csproj" />
     <ProjectReference Include="..\Events\Events.csproj" />
+    <ProjectReference Include="..\Identity\AppIdentity.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
     <ProjectReference Include="..\Module\Module.csproj" />
   </ItemGroup>

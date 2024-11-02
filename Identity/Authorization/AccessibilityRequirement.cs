@@ -62,7 +62,7 @@ public class AccessibilityRequirementHandler : AuthorizationHandler<Accessibilit
 
             if (users is null) continue;
 
-            var isUserInGroup = users.Any(x => x.Id.Equals(currentUser.Id, StringComparison.OrdinalIgnoreCase));
+            var isUserInGroup = users.Any(x => x.Id == currentUser.Id);
 
             if (isUserInGroup)
             {

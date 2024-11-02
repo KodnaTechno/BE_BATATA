@@ -19,6 +19,7 @@ using Api.Jobs;
 using Serilog;
 using Winton.Extensions.Configuration.Consul;
 using FileStorge;
+using Application.Services;
 
 namespace Api.Extensions
 {
@@ -57,6 +58,8 @@ namespace Api.Extensions
             }));
 
             services.AddScoped<AppConfigSeeder>();
+
+            services.AddScoped<ApplicationManager>();
 
             services.AddImportServices();
 

@@ -27,6 +27,6 @@ public interface IGroupProvider
     
     public AppGroup DeleteUser(int groupId, string username);
     public AppGroup DeleteUsers(int groupId, List<string> usernames);
-    public List<AppGroup> GetGroupsOfUser(string userId);
-    bool IsUserInAdminGroup(string userId);
+    public List<AppGroup> GetGroupsOfUser(Guid userId);
+    bool IsUserInAdminGroup(Guid userId);
 }

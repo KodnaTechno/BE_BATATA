@@ -3,7 +3,7 @@ using Microsoft.VisualBasic;
 
 namespace AppIdentity.Domain;
 
-public class AppUser : IdentityUser
+public class AppUser : IdentityUser<Guid>
 {
     public string DisplayName { get; set; }
     public int Stars { get; set; }

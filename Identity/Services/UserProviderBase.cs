@@ -29,8 +29,8 @@ public abstract class UserProviderBase : IUserProvider
     public abstract Task<AppResult<AppUser>> Add(AddUserRes user, bool isExternal = false);
     public abstract Task<AppResult<AppUser>> Update(UpdateUserReq updateUserRequest);
     public abstract Task<AppResult<AppUser>> Get(string userName);
-    public abstract Task<AppResult<AppUser>> GetById(string userName);
-    public abstract Task<AppResult<List<AppUser>>> GetByIds(List<string> userIds);
+    public abstract Task<AppResult<AppUser>> GetById(Guid userId);
+    public abstract Task<AppResult<List<AppUser>>> GetByIds(List<Guid> userIds);
 
     public abstract Task<AppResult<AppUser>> GetByEmail(string email);
 

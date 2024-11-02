@@ -50,7 +50,7 @@ namespace Application.Features.ControlPanel.Workspace.Handlers
 
             var currentWorkspaceModules = _moduleDbContext.WorkspaceModules
                 .Include(x => x.Module)
-                .ThenInclude(x => x.WorkspaceModules)
+                .Include(x => x.Workspace)
                 .Where(x => x.WorkspaceId == workspace.Id).ToList();
 
             //Remove Not Mapped Moduels

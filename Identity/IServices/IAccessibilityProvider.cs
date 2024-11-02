@@ -30,7 +30,7 @@ public interface IAccessibilityProvider
     public IEnumerable<AppUser> GetAccessibilityUsers(int accessibilityId);
     public IEnumerable<AppUser> GetAccessibilityUsers(string accessibilityKey);
     
-    public IEnumerable<AccessibilityPermissions> GetAccessibilityPermissionsForUser(string userId);
-    public IEnumerable<AccessibilityPermissions> GetAccessibilityPermissionsForUserByUserId(string userId);
-    bool HasUserPermissionForModule(string userId, string moduleKey);
+    public IEnumerable<AccessibilityPermissions> GetAccessibilityPermissionsForUser(string username);
+    public IEnumerable<AccessibilityPermissions> GetAccessibilityPermissionsForUserByUserId(Guid userId);
+    bool HasUserPermissionForModule(Guid userId, string moduleKey);
 }
