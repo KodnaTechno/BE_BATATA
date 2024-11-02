@@ -33,9 +33,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileStorge", "FileStorge\Fi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hangfire.Api", "Hangfire\Hangfire.Api.csproj", "{E3157C51-AD18-4536-AE80-38D13AFE64D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hangfire.Shared", "Hangfire.Shared\Hangfire.Shared.csproj", "{4745B66A-1E91-4A95-BF1D-9B0374123F0B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hangfire.Shared", "Hangfire.Shared\Hangfire.Shared.csproj", "{4745B66A-1E91-4A95-BF1D-9B0374123F0B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobsProcessor", "JobsProcessor\JobsProcessor.csproj", "{3CD35DEB-52EF-438D-AA47-8B31EB3970EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JobsProcessor", "JobsProcessor\JobsProcessor.csproj", "{3CD35DEB-52EF-438D-AA47-8B31EB3970EC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Migrations", "Migrations", "{EECEAD1F-B01F-4174-8450-A33C876F68FD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Hangfire", "Hangfire", "{461D0BDA-260B-446A-81C0-88190DACD1B5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -114,6 +118,14 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{182CAD2B-C6A7-43A1-BA7D-5FB9F177967C} = {EECEAD1F-B01F-4174-8450-A33C876F68FD}
+		{D4D77D99-E59D-44EF-8704-D6AC1BBC9484} = {EECEAD1F-B01F-4174-8450-A33C876F68FD}
+		{AD9710D7-891F-4A18-A235-37908849D640} = {EECEAD1F-B01F-4174-8450-A33C876F68FD}
+		{E3157C51-AD18-4536-AE80-38D13AFE64D3} = {461D0BDA-260B-446A-81C0-88190DACD1B5}
+		{4745B66A-1E91-4A95-BF1D-9B0374123F0B} = {461D0BDA-260B-446A-81C0-88190DACD1B5}
+		{3CD35DEB-52EF-438D-AA47-8B31EB3970EC} = {461D0BDA-260B-446A-81C0-88190DACD1B5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BA6E2CB9-5DEF-4A1B-821C-E4AADBA5D912}
