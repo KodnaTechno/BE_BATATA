@@ -1,7 +1,7 @@
 ﻿using Application.Common.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Common.Helpers
+namespace AppCommon.GlobalHelpers
 {
     public static class PaginationHelpers
     {

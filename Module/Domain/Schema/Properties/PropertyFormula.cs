@@ -9,5 +9,7 @@ namespace Module.Domain.Schema.Properties
         public string Formula { get; set; }
         public string Value { get; set; }
         public bool IsConditional { get; set; }
+
+        public int Order { get; set; }
     }
 }
