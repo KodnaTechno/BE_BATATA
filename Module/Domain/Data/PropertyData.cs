@@ -1,6 +1,7 @@
 ﻿    using Module.Domain.Base;
     using Module.Domain.Schema.Properties;
     using Module.Domain.Shared;
+using System;
 
     namespace Module.Domain.Data
     {
@@ -37,6 +38,27 @@
                     _ => throw new NotSupportedException($"DataType '{Property.DataType}' is not supported."),
                 };
             }
+
+        public object SetValue(string value)
+        {
+            if (Property == null)
+            {
+                throw new InvalidOperationException("Property information is not available.");
+            }
+
+            return Property.DataType switch // Using DataTypeEnum here
+            {
+                DataTypeEnum.String => this.StringValue = value,
+                DataTypeEnum.Int => this.IntValue = int.TryParse(value, out int val) ? val : null,
+                DataTypeEnum.Guid => this.GuidValue = Guid.TryParse(value, out Guid val) ? val : null,
+                DataTypeEnum.DateTime => this.DateTimeValue = DateTime.TryParse(value, out DateTime val) ? val : null,
+                DataTypeEnum.Double => this.DoubleValue = double.TryParse(value, out double val) ? val : null,
+                DataTypeEnum.Decmial => this.DecimalValue = decimal.TryParse(value, out decimal val) ? val : null,
+                DataTypeEnum.Bool => this.BoolValue = bool.TryParse(value, out bool val) ? val : null,
+                DataTypeEnum.None => null,
+                _ => throw new NotSupportedException($"DataType '{Property.DataType}' is not supported."),
+            };
         }
+    }
 
     }

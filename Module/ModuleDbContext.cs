@@ -27,9 +27,9 @@ namespace Module
 
         #region SchemaData
         public DbSet<ModuleData> ModuleData { get; set; }
-        public DbSet<Workspace> WorkspaceData { get; set; }
+        public DbSet<WorkspaceData> WorkspaceData { get; set; }
         public DbSet<WorkspaceConnection> WorkspaceConnectionData { get; set; }
-        public DbSet<Property> PropertyData { get; set; }
+        public DbSet<PropertyData> PropertyData { get; set; }
 
         #endregion
 
