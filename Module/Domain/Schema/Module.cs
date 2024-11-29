@@ -3,7 +3,7 @@ using Module.Domain.Shared;
 
 namespace Module.Domain.Schema
 {
-    public class Module : BaseModule
+    public class Module : BaseProperty
     {
         public string Title { get; set; }
         public ModuleTypeEnum Type { get; set; }

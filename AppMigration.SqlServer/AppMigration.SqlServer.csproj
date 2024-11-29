@@ -29,7 +29,6 @@
 
   <ItemGroup>
     <Folder Include="AppIdentity\" />
-    <Folder Include="Module\" />
     <Folder Include="Application\" />
     <Folder Include="File\" />
   </ItemGroup>

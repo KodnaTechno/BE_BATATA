@@ -12,8 +12,8 @@ using Module;
 namespace AppMigration.SqlServer.Module
 {
     [DbContext(typeof(ModuleDbContext))]
-    [Migration("20241012090040_updatedApplicationrelation")]
-    partial class updatedApplicationrelation
+    [Migration("20241129233218_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,10 +21,27 @@ namespace AppMigration.SqlServer.Module
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("module")
-                .HasAnnotation("ProductVersion", "8.0.6")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Module.Domain.BusinessDomain.Task", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ModuleDataId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ModuleDataId")
+                        .IsUnique();
+
+                    b.ToTable("Tasks", "module");
+                });
 
             modelBuilder.Entity("Module.Domain.Data.ModuleData", b =>
                 {
@@ -37,6 +54,15 @@ namespace AppMigration.SqlServer.Module
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<Guid>("ModulId")
                         .HasColumnType("uniqueidentifier");
@@ -69,14 +95,23 @@ namespace AppMigration.SqlServer.Module
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("DataType")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("DateTimeValue")
                         .HasColumnType("datetime2");
+
+                    b.Property<DateOnly?>("DateValue")
+                        .HasColumnType("date");
 
                     b.Property<decimal?>("DecimalValue")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<double?>("DoubleValue")
                         .HasColumnType("float");
+
+                    b.Property<Guid?>("GuidValue")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int?>("IntValue")
                         .HasColumnType("int");
@@ -90,6 +125,9 @@ namespace AppMigration.SqlServer.Module
                     b.Property<string>("StringValue")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("SystemPropertyPath")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -99,9 +137,6 @@ namespace AppMigration.SqlServer.Module
                     b.Property<Guid?>("WorkspaceDataId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("WorkspaceModuleId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ModuleDataId");
@@ -109,8 +144,6 @@ namespace AppMigration.SqlServer.Module
                     b.HasIndex("PropertyId");
 
                     b.HasIndex("WorkspaceDataId");
-
-                    b.HasIndex("WorkspaceModuleId");
 
                     b.ToTable("PropertyData", "module");
                 });
@@ -152,6 +185,15 @@ namespace AppMigration.SqlServer.Module
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -211,6 +253,12 @@ namespace AppMigration.SqlServer.Module
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Details")
                         .HasColumnType("nvarchar(max)");
 
@@ -218,6 +266,9 @@ namespace AppMigration.SqlServer.Module
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
@@ -244,6 +295,22 @@ namespace AppMigration.SqlServer.Module
                     b.HasIndex("ApplicationId");
 
                     b.ToTable("Modules", "module");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"),
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
+                            Details = "{\r\n  \"en\": \"تفاصيل\",\r\n  \"ar\": \"Details\"\r\n}",
+                            Domain = "Module.Domain.BusinessDomain.Task",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "Task",
+                            Order = 1,
+                            Title = "{\r\n  \"en\": \"المهام\",\r\n  \"ar\": \"Tasks\"\r\n}",
+                            Type = "Basic"
+                        });
                 });
 
             modelBuilder.Entity("Module.Domain.Schema.ModuleBlock", b =>
@@ -318,10 +385,19 @@ namespace AppMigration.SqlServer.Module
                     b.Property<string>("DefaultValue")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsCalculated")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsEncrypted")
@@ -333,13 +409,13 @@ namespace AppMigration.SqlServer.Module
                     b.Property<bool>("IsSystem")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsTranslatable")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Key")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("ModuleId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("ModuleId1")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("NormalizedKey")
@@ -347,6 +423,9 @@ namespace AppMigration.SqlServer.Module
 
                     b.Property<int>("Order")
                         .HasColumnType("int");
+
+                    b.Property<string>("SystemPropertyPath")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
@@ -364,9 +443,6 @@ namespace AppMigration.SqlServer.Module
                     b.Property<Guid?>("WorkspaceId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("WorkspaceId1")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid?>("WorkspaceModuleId")
                         .HasColumnType("uniqueidentifier");
 
@@ -374,15 +450,193 @@ namespace AppMigration.SqlServer.Module
 
                     b.HasIndex("ModuleId");
 
-                    b.HasIndex("ModuleId1");
-
                     b.HasIndex("WorkspaceId");
-
-                    b.HasIndex("WorkspaceId1");
 
                     b.HasIndex("WorkspaceModuleId");
 
                     b.ToTable("Property", "module");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("9d6b2976-c5ea-4c7a-91e7-c684f3b57f33"),
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
+                            DataType = "String",
+                            IsCalculated = false,
+                            IsDeleted = false,
+                            IsEncrypted = false,
+                            IsInternal = true,
+                            IsSystem = true,
+                            IsTranslatable = true,
+                            Key = "task_title",
+                            ModuleId = new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"),
+                            NormalizedKey = "TITLE",
+                            Order = 1,
+                            SystemPropertyPath = "Title",
+                            Title = "{\r\n  \"en\": \"Title\",\r\n  \"ar\": \"العنوان\"\r\n}",
+                            ViewType = "Text"
+                        },
+                        new
+                        {
+                            Id = new Guid("f1f61de5-c906-4a0e-8a79-37a119fb6a54"),
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
+                            DataType = "Guid",
+                            IsCalculated = false,
+                            IsDeleted = false,
+                            IsEncrypted = false,
+                            IsInternal = true,
+                            IsSystem = true,
+                            IsTranslatable = false,
+                            Key = "task_assignedto",
+                            ModuleId = new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"),
+                            NormalizedKey = "ASSIGNDTO",
+                            Order = 2,
+                            SystemPropertyPath = "AssigndTo",
+                            Title = "{\r\n  \"en\": \"Assigned To\",\r\n  \"ar\": \"مسند إلى\"\r\n}",
+                            ViewType = "User"
+                        },
+                        new
+                        {
+                            Id = new Guid("b653054d-75a9-4c48-9fe8-c5704459e578"),
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
+                            DataType = "DateOnly",
+                            IsCalculated = false,
+                            IsDeleted = false,
+                            IsEncrypted = false,
+                            IsInternal = true,
+                            IsSystem = true,
+                            IsTranslatable = false,
+                            Key = "task_duedate",
+                            ModuleId = new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"),
+                            NormalizedKey = "DUEDATE",
+                            Order = 3,
+                            SystemPropertyPath = "DueDate",
+                            Title = "{\r\n  \"en\": \"Due Date\",\r\n  \"ar\": \"تاريخ الاستحقاق\"\r\n}",
+                            ViewType = "Date"
+                        },
+                        new
+                        {
+                            Id = new Guid("63e6128a-2903-4500-a2e8-15af07867df3"),
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
+                            DataType = "DateTime",
+                            IsCalculated = true,
+                            IsDeleted = false,
+                            IsEncrypted = false,
+                            IsInternal = true,
+                            IsSystem = true,
+                            IsTranslatable = false,
+                            Key = "task_createdat",
+                            ModuleId = new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"),
+                            NormalizedKey = "CREATED_AT",
+                            Order = 4,
+                            SystemPropertyPath = "CreatedAt",
+                            Title = "{\r\n  \"en\": \"Created At\",\r\n  \"ar\": \"تاريخ الإنشاء\"\r\n}",
+                            ViewType = "DateTime"
+                        },
+                        new
+                        {
+                            Id = new Guid("e0a3bbff-5314-41fe-9a9d-5b13b2151a67"),
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
+                            DataType = "Guid",
+                            IsCalculated = true,
+                            IsDeleted = false,
+                            IsEncrypted = false,
+                            IsInternal = true,
+                            IsSystem = true,
+                            IsTranslatable = false,
+                            Key = "task_createdby",
+                            ModuleId = new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"),
+                            NormalizedKey = "CREATED_BY",
+                            Order = 5,
+                            SystemPropertyPath = "CreatedBy",
+                            Title = "{\r\n  \"en\": \"Created By\",\r\n  \"ar\": \"تم الإنشاء بواسطة\"\r\n}",
+                            ViewType = "User"
+                        },
+                        new
+                        {
+                            Id = new Guid("1894b31a-c4c4-411e-b116-e3d3ea0d5124"),
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
+                            DataType = "DateTime",
+                            IsCalculated = true,
+                            IsDeleted = false,
+                            IsEncrypted = false,
+                            IsInternal = true,
+                            IsSystem = true,
+                            IsTranslatable = false,
+                            Key = "task_updatedat",
+                            ModuleId = new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"),
+                            NormalizedKey = "UPDATED_AT",
+                            Order = 6,
+                            SystemPropertyPath = "UpdatedAt",
+                            Title = "{\r\n  \"en\": \"Updated At\",\r\n  \"ar\": \"تاريخ التحديث\"\r\n}",
+                            ViewType = "DateTime"
+                        },
+                        new
+                        {
+                            Id = new Guid("81cc79f8-200b-49bc-ac71-b6d2e19b4cc4"),
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
+                            DataType = "Guid",
+                            IsCalculated = true,
+                            IsDeleted = false,
+                            IsEncrypted = false,
+                            IsInternal = true,
+                            IsSystem = true,
+                            IsTranslatable = false,
+                            Key = "task_updatedby",
+                            ModuleId = new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"),
+                            NormalizedKey = "UPDATED_BY",
+                            Order = 7,
+                            SystemPropertyPath = "UpdatedBy",
+                            Title = "{\r\n  \"en\": \"Updated By\",\r\n  \"ar\": \"تم التحديث بواسطة\"\r\n}",
+                            ViewType = "User"
+                        },
+                        new
+                        {
+                            Id = new Guid("ee82a724-8aa7-412d-add7-cfc25b4d15f6"),
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
+                            DataType = "DateTime",
+                            IsCalculated = true,
+                            IsDeleted = false,
+                            IsEncrypted = false,
+                            IsInternal = true,
+                            IsSystem = true,
+                            IsTranslatable = false,
+                            Key = "task_deletedat",
+                            ModuleId = new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"),
+                            NormalizedKey = "DELETED_AT",
+                            Order = 8,
+                            SystemPropertyPath = "DeletedAt",
+                            Title = "{\r\n  \"en\": \"Deleted At\",\r\n  \"ar\": \"تاريخ الحذف\"\r\n}",
+                            ViewType = "DateTime"
+                        },
+                        new
+                        {
+                            Id = new Guid("64b8369e-497f-462d-bc30-ac97c3e43b30"),
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
+                            DataType = "Guid",
+                            IsCalculated = true,
+                            IsDeleted = false,
+                            IsEncrypted = false,
+                            IsInternal = true,
+                            IsSystem = true,
+                            IsTranslatable = false,
+                            Key = "task_deletedby",
+                            ModuleId = new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"),
+                            NormalizedKey = "DELETED_BY",
+                            Order = 9,
+                            SystemPropertyPath = "DeletedBy",
+                            Title = "{\r\n  \"en\": \"Deleted By\",\r\n  \"ar\": \"تم الحذف بواسطة\"\r\n}",
+                            ViewType = "User"
+                        });
                 });
 
             modelBuilder.Entity("Module.Domain.Schema.Properties.PropertyConnection", b =>
@@ -500,8 +754,17 @@ namespace AppMigration.SqlServer.Module
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Details")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("NormlizedTitle")
                         .HasColumnType("nvarchar(max)");
@@ -534,6 +797,9 @@ namespace AppMigration.SqlServer.Module
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("AllowManySource")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsOptional")
                         .HasColumnType("bit");
@@ -570,6 +836,15 @@ namespace AppMigration.SqlServer.Module
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<Guid>("ModuleId")
                         .HasColumnType("uniqueidentifier");
@@ -613,6 +888,17 @@ namespace AppMigration.SqlServer.Module
                     b.ToTable("WorkspaceModuleBlocks", "module");
                 });
 
+            modelBuilder.Entity("Module.Domain.BusinessDomain.Task", b =>
+                {
+                    b.HasOne("Module.Domain.Data.ModuleData", "ModuleData")
+                        .WithOne()
+                        .HasForeignKey("Module.Domain.BusinessDomain.Task", "ModuleDataId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ModuleData");
+                });
+
             modelBuilder.Entity("Module.Domain.Data.ModuleData", b =>
                 {
                     b.HasOne("Module.Domain.Schema.Module", "Module")
@@ -639,10 +925,6 @@ namespace AppMigration.SqlServer.Module
                     b.HasOne("Module.Domain.Data.WorkspaceData", null)
                         .WithMany("ProperatyData")
                         .HasForeignKey("WorkspaceDataId");
-
-                    b.HasOne("Module.Domain.Schema.WorkspaceModule", null)
-                        .WithMany("ProperatyData")
-                        .HasForeignKey("WorkspaceModuleId");
 
                     b.Navigation("Property");
                 });
@@ -703,23 +985,15 @@ namespace AppMigration.SqlServer.Module
             modelBuilder.Entity("Module.Domain.Schema.Properties.Property", b =>
                 {
                     b.HasOne("Module.Domain.Schema.Module", "Module")
-                        .WithMany()
+                        .WithMany("Properties")
                         .HasForeignKey("ModuleId");
 
-                    b.HasOne("Module.Domain.Schema.Module", null)
-                        .WithMany("Properaties")
-                        .HasForeignKey("ModuleId1");
-
                     b.HasOne("Module.Domain.Schema.Workspace", "Workspace")
-                        .WithMany()
+                        .WithMany("Properties")
                         .HasForeignKey("WorkspaceId");
 
-                    b.HasOne("Module.Domain.Schema.Workspace", null)
-                        .WithMany("Properaties")
-                        .HasForeignKey("WorkspaceId1");
-
                     b.HasOne("Module.Domain.Schema.WorkspaceModule", "WorkspaceModule")
-                        .WithMany()
+                        .WithMany("Properties")
                         .HasForeignKey("WorkspaceModuleId");
 
                     b.Navigation("Module");
@@ -855,7 +1129,7 @@ namespace AppMigration.SqlServer.Module
 
             modelBuilder.Entity("Module.Domain.Schema.Module", b =>
                 {
-                    b.Navigation("Properaties");
+                    b.Navigation("Properties");
 
                     b.Navigation("WorkspaceModules");
                 });
@@ -878,7 +1152,7 @@ namespace AppMigration.SqlServer.Module
 
             modelBuilder.Entity("Module.Domain.Schema.Workspace", b =>
                 {
-                    b.Navigation("Properaties");
+                    b.Navigation("Properties");
 
                     b.Navigation("WorkspaceModuleBlocks");
 
@@ -887,7 +1161,7 @@ namespace AppMigration.SqlServer.Module
 
             modelBuilder.Entity("Module.Domain.Schema.WorkspaceModule", b =>
                 {
-                    b.Navigation("ProperatyData");
+                    b.Navigation("Properties");
                 });
 #pragma warning restore 612, 618
         }

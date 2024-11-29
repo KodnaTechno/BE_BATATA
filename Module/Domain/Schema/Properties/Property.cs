@@ -1,9 +1,10 @@
-﻿using Module.Domain.Base;
+﻿using AppCommon.DTOs;
+using Module.Domain.Base;
 using Module.Domain.Shared;
 
 namespace Module.Domain.Schema.Properties
 {
-    public class Property : BaseEntity
+    public class Property : SoftDeleteEntity
     {
         public string Title { get; set; }
         public string Key { get; set; }
@@ -17,8 +18,9 @@ namespace Module.Domain.Schema.Properties
         public string DefaultValue { get; set; }
         public bool IsCalculated { get; set; }
         public bool IsEncrypted { get; set; }
-        public int Order { get; set; }
 
+        public bool IsTranslatable { get; set; }
+        public int Order { get; set; }
 
         public Guid? ModuleId { get; set; }
         public virtual Module Module { get; set; }
@@ -32,5 +34,6 @@ namespace Module.Domain.Schema.Properties
 
         public virtual ICollection<PropertyConnection> SourcePropertyConnections { get; set; }
         public virtual ICollection<PropertyConnection> TargetPropertyConnections { get; set; }
+        public string SystemPropertyPath { get; set; }
     }
 }

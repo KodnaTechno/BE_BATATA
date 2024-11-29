@@ -3,6 +3,8 @@ using Module.Domain.Schema.Properties;
 using Module.Domain.Schema;
 using Module.Domain.Data;
 using Module.Configurations;
+using Module.Seeding.ModuleDefinitions;
+using Module.Seeding;
 
 namespace Module
 {
@@ -31,6 +33,11 @@ namespace Module
 
         #endregion
 
+        #region Businss
+        public DbSet<Domain.BusinessDomain.Task> Tasks { get; set; }
+
+        #endregion
+
         public ModuleDbContext(DbContextOptions<ModuleDbContext> options) : base(options)
         {
         }
@@ -55,6 +62,11 @@ namespace Module
             modelBuilder.ApplyConfiguration(new WorkspaceModuleBlockConfiguration());
             modelBuilder.ApplyConfiguration(new PropertyFormulaConfiguration());
             modelBuilder.ApplyConfiguration(new ApplicationConfiguration());
+            modelBuilder.ApplyConfiguration(new TaskConfiguration());
+
+            #region Seeding
+            modelBuilder.SeedModules();
+            #endregion
         }
     }
 }

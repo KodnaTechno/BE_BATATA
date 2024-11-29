@@ -21,7 +21,7 @@ namespace Hangfire.Api.Jobs
             try
             {
                 var entityTypes = moduleDbContext.Model.GetEntityTypes()
-                    .Where(t => typeof(BaseEntity).IsAssignableFrom(t.ClrType));
+                    .Where(t => typeof(SoftDeleteEntity).IsAssignableFrom(t.ClrType));
 
                 foreach (var entityType in entityTypes)
                 {
@@ -56,7 +56,7 @@ namespace Hangfire.Api.Jobs
                 return;
             }
 
-            var dbSet = method.Invoke(dbContext, null) as IQueryable<BaseEntity>;
+            var dbSet = method.Invoke(dbContext, null) as IQueryable<SoftDeleteEntity>;
             if (dbSet == null)
             {
                 logger.LogError("Could not create DbSet for entity type {Entity}", entityType.ClrType.Name);

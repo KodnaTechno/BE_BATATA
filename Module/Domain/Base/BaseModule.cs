@@ -1,6 +1,10 @@
-﻿namespace Module.Domain.Base
+﻿using Module.Domain.Data;
+
+namespace Module.Domain.Base
 {
-    public class BaseModule : BaseProperty
+    public class BaseModuleData
     {
+        public Guid ModuleDataId { get; set; }
+        public virtual ModuleData ModuleData { get; set; }
     }
 }
