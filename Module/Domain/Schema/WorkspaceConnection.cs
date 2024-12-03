@@ -1,4 +1,6 @@
-﻿namespace Module.Domain.Schema
+﻿using Module.Domain.Data;
+
+namespace Module.Domain.Schema
 {
     public class WorkspaceConnection
     {
@@ -12,5 +14,6 @@
         public string Metadata { get; set; }
         public bool AllowManySource { get; set; }
 
+        public virtual ICollection<WorkspaceConnectionData> WorkspaceConnectionData { get; set; }
     }
 }

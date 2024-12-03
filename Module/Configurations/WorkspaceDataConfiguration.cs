@@ -8,7 +8,15 @@ namespace Module.Configurations
     {
         public void Configure(EntityTypeBuilder<WorkspaceData> builder)
         {
-            builder.HasMany(e => e.WorkspaceConnections).WithOne(e => e.SourceWorkspaceData).HasForeignKey(e => e.SourceWorkspaceDataId);
+            builder.HasOne(w => w.Workspace)
+                .WithMany(w => w.WorkspaceData)
+                .HasForeignKey(w => w.WorkspaceId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(w => w.WorkspaceConnections)
+                .WithOne(c => c.TargetWorkspaceData)
+                .HasForeignKey(c => c.TargetWorkspaceDataId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 

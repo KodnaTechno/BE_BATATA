@@ -22,6 +22,12 @@ using System;
             public decimal? DecimalValue { get; set; }
             public bool? BoolValue { get; set; }
 
+            public Guid? ModuleDataId { get; set; }
+            public virtual ModuleData ModuleData { get; set; }
+
+            public Guid? WorkspaceDataId { get; set; }
+            public virtual WorkspaceData WorkspaceData { get; set; }
+
             public object GetValue()
             {
                 return DataType switch
@@ -35,30 +41,26 @@ using System;
                     DataTypeEnum.Decmial => DecimalValue.Value,
                     DataTypeEnum.Bool => BoolValue.Value,
                     DataTypeEnum.None => null,
-                    _ => throw new NotSupportedException($"DataType '{Property.DataType}' is not supported."),
+                    _ => throw new NotSupportedException($"DataType '{DataType}' is not supported."),
                 };
             }
 
-        public object SetValue(string value)
-        {
-            if (Property == null)
+            public object SetValue(string value)
             {
-                throw new InvalidOperationException("Property information is not available.");
+                return DataType switch
+                {
+                    DataTypeEnum.String => StringValue = value,
+                    DataTypeEnum.Int => IntValue = int.TryParse(value, out int val) ? val : null,
+                    DataTypeEnum.Guid => GuidValue = Guid.TryParse(value, out Guid val) ? val : null,
+                    DataTypeEnum.DateTime => DateTimeValue = DateTime.TryParse(value, out DateTime val) ? val : null,
+                    DataTypeEnum.DateOnly => DateValue = DateTime.TryParse(value, out DateTime val) ? DateOnly.FromDateTime(val) : null,
+                    DataTypeEnum.Double => DoubleValue = double.TryParse(value, out double val) ? val : null,
+                    DataTypeEnum.Decmial => DecimalValue = decimal.TryParse(value, out decimal val) ? val : null,
+                    DataTypeEnum.Bool => BoolValue = bool.TryParse(value, out bool val) ? val : null,
+                    DataTypeEnum.None => null,
+                    _ => throw new NotSupportedException($"DataType '{DataType}' is not supported."),
+                };
             }
-
-            return Property.DataType switch // Using DataTypeEnum here
-            {
-                DataTypeEnum.String => this.StringValue = value,
-                DataTypeEnum.Int => this.IntValue = int.TryParse(value, out int val) ? val : null,
-                DataTypeEnum.Guid => this.GuidValue = Guid.TryParse(value, out Guid val) ? val : null,
-                DataTypeEnum.DateTime => this.DateTimeValue = DateTime.TryParse(value, out DateTime val) ? val : null,
-                DataTypeEnum.Double => this.DoubleValue = double.TryParse(value, out double val) ? val : null,
-                DataTypeEnum.Decmial => this.DecimalValue = decimal.TryParse(value, out decimal val) ? val : null,
-                DataTypeEnum.Bool => this.BoolValue = bool.TryParse(value, out bool val) ? val : null,
-                DataTypeEnum.None => null,
-                _ => throw new NotSupportedException($"DataType '{Property.DataType}' is not supported."),
-            };
         }
-    }
 
     }
