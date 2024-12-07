@@ -12,7 +12,4 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\AppCommon\AppCommon.csproj" />
 	</ItemGroup>
-	<ItemGroup>
-	  <ProjectReference Include="..\AppCommon\AppCommon.csproj" />
-	</ItemGroup>
 </Project>
