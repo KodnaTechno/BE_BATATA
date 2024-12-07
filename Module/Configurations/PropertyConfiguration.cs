@@ -11,9 +11,17 @@ namespace Module.Configurations
             builder.Property(e => e.ViewType).HasConversion<string>();
             builder.Property(e => e.DataType).HasConversion<string>();
 
-            builder.HasOne(e => e.Module).WithMany().HasForeignKey(e => e.ModuleId);
-            builder.HasOne(e => e.Workspace).WithMany().HasForeignKey(e => e.WorkspaceId);
-            builder.HasOne(e => e.WorkspaceModule).WithMany().HasForeignKey(e => e.WorkspaceModuleId);
+            builder.HasOne(e => e.Module)
+                .WithMany(m => m.Properties)  
+                .HasForeignKey(e => e.ModuleId);
+
+            builder.HasOne(e => e.Workspace)
+                .WithMany(w => w.Properties)  
+                .HasForeignKey(e => e.WorkspaceId);
+
+            builder.HasOne(e => e.WorkspaceModule)
+                .WithMany(wm => wm.Properties)  
+                .HasForeignKey(e => e.WorkspaceModuleId);
         }
     }
 

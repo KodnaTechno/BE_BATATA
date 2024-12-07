@@ -8,9 +8,22 @@ namespace Module.Configurations
     {
         public void Configure(EntityTypeBuilder<WorkspaceConnectionData> builder)
         {
-            builder.HasOne(e => e.SourceWorkspaceData).WithMany().HasForeignKey(e => e.SourceWorkspaceDataId);
-            builder.HasOne(e => e.TargetWorkspaceData).WithMany().HasForeignKey(e => e.TargetWorkspaceDataId);
-            builder.HasOne(e => e.WorkspaceConnection).WithMany().HasForeignKey(e => e.WorkspaceConnectionId);
+            builder.HasOne(w => w.WorkspaceConnection)
+                .WithMany(w => w.WorkspaceConnectionData)
+                .HasForeignKey(w => w.WorkspaceConnectionId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(w => w.SourceWorkspaceData)
+                .WithMany()
+                .HasForeignKey(w => w.SourceWorkspaceDataId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(w => w.TargetWorkspaceData)
+                .WithMany(w => w.WorkspaceConnections)
+                .HasForeignKey(w => w.TargetWorkspaceDataId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 

@@ -1,6 +1,6 @@
-﻿using Hangfire;
+﻿using System.Reflection;
 
-namespace Api.Jobs
+namespace Hangfire.Api.Jobs
 {
     public abstract class BaseJob
     {
@@ -20,4 +20,9 @@ namespace Api.Jobs
                 date.Date >= holiday.from.Date && date.Date <= holiday.to.Date);
         }
     }
+
+
+
+
+
 }

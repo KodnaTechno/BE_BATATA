@@ -4,7 +4,7 @@ using Module;
 using AppCommon.GlobalHelpers;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace Api.Jobs
+namespace Hangfire.Api.Jobs
 {
     public class SoftDeleteCleanupJob : BaseJob
     {
@@ -21,7 +21,7 @@ namespace Api.Jobs
             try
             {
                 var entityTypes = moduleDbContext.Model.GetEntityTypes()
-                    .Where(t => typeof(BaseEntity).IsAssignableFrom(t.ClrType));
+                    .Where(t => typeof(SoftDeleteEntity).IsAssignableFrom(t.ClrType));
 
                 foreach (var entityType in entityTypes)
                 {
@@ -56,7 +56,7 @@ namespace Api.Jobs
                 return;
             }
 
-            var dbSet = method.Invoke(dbContext, null) as IQueryable<BaseEntity>;
+            var dbSet = method.Invoke(dbContext, null) as IQueryable<SoftDeleteEntity>;
             if (dbSet == null)
             {
                 logger.LogError("Could not create DbSet for entity type {Entity}", entityType.ClrType.Name);

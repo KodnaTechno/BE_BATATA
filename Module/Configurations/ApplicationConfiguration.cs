@@ -10,13 +10,11 @@ namespace Module.Configurations
         {
             builder.HasMany(e => e.Workspaces)
                .WithOne(e => e.Application)
-               .HasForeignKey(e => e.ApplicationId)
-               .IsRequired(false); 
+               .HasForeignKey(e => e.ApplicationId);
 
             builder.HasMany(e => e.Modules)
                    .WithOne(e => e.Application)
-                   .HasForeignKey(e => e.ApplicationId)
-                   .IsRequired(false); 
+                   .HasForeignKey(e => e.ApplicationId);
         }
     }
 

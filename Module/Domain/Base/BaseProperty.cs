@@ -2,8 +2,8 @@
 
 namespace Module.Domain.Base
 {
-    public class BaseProperty : BaseEntity
+    public class BaseProperty : SoftDeleteEntity
     {
-        public virtual ICollection<Property> Properaties { get; set; }
+        public virtual ICollection<Property> Properties { get; set; }
     }
 }

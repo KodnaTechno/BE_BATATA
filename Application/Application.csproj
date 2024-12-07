@@ -16,14 +16,12 @@
     <Folder Include="Common\Behaviors\" />
     <Folder Include="Common\Exceptions\" />
     <Folder Include="Common\Constants\" />
+    <Folder Include="Features\ControlPanel\Modules\Queries\" />
     <Folder Include="Services\Caching\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Consul" Version="1.7.14.4" />
-    <PackageReference Include="Hangfire.AspNetCore" Version="1.8.15" />
-    <PackageReference Include="Hangfire.Core" Version="1.8.15" />
-    <PackageReference Include="Hangfire.SqlServer" Version="1.8.15" />
     <PackageReference Include="MediatR" Version="12.4.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
     <PackageReference Include="Riok.Mapperly" Version="4.0.0" />
@@ -31,8 +29,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AppCommon\AppCommon.csproj" />
-    <ProjectReference Include="..\Events\Events.csproj" />
+    <ProjectReference Include="..\Identity\AppIdentity.csproj" />
+    <ProjectReference Include="..\Hangfire.Shared\Hangfire.Shared.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+    <ProjectReference Include="..\JobsProcessor\JobsProcessor.csproj" />
     <ProjectReference Include="..\Module\Module.csproj" />
   </ItemGroup>
 

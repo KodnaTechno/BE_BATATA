@@ -2,7 +2,7 @@
 
 namespace Module.Domain.Schema
 {
-    public class WorkspaceModule : BasePropertyData
+    public class WorkspaceModule : BaseProperty
     {
         public Guid WorkspaceId { get; set; }
         public virtual Workspace Workspace { get; set; }

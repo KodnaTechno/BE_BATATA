@@ -60,7 +60,7 @@ public class GroupProvider : IGroupProvider
             .Where(g => g.Group.Name == groupName)
             .Select(g => g.User);
     }
-    public bool IsUserInAdminGroup(string userId)
+    public bool IsUserInAdminGroup(Guid userId)
     {
         var adminGroupId = _dbContext.AppGroups.FirstOrDefault().Id;
         return _dbContext.AppGroupUsers
@@ -90,7 +90,7 @@ public class GroupProvider : IGroupProvider
         return AppGroup;
     }
 
-    public List<AppGroup> GetGroupsOfUser(string userId)
+    public List<AppGroup> GetGroupsOfUser(Guid userId)
     {
         return _dbContext.AppGroupUsers
             .Include(gu => gu.Group)

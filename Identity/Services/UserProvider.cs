@@ -26,9 +26,9 @@ public abstract class UserProvider : UserProviderBase
 
     public abstract override Task<AppResult<AppUser>> Add(AddUserRes user, bool isExternal = false);
     public abstract override Task<AppResult<AppUser>> Update(UpdateUserReq updateUserRequest);
-    public override async Task<AppResult<AppUser>> GetById(string userId)
+    public override async Task<AppResult<AppUser>> GetById(Guid userId)
     {
-        var user = await UserManager.FindByIdAsync(userId);
+        var user = await UserManager.FindByIdAsync(userId.ToString());
         if (user is null)
             return new()
             {
@@ -44,7 +44,7 @@ public abstract class UserProvider : UserProviderBase
         }; ;
     }
 
-    public override async Task<AppResult<List<AppUser>>> GetByIds(List<string> userIds)
+    public override async Task<AppResult<List<AppUser>>> GetByIds(List<Guid> userIds)
     {
         var users = await UserManager.Users.Where(u => userIds.Contains(u.Id))
             .ToListAsync(); 
