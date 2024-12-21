@@ -12,7 +12,7 @@ namespace Module.Domain.Schema
         public bool IsActive { get; set; }
         public int Order { get; set; }
         public string Details { get; set; }
-        public Guid ApplicationId { get; set; }
+        public Guid? ApplicationId { get; set; }
         public Application Application { get; set; }
         public virtual ICollection<WorkspaceModule> WorkspaceModules { get; set; }
     }

@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using System.Text.Json;
-using System.Text;
+﻿using System.Text.Json;
 
 namespace Infrastructure.Caching
 {
@@ -13,7 +11,7 @@ namespace Infrastructure.Caching
             _cacheProvider = cacheProvider;
         }
 
-        public async Task<T> GetOrSetAsync<T>(string key, Func<Task<T>> factory) where T : class
+        public async Task<T> GetOrSetAsync<T>(string key, Func<Task<T>> factory, TimeSpan? expiry = null) where T : class
         {
             var cachedValue = await _cacheProvider.GetAsync(key);
             if (cachedValue != null)
@@ -21,12 +19,12 @@ namespace Infrastructure.Caching
 
             var value = await factory();
             if (value != null)
-                await CacheValueAsync(key, value);
+                await CacheValueAsync(key, value, expiry);
 
             return value;
         }
 
-        public async Task<List<T>> GetOrSetListAsync<T>(string key, Func<Task<List<T>>> factory) where T : class
+        public async Task<List<T>> GetOrSetListAsync<T>(string key, Func<Task<List<T>>> factory, TimeSpan? expiry = null) where T : class
         {
             var cachedValue = await _cacheProvider.GetAsync(key);
             if (cachedValue != null)
@@ -34,7 +32,7 @@ namespace Infrastructure.Caching
 
             var value = await factory();
             if (value != null && value.Count > 0)
-                await CacheValueAsync(key, value);
+                await CacheValueAsync(key, value, expiry);
 
             return value;
         }

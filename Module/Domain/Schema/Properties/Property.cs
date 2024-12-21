@@ -1,5 +1,4 @@
-﻿using AppCommon.DTOs;
-using Module.Domain.Base;
+﻿using Module.Domain.Base;
 using Module.Domain.Shared;
 
 namespace Module.Domain.Schema.Properties

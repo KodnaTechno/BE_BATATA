@@ -1,7 +1,6 @@
 ﻿    using Module.Domain.Base;
     using Module.Domain.Schema.Properties;
     using Module.Domain.Shared;
-using System;
 
     namespace Module.Domain.Data
     {
@@ -38,7 +37,7 @@ using System;
                     DataTypeEnum.DateTime => DateTimeValue.Value,
                     DataTypeEnum.DateOnly => DateValue.Value,
                     DataTypeEnum.Double => DoubleValue.Value,
-                    DataTypeEnum.Decmial => DecimalValue.Value,
+                    DataTypeEnum.Decimal => DecimalValue.Value,
                     DataTypeEnum.Bool => BoolValue.Value,
                     DataTypeEnum.None => null,
                     _ => throw new NotSupportedException($"DataType '{DataType}' is not supported."),
@@ -55,7 +54,7 @@ using System;
                     DataTypeEnum.DateTime => DateTimeValue = DateTime.TryParse(value, out DateTime val) ? val : null,
                     DataTypeEnum.DateOnly => DateValue = DateTime.TryParse(value, out DateTime val) ? DateOnly.FromDateTime(val) : null,
                     DataTypeEnum.Double => DoubleValue = double.TryParse(value, out double val) ? val : null,
-                    DataTypeEnum.Decmial => DecimalValue = decimal.TryParse(value, out decimal val) ? val : null,
+                    DataTypeEnum.Decimal => DecimalValue = decimal.TryParse(value, out decimal val) ? val : null,
                     DataTypeEnum.Bool => BoolValue = bool.TryParse(value, out bool val) ? val : null,
                     DataTypeEnum.None => null,
                     _ => throw new NotSupportedException($"DataType '{DataType}' is not supported."),

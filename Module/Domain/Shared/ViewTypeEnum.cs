@@ -13,7 +13,7 @@
         MultiUser,
         Lookup,
         MultiLookup,
-        Checkbox,
+        CheckBox,
         Api,
         Date,
         Time,
@@ -26,5 +26,6 @@
         Dynamic,
         Attachment,
         MultiAttachment,
+        ModuleReference // => {"ReferenceModuleId":"", "Multiple": true, false}
     }
 }
