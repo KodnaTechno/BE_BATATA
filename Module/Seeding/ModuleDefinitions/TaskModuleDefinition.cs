@@ -12,6 +12,7 @@ namespace Module.Seeding.ModuleDefinitions
             return new Domain.Schema.Module
             {
                 Id = SystemModuleConstants.Basic.TaskModule.Id,
+                ApplicationId = SystemApplicationConstants.AssetManagementApplicationId,
                 Title = new TranslatableValue { Ar = "Tasks", En = "المهام"}.AsText(),
                 Name = nameof(Domain.BusinessDomain.Task),
                 Domain = typeof(Domain.BusinessDomain.Task).FullName,

@@ -8,7 +8,7 @@ namespace Module.Configurations
     {
         public void Configure(EntityTypeBuilder<ModuleData> builder)
         {
-            builder.HasOne(e => e.Module).WithMany().HasForeignKey(e => e.ModulId);
+            builder.HasOne(e => e.Module).WithMany().HasForeignKey(e => e.ModuleId);
         }
     }
 

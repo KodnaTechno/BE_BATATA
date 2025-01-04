@@ -13,7 +13,7 @@ namespace Module.Extensions
             if (string.IsNullOrEmpty(propertyName))
                 throw new ArgumentException("Property name cannot be null or empty.", nameof(propertyName));
 
-            var propertyData = moduleData.ProperatyData
+            var propertyData = moduleData.PropertyData
                 .SingleOrDefault(p => p.SystemPropertyPath == propertyName);
 
             if (propertyData == null)

@@ -8,7 +8,7 @@
         DateTime,
         DateOnly,
         Double,
-        Decmial,
+        Decimal,
         Bool,
         None
     }

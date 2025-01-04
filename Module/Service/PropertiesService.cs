@@ -45,27 +45,27 @@ namespace Module.Service
             if (IsModule)
             {
                 var ModuleData = _moduleDbContext.ModuleData
-                    .Include(x => x.ProperatyData)
+                    .Include(x => x.PropertyData)
                     .Include(x => x.WorkspaceData)
-                        .ThenInclude(x => x.ProperatyData)
+                        .ThenInclude(x => x.PropertyData)
                     .FirstOrDefault(x => x.Id == dataId);
                 if (ModuleData == null) return;
                 
-                PropertyData.AddRange(ModuleData.ProperatyData);
+                PropertyData.AddRange(ModuleData.PropertyData);
                 if (ModuleData.WorkspaceData != null)
-                    PropertyData.AddRange(ModuleData.WorkspaceData.ProperatyData);
+                    PropertyData.AddRange(ModuleData.WorkspaceData.PropertyData);
 
-                FormulaPropertyIds = cachedProperties.Where(x => x.ModuleId == ModuleData.ModulId && x.PropertyFormulas.Count > 0).Select(x => x.Id).ToList();
+                FormulaPropertyIds = cachedProperties.Where(x => x.ModuleId == ModuleData.ModuleId && x.PropertyFormulas.Count > 0).Select(x => x.Id).ToList();
             }
             else //Workspace
             {
                 var WorkspaceData = _moduleDbContext.WorkspaceData
-                    .Include(x => x.ProperatyData)
+                    .Include(x => x.PropertyData)
                     .FirstOrDefault(x => x.Id == dataId);
 
                 if (WorkspaceData  == null) return;
 
-                PropertyData.AddRange(WorkspaceData.ProperatyData);
+                PropertyData.AddRange(WorkspaceData.PropertyData);
 
                 var AllRelatedModulePropData = _moduleDbContext.PropertyData
                     .Where(x => x.ModuleDataId != null && x.ModuleData.WorkSpaceDataId == dataId).ToList();

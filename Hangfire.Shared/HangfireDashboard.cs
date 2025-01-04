@@ -22,10 +22,10 @@ namespace Hangfire.Shared
         {
             var options = new DashboardOptions
             {
-                Authorization = new[]
-                {
+                Authorization =
+                [
                     new HangfireAuthorizationFilter(configuration)
-                }
+                ]
             };
 
             return app.UseHangfireDashboard(route, options);
@@ -96,9 +96,9 @@ namespace Hangfire.Shared
             return false;
         }
 
-        private void SetAuthenticationChallenge(HttpContext httpContext)
+        private static void SetAuthenticationChallenge(HttpContext httpContext)
         {
-            httpContext.Response.Headers["WWW-Authenticate"] = "Basic realm=\"Hangfire Dashboard\"";
+            httpContext.Response.Headers.WWWAuthenticate = "Basic realm=\"Hangfire Dashboard\"";
             httpContext.Response.StatusCode = 401;
         }
     }
