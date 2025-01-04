@@ -50,3 +50,11 @@ public enum WorkflowStatus
         Reference,
         Dependent
     }
+
+public enum ApprovalStatus
+{
+    Pending,
+    Approved,
+    Rejected,
+    Expired
+}

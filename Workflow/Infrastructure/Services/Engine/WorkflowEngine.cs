@@ -4,23 +4,54 @@ using AppWorkflow.Core.Domain.Schema;
 using AppWorkflow.Core.Interfaces.Services;
 using AppWorkflow.Core.Models;
 using AppWorkflow.Engine;
+using AppWorkflow.Infrastructure.Data.Context;
 using AppWorkflow.Infrastructure.Repositories.IRepository;
 using AppWorkflow.Infrastructure.Services.Actions;
+using AppWorkflow.Services.Interfaces;
 
 namespace AppWorkflow.Infrastructure.Services.Engine;
 
 
 public class WorkflowEngine: IWorkflowEngine
     {
-        private readonly IActionResolver _actionResolver;
-        private readonly IWorkflowRepository _workflowRepository;
-        private readonly IWorkflowDataRepository _instanceRepository;
-        private readonly IExpressionEvaluator _expressionEvaluator;
-        private readonly ILogger<WorkflowEngine> _logger;
-        private readonly ITelemetryTracker _telemetry;
-        private readonly IServiceProvider _serviceProvider;
-        
-        public async Task<WorkflowData> StartWorkflowAsync(Guid workflowId, WorkflowModuleData moduleData, Dictionary<string, object> initialVariables = null)
+    private readonly IActionResolver _actionResolver;
+    private readonly IWorkflowRepository _workflowRepository;
+    private readonly IWorkflowDataRepository _instanceRepository;
+    private readonly IExpressionEvaluator _expressionEvaluator;
+    private readonly IStepExecutorFactory _stepExecutorFactory;
+    private readonly IWorkflowStateManager _stateManager;
+    private readonly IWorkflowEventHandler _eventHandler;
+    private readonly IDistributedLockManager _lockManager;
+    private readonly ILogger<WorkflowEngine> _logger;
+    private readonly ITelemetryTracker _telemetry;
+    private readonly IServiceProvider _serviceProvider;
+
+    public WorkflowEngine(
+        IActionResolver actionResolver,
+        IWorkflowRepository workflowRepository,
+        IWorkflowDataRepository instanceRepository,
+        IExpressionEvaluator expressionEvaluator,
+        IStepExecutorFactory stepExecutorFactory,
+        IWorkflowStateManager stateManager,
+        IWorkflowEventHandler eventHandler,
+        IDistributedLockManager lockManager,
+        ITelemetryTracker telemetry,
+        ILogger<WorkflowEngine> logger,
+        IServiceProvider serviceProvider)
+    {
+        _actionResolver = actionResolver;
+        _workflowRepository = workflowRepository;
+        _instanceRepository = instanceRepository;
+        _expressionEvaluator = expressionEvaluator;
+        _stepExecutorFactory = stepExecutorFactory;
+        _stateManager = stateManager;
+        _eventHandler = eventHandler;
+        _lockManager = lockManager;
+        _telemetry = telemetry;
+        _logger = logger;
+        _serviceProvider = serviceProvider;
+    }
+    public async Task<WorkflowData> StartWorkflowAsync(Guid workflowId, WorkflowModuleData moduleData, Dictionary<string, object> initialVariables = null)
         {
 
             var workflow = await _workflowRepository.GetByIdAsync(workflowId);
@@ -47,74 +78,170 @@ public class WorkflowEngine: IWorkflowEngine
 
             return instance;
         }
+    public async Task HandleApprovalTimeoutAsync(Guid workflowId, Guid stepId)
+    {
+        var instance = await GetInstanceAsync(workflowId);
+        if (instance == null) return;
 
-        public async Task<StepExecutionResult> ExecuteStepAsync(Guid instanceId, Guid stepId)
+        // Get the workflow definition
+        var workflow = await _workflowRepository.GetByIdAsync(instance.WorkflowId);
+        var step = workflow.Steps.FirstOrDefault(s => s.Id == stepId);
+
+        if (step == null) return;
+
+        // Get the approval configuration
+        var config = step.ActionConfiguration.Deserialize<ApprovalActionConfiguration>();
+
+        // Handle timeout based on configuration
+        if (!string.IsNullOrEmpty(config.TimeoutTransition))
         {
+            // Transition to timeout step
+            var timeoutStep = workflow.Steps.FirstOrDefault(s => s.Name == config.TimeoutTransition);
+            if (timeoutStep != null)
+            {
+                instance.CurrentStepId = timeoutStep.Id;
+                await _instanceRepository.UpdateInstanceAsync(instance);
 
+                // Resume workflow execution
+                await ResumeWorkflowAsync(workflowId);
+            }
+        }
+        else
+        {
+            // Default behavior: fail the workflow
+            await CancelWorkflowAsync(workflowId);
+        }
+    }
+
+    public async Task<StepExecutionResult> ExecuteStepAsync(Guid instanceId, Guid stepId)
+    {
+        using var lockScope = await _lockManager.AcquireLockAsync(
+            $"workflow-execution-{instanceId}",
+            TimeSpan.FromMinutes(5));
+
+        try
+        {
             var instance = await _instanceRepository.GetByIdAsync(instanceId);
             var workflow = await _workflowRepository.GetByIdAsync(instance.WorkflowId);
             var step = workflow.Steps.First(s => s.Id == stepId);
 
-            try
+            // Create execution context
+            var context = new WorkflowExecutionContext(instance.WorkflowId, instanceId, _serviceProvider)
             {
-                // Update step status
-                await UpdateStepStatus(instance, stepId, StepStatus.InProgress);
+                CurrentStepId = stepId,
+                ModuleData = instance.ModuleData,
+                Variables = instance.Variables,
+                Status = instance.Status
+            };
 
-                // Handle parallel steps
-                if (step.IsParallel)
+            // Update step status
+            await UpdateStepStatus(instance, stepId, StepStatus.InProgress);
+
+            // Get the appropriate action
+            var action = _actionResolver.ResolveAction(step.ActionType);
+            var actionContext = CreateActionContext(instance, step);
+
+            // Execute the action
+            var result = await ExecuteActionWithRetryAsync(action, actionContext, step.RetryPolicy);
+
+            if (result.Success)
+            {
+                // Update instance variables with action outputs
+                foreach (var (key, value) in result.OutputVariables)
                 {
-                    return await ExecuteParallelStepsAsync(instance, step);
+                    instance.Variables[key] = value;
                 }
 
-                // Execute the action
-                var action = _actionResolver.ResolveAction(step.ActionType);
-                var context = CreateActionContext(instance, step);
-                var result = await ExecuteActionWithRetryAsync(action, context, step.RetryPolicy);
-
-                if (result.Success)
+                // Check if this is an approval action that needs to pause the workflow
+                if (step.ActionType == "Approval" && result.OutputVariables.ContainsKey("status")
+                    && result.OutputVariables["status"].ToString() == "pending")
                 {
-                    // Update instance variables with action outputs
-                    foreach (var (key, value) in result.OutputVariables)
-                    {
-                        instance.Variables[key] = value;
-                    }
+                    // Update workflow state for approval
+                    instance.Status = WorkflowStatus.Suspended;
+                    instance.Variables["approvalId"] = result.OutputVariables["approvalId"];
+                    instance.Variables["approvalStep"] = stepId;
 
-                    await UpdateStepStatus(instance, stepId, StepStatus.Completed);
+                    await UpdateStepStatus(instance, stepId, StepStatus.Pending);
+                    await _instanceRepository.UpdateAsync(instance);
 
-                    // Evaluate transitions
-                    var nextStep = await EvaluateTransitionsAsync(step, instance);
-                    if (nextStep != null)
+                    return new StepExecutionResult
                     {
-                        instance.CurrentStepId = nextStep.Id;
-                        // Start next step execution
-                        _ = Task.Run(() => ExecuteStepAsync(instance.Id, nextStep.Id));
-                    }
-                    else
-                    {
-                        // No more steps - complete workflow
-                        await CompleteWorkflowAsync(instance);
-                    }
+                        Success = true,
+                        Message = "Workflow paused for approval",
+                        Status = StepStatus.Pending,
+                        NextStepId = stepId
+                    };
+                }
+
+                // Normal completion flow
+                await UpdateStepStatus(instance, stepId, StepStatus.Completed);
+
+                // Evaluate transitions
+                var nextStep = await EvaluateTransitionsAsync(step, instance);
+                if (nextStep != null)
+                {
+                    instance.CurrentStepId = nextStep.Id;
+                    instance.Status = WorkflowStatus.Active;
+
+                    // Start next step execution asynchronously
+                    _ = Task.Run(() => ExecuteStepAsync(instance.Id, nextStep.Id));
                 }
                 else
                 {
-                    await HandleStepFailure(instance, step, result.Exception);
+                    // No more steps - complete workflow
+                    await CompleteWorkflowAsync(instance);
                 }
 
                 await _instanceRepository.UpdateAsync(instance);
+
                 return new StepExecutionResult
                 {
-                    Success = result.Success,
+                    Success = true,
                     Message = result.Message,
-                    NextStepId = instance.CurrentStepId
+                    NextStepId = instance.CurrentStepId,
+                    OutputVariables = result.OutputVariables,
+                    Status = StepStatus.Completed,
+                    ExecutionTime = DateTime.UtcNow - context.StartTime
                 };
             }
-            catch (Exception ex)
+            else
             {
-                _logger.LogError(ex, $"Error executing step {stepId}");
-                await HandleStepFailure(instance, step, ex);
-                throw;
+                // Handle failure
+                await HandleStepFailure(instance, step, result.Exception);
+                await _instanceRepository.UpdateAsync(instance);
+
+                return new StepExecutionResult
+                {
+                    Success = false,
+                    Message = result.Message,
+                    Error = result.Exception,
+                    Status = StepStatus.Failed,
+                    ExecutionTime = DateTime.UtcNow - context.StartTime
+                };
             }
         }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error executing step {StepId} for workflow instance {InstanceId}",
+                stepId, instanceId);
+
+            var instance = await _instanceRepository.GetByIdAsync(instanceId);
+            if (instance != null)
+            {
+                var step = (await _workflowRepository.GetByIdAsync(instance.WorkflowId))
+                    .Steps.First(s => s.Id == stepId);
+                await HandleStepFailure(instance, step, ex);
+                await _instanceRepository.UpdateAsync(instance);
+            }
+
+            throw new WorkflowExecutionException(
+                $"Step execution failed: {ex.Message}",
+                instance.WorkflowId,
+                instanceId,
+                stepId);
+        }
+    }
+
     public async Task<WorkflowStatus> GetWorkflowStatusAsync(Guid instanceId)
     {
         var instance = await _instanceRepository.GetByIdAsync(instanceId);

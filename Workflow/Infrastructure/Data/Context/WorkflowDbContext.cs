@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 public class WorkflowDbContext : DbContext
     {
         public DbSet<Workflow> Workflows { get; set; }
+        public DbSet<ApprovalRequest> ApprovalRequests { get; set; }
+        public DbSet<ApprovalHistory> ApprovalHistories { get; set; }
         public DbSet<WorkflowData> WorkflowDatas { get; set; }
         public DbSet<WorkflowStep> WorkflowSteps { get; set; }
         public DbSet<WorkflowStepData> WorkflowStepInstances { get; set; }
