@@ -56,5 +56,17 @@ namespace AppCommon.GlobalHelpers
                 throw; // Re-throwing the exception to let the caller handle it or fail the operation.
             }
         }
+        public static JsonDocument Clone(this JsonDocument original)
+        {
+            // Serialize the JsonDocument to a string
+            string jsonString = original.RootElement.GetRawText();
+
+            // Parse the string back into a new JsonDocument
+            return JsonDocument.Parse(jsonString);
+        }
+        public static T CloneObj<T>(this T o) 
+        {
+            return FromJson<T>(AsText(o));
+        }
     }
 }

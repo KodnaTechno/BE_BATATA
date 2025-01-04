@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Infrastructure.Database.Domain;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.Database.Configration;
