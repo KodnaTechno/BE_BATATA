@@ -3,6 +3,7 @@ namespace AppWorkflow.Infrastructure.Data.Context;
 using System.Text;
 using AppWorkflow.Common.Enums;
 using AppWorkflow.Core.Domain.Schema;
+using AppWorkflow.Core.Models;
 using Microsoft.Extensions.DependencyInjection;
 
 public class WorkflowExecutionContext
@@ -10,7 +11,7 @@ public class WorkflowExecutionContext
     public Guid WorkflowId { get; set; }
     public Guid InstanceId { get; set; }
     public Guid CurrentStepId { get; set; }
-    public dynamic ModuleData { get; set; }
+    public WorkflowModuleData ModuleData { get; set; }
     public Dictionary<string, object> Variables { get; set; }
     public WorkflowStatus Status { get; set; }
     public CancellationToken CancellationToken { get; set; }

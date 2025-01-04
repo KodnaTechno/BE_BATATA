@@ -133,7 +133,7 @@ namespace AppWorkflow.Infrastructure.Services
                 Status = workflowData.Status,
                 CurrentStepId = workflowData.CurrentStepId,
                 Variables = workflowData.Variables,
-                ModuleData = JsonSerializer.Deserialize<dynamic>(workflowData.ModuleData),
+                ModuleData = workflowData.ModuleData,
                 StartTime = workflowData.StartedAt
             };
 

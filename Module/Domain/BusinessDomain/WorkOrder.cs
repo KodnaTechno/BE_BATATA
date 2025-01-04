@@ -25,7 +25,7 @@ namespace Module.Domain.BusinessDomain
 
         // Navigation Properties
         public ICollection<WorkOrderTask> WorkOrderTasks { get; set; }
-        public ICollection<WorkOrderInventoryItem> WorkOrderInventoryItems { get; set; }
+       // public ICollection<WorkOrderInventoryItem> WorkOrderInventoryItems { get; set; }
         public ICollection<Instruction> Instructions { get; set; }
         //public ICollection<Document> Documents { get; set; }
     }

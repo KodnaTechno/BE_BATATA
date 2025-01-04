@@ -343,8 +343,8 @@ public class WorkflowEngine: IWorkflowEngine
         private async Task<WorkflowStep> EvaluateTransitionsAsync(WorkflowStep currentStep, WorkflowData instance)
         {
             var workflow = await _workflowRepository.GetByIdAsync(instance.WorkflowId);
-
-            foreach (var transition in currentStep.Transitions.OrderBy(t => t.Priority))
+         return workflow.Steps.FirstOrDefault();
+        foreach (var transition in currentStep.Transitions.OrderBy(t => t.Priority))
             {
                 //if (string.IsNullOrEmpty(transition.Condition) ||
                 //    await _expressionEvaluator.EvaluateAsync<bool>(
