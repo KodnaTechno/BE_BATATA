@@ -19,11 +19,12 @@ using AppWorkflow.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using AppWorkflow.Services.HealthCheck;
+using Module;
 namespace AppWorkflow.Infrastructure;
 
 public static class WorkflowServiceRegistration
 {
-    public static IServiceCollection AddWorkflowInfrastructure(
+    public static void AddWorkflowInfrastructure(
         this IServiceCollection services,
         IConfiguration configuration)
     {
@@ -32,10 +33,8 @@ public static class WorkflowServiceRegistration
             configuration.GetSection("WorkflowOptions"));
 
         // Database Context
-        //services.AddDbContext<WorkflowDbContext>(options =>
-        //    options.UseNpgsql(
-        //        configuration.GetConnectionString("WorkflowDatabase"),
-        //        b => b.MigrationsAssembly("AppWorkflow.Infrastructure")));
+
+        ConfigureDB(services, configuration);
 
         // Core Services - Scoped
         services.AddScoped<IWorkflowEngine, WorkflowEngine>();
@@ -60,8 +59,6 @@ public static class WorkflowServiceRegistration
 
         // Register workflow trigger handlers
         RegisterWorkflowTriggers(services);
-
-        return services;
     }
 
     private static void RegisterWorkflowActions(IServiceCollection services)
@@ -86,6 +83,44 @@ public static class WorkflowServiceRegistration
         services.AddScoped<IWorkflowTrigger, ScheduledTrigger>();
         // Add other trigger implementations
     }
+
+    private static void ConfigureDB(IServiceCollection services, IConfiguration configuration)
+    {
+        string connectionString = configuration.GetConnectionString("DefaultConnection");
+        string databaseProvider = configuration["DatabaseProvider"];
+
+        switch (databaseProvider)
+        {
+            case "SqlServer":
+                ConfigureSqlServerDbContext(services, connectionString);
+                break;
+            case "PostgreSQL":
+                //ConfigurePostgreSQLDbContext(services, connectionString);
+                break;
+            default:
+                throw new Exception("Invalid database provider");
+        }
+    }
+
+    private static void ConfigureSqlServerDbContext(IServiceCollection services, string connectionString)
+    {
+        services.AddDbContext<WorkflowDbContext>(options =>
+        {
+            options.UseSqlServer(connectionString, sqlOptions =>
+            {
+                sqlOptions.MigrationsAssembly("AppMigration.SqlServer");
+                sqlOptions.MigrationsHistoryTable("__Workflow_MigrationTable");
+            });
+        });
+    }
+
+    //public static void ConfigurePostgreSQLDbContext(IServiceCollection services, string connectionString)
+    //{
+    //    services.AddDbContext<WorkflowDbContext>(options =>
+    //    {
+    //        options.UseNpgsql(connectionString);
+    //    });
+    //}
 }
 
 // Extension method for middleware registration

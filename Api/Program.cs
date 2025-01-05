@@ -8,6 +8,8 @@ using Api.Middlewares;
 using AppCommon.GlobalHelpers;
 using FileStorge.Providers.Database;
 using Hangfire.Shared;
+using AppWorkflow.Infrastructure.Data.Context;
+using AppWorkflow.Infrastructure;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,7 +32,7 @@ var app = builder.Build();
 ServiceActivator.Configure(app.Services);
 
 
-app.ApplyMigrations(typeof(ModuleDbContext), typeof(AppIdentityDbContext), typeof(ApplicationDbContext), typeof(FileDbContext));
+app.ApplyMigrations(typeof(ModuleDbContext), typeof(AppIdentityDbContext), typeof(ApplicationDbContext), typeof(FileDbContext), typeof(WorkflowDbContext));
 
 app.SeedDatabaseAsync().Wait();
 
@@ -47,6 +49,9 @@ app.UseHttpsRedirection();
 app.UseCultureMiddleware();
 app.UseCulture();
 app.UseAppIdentity();
+
+app.UseWorkflowSystem();
+
 app.MapControllers();
 
 app.UseMiddleware<RequestResponseLoggingMiddleware>();

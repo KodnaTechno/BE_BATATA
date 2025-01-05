@@ -34,6 +34,7 @@
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
     <ProjectReference Include="..\JobsProcessor\JobsProcessor.csproj" />
     <ProjectReference Include="..\Module\Module.csproj" />
+    <ProjectReference Include="..\Workflow\AppWorkflow.csproj" />
   </ItemGroup>
 
 </Project>

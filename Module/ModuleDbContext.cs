@@ -65,6 +65,8 @@ namespace Module
             modelBuilder.ApplyConfiguration(new TaskConfiguration());
 
             #region Seeding
+            modelBuilder.SeedApplications();
+            modelBuilder.SeedWorkspaces();
             modelBuilder.SeedModules();
             #endregion
         }

@@ -17,6 +17,7 @@ using FileStorge;
 using Events;
 using Application.SeederServices;
 using Application.Services;
+using AppWorkflow.Infrastructure;
 
 namespace Api.Extensions
 {
@@ -73,6 +74,8 @@ namespace Api.Extensions
             services.AddFlexibleCaching(configuration);
 
             services.AddFileProvider(configuration);
+
+            services.AddWorkflowInfrastructure(configuration);
         }
 
         public static void ApplyMigrations(this IApplicationBuilder app, params Type[] dbContexts)
