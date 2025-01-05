@@ -8,6 +8,7 @@ using System.Text;
 public interface IWorkflowEngine
     {
         Task<WorkflowData> StartWorkflowAsync(Guid workflowId, WorkflowModuleData moduleData, Dictionary<string, object> initialVariables = null);
+    Task HandleApprovalTimeoutAsync(Guid workflowId, Guid stepId);
         Task<StepExecutionResult> ExecuteStepAsync(Guid instanceId, Guid stepId);
         Task<WorkflowStatus> GetWorkflowStatusAsync(Guid instanceId);
         Task PauseWorkflowAsync(Guid instanceId);
