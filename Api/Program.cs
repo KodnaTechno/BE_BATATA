@@ -10,19 +10,22 @@ using FileStorge.Providers.Database;
 using Hangfire.Shared;
 using AppWorkflow.Infrastructure.Data.Context;
 using AppWorkflow.Infrastructure;
+using AppCommon;
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+using Microsoft.EntityFrameworkCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 
-builder.AddSerilogConfiguration()
-       .AddConsulConfiguration();
+builder.AddSerilogConfiguration();
+       //.AddConsulConfiguration();
 
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+ 
 builder.Services.AddCustomServices(builder.Configuration);
 
 builder.Services.AddHangfire(builder.Configuration, false);

@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using AppWorkflow.Services.HealthCheck;
 using Module;
+using AppWorkflow.Expressions;
 namespace AppWorkflow.Infrastructure;
 
 public static class WorkflowServiceRegistration
@@ -34,31 +35,45 @@ public static class WorkflowServiceRegistration
 
         // Database Context
 
-        ConfigureDB(services, configuration);
+       // ConfigureDB(services, configuration);
 
         // Core Services - Scoped
-        services.AddScoped<IWorkflowEngine, WorkflowEngine>();
-        services.AddScoped<IWorkflowStateManager, WorkflowStateManager>();
-        services.AddScoped<IWorkflowValidator, WorkflowValidator>();
-        services.AddScoped<IWorkflowVersionManager, WorkflowVersionManager>();
-        services.AddScoped<IWorkflowMigrationService, WorkflowMigrationService>();
-        services.AddScoped<IStepExecutor, TransactionalStepExecutor>();
-        services.AddScoped<IActionResolver, ActionResolver>();
-        services.AddScoped<IAuditLogService, AuditLogService>();
-        services.AddScoped<IWorkflowRepository, WorkflowRepository>();
-        services.AddScoped<IWorkflowDataRepository, WorkflowDataRepository>();
-        services.AddScoped<IExpressionEvaluator, ExpressionEvaluator>();
+        //services.AddScoped<IWorkflowEventHandler, WorkflowEventHandler>();
+        //services.AddScoped<IWorkflowEngine, WorkflowEngine>();
+        //services.AddScoped<IWorkflowStateManager, WorkflowStateManager>();
+        //services.AddScoped<IWorkflowValidator, WorkflowValidator>();
+        //services.AddScoped<IWorkflowVersionManager, WorkflowVersionManager>();
+        //services.AddScoped<IWorkflowMigrationService, WorkflowMigrationService>();
+        //services.AddScoped<IStepExecutor, TransactionalStepExecutor>();
+        //services.AddScoped<IActionResolver, ActionResolver>();
+        //services.AddScoped<IAuditLogService, AuditLogService>();
+        //services.AddScoped<IWorkflowRepository, WorkflowRepository>();
+        //services.AddScoped<IWorkflowDataRepository, WorkflowDataRepository>();
+        //services.AddScoped<IExpressionEvaluator, ExpressionEvaluator>();
 
-        // Infrastructure Services - Singleton
-        services.AddSingleton<IDistributedLockManager, RedisDistributedLockManager>();
-        services.AddSingleton<ITelemetryTracker, TelemetryTracker>();
-       // services.AddSingleton<IWorkflowHealthMonitor, WorkflowHealthMonitor>();
+        //// Infrastructure Services - Singleton
+        //services.AddSingleton<IDistributedLockManager, RedisDistributedLockManager>();
+        //services.AddSingleton<ITelemetryTracker, TelemetryTracker>();
+        // services.AddSingleton<IWorkflowHealthMonitor, WorkflowHealthMonitor>();
+
+        // Missing registrations
+       // services.AddScoped<IWorkflowEventHandler>(); 
+       
+        //services.AddScoped<IStepExecutorFactory>(); 
+        //services.AddScoped<IExpressionLanguageProvider, ExpressionLanguageProvider>();
+        //services.AddScoped<IExpressionParser>(); 
+        //services.AddScoped<IExpressionValidator>();
+
+        // Add these registrations
+        //services.AddScoped<IApprovalTargetResolver>(); 
+        //services.AddScoped<IStepTransactionManager>(); 
+
 
         // Register all workflow actions
-        RegisterWorkflowActions(services);
+        //RegisterWorkflowActions(services);
 
         // Register workflow trigger handlers
-        RegisterWorkflowTriggers(services);
+        //RegisterWorkflowTriggers(services);
     }
 
     private static void RegisterWorkflowActions(IServiceCollection services)

@@ -30,6 +30,7 @@ public class WorkflowStepData
 
     public class StepExecutionLog
     {
+        public Guid Id { get; set; }
         public DateTime Timestamp { get; set; }
         public string Message { get; set; }
         public string Level { get; set; }

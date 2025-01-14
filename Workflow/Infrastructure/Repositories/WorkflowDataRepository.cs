@@ -41,7 +41,7 @@ namespace AppWorkflow.Infrastructure.Repositories
 
             try
             {
-                var instance = await _context.WorkflowDatas
+                var instance = await _context.WorkflowData
                     .Include(w => w.StepInstances)
                     .FirstOrDefaultAsync(w => w.Id == id && !w.IsDeleted);
 
@@ -63,7 +63,7 @@ namespace AppWorkflow.Infrastructure.Repositories
         {
             try
             {
-                return await _context.WorkflowDatas
+                return await _context.WorkflowData
                     .Include(w => w.StepInstances)
                     .Where(w => w.Status == WorkflowStatus.Active && !w.IsDeleted)
                     .ToListAsync();
@@ -79,7 +79,7 @@ namespace AppWorkflow.Infrastructure.Repositories
         {
             try
             {
-                return await _context.WorkflowDatas
+                return await _context.WorkflowData
                     .Include(w => w.StepInstances)
                     .Where(w => w.WorkflowVersion == version && !w.IsDeleted)
                     .ToListAsync();
@@ -95,7 +95,7 @@ namespace AppWorkflow.Infrastructure.Repositories
         {
             try
             {
-                await _context.WorkflowDatas.AddAsync(instance);
+                await _context.WorkflowData.AddAsync(instance);
                 await _context.SaveChangesAsync();
 
                 // Cache the new instance
@@ -121,7 +121,7 @@ namespace AppWorkflow.Infrastructure.Repositories
                 {
                     if (stepInstance.Id == Guid.Empty)
                     {
-                        await _context.WorkflowStepInstances.AddAsync(stepInstance);
+                        await _context.WorkflowStepData.AddAsync(stepInstance);
                     }
                     else
                     {
@@ -149,7 +149,7 @@ namespace AppWorkflow.Infrastructure.Repositories
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                var existing = await _context.WorkflowDatas
+                var existing = await _context.WorkflowData
                     .Include(w => w.StepInstances)
                     .FirstOrDefaultAsync(w => w.Id == instance.Id);
 
@@ -194,7 +194,7 @@ namespace AppWorkflow.Infrastructure.Repositories
         {
             try
             {
-                return await _context.WorkflowDatas
+                return await _context.WorkflowData
                     .Include(w => w.StepInstances)
                     .Where(w => w.Status == status && !w.IsDeleted)
                     .ToListAsync();
@@ -209,7 +209,7 @@ namespace AppWorkflow.Infrastructure.Repositories
         {
             try
             {
-                return await _context.WorkflowDatas
+                return await _context.WorkflowData
                     .Include(w => w.StepInstances)
                     .Where(w => w.CreatedAt >= start &&
                                w.CreatedAt <= end &&
@@ -232,7 +232,7 @@ namespace AppWorkflow.Infrastructure.Repositories
         {
             try
             {
-                return await _context.WorkflowStepInstances
+                return await _context.WorkflowStepData
                     .Where(s => s.WorkflowDataId == instanceId)
                     .OrderByDescending(s => s.StartedAt)
                     .ToListAsync();
@@ -252,7 +252,7 @@ namespace AppWorkflow.Infrastructure.Repositories
         {
             try
             {
-                return await _context.WorkflowDatas
+                return await _context.WorkflowData
                     .Include(w => w.StepInstances)
                     .Where(w => w.Status == WorkflowStatus.Failed &&
                                w.UpdatedAt >= since &&
@@ -275,7 +275,7 @@ namespace AppWorkflow.Infrastructure.Repositories
         {
             try
             {
-                return await _context.WorkflowDatas
+                return await _context.WorkflowData
                     .AnyAsync(w => w.WorkflowId == workflowId &&
                                   w.Status == WorkflowStatus.Active &&
                                   !w.IsDeleted);
@@ -296,7 +296,7 @@ namespace AppWorkflow.Infrastructure.Repositories
         {
             try
             {
-                return await _context.WorkflowDatas
+                return await _context.WorkflowData
                     .Where(w => workflowIds.Contains(w.WorkflowId) &&
                                w.Status == WorkflowStatus.Active &&
                                !w.IsDeleted)
@@ -323,7 +323,7 @@ namespace AppWorkflow.Infrastructure.Repositories
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                var instances = await _context.WorkflowDatas
+                var instances = await _context.WorkflowData
                     .Where(w => instanceIds.Contains(w.Id))
                     .ToListAsync();
 
@@ -362,7 +362,7 @@ namespace AppWorkflow.Infrastructure.Repositories
             {
                 var cutoffDate = DateTime.UtcNow.Subtract(stalePeriod);
 
-                var staleInstances = await _context.WorkflowDatas
+                var staleInstances = await _context.WorkflowData
                     .Where(w => w.UpdatedAt <= cutoffDate &&
                                (w.Status == WorkflowStatus.Completed ||
                                 w.Status == WorkflowStatus.Failed ||
@@ -415,7 +415,7 @@ namespace AppWorkflow.Infrastructure.Repositories
         {
             try
             {
-                return await _context.WorkflowDatas
+                return await _context.WorkflowData
                     .Include(w => w.StepInstances)
                     .Where(w => w.ParentRelations.Any(r => r.ParentInstanceId == parentInstanceId))
                     .ToListAsync();
@@ -431,7 +431,7 @@ namespace AppWorkflow.Infrastructure.Repositories
         {
             try
             {
-                return await _context.WorkflowDatas
+                return await _context.WorkflowData
                     .Include(w => w.StepInstances)
                     .FirstOrDefaultAsync(w => w.ChildRelations.Any(r => r.ChildInstanceId == childInstanceId));
             }

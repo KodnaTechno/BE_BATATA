@@ -16,7 +16,9 @@ namespace AppWorkflow.Infrastructure.Data.Configurations
             entity.HasKey(e => e.Id);
 
             entity.Property(e => e.UpdatedProperties)
-                .HasColumnType("jsonb");
+                .HasConversion(
+                    v => JsonSerializer.Serialize(v, JsonSerializerOptions.Default),
+                    v => JsonSerializer.Deserialize<Dictionary<string, object>>(v, JsonSerializerOptions.Default));
 
             entity.HasIndex(e => e.ApprovalRequestId);
             entity.HasIndex(e => e.UserId);

@@ -57,7 +57,7 @@ namespace AppWorkflow.Infrastructure.Services
 
                 _logger.LogInformation(
                     "Created approval request {ApprovalId} for workflow {WorkflowId}",
-                    request.Id, request.WorkflowId);
+                    request.Id, request.WorkflowDataId);
 
                 return request.Id;
             }
@@ -116,7 +116,7 @@ namespace AppWorkflow.Infrastructure.Services
                 // Resume workflow
                 if (approved)
                 {
-                    var workflowInstance = await _workflowEngine.GetInstanceAsync(request.WorkflowId);
+                    var workflowInstance = await _workflowEngine.GetInstanceAsync(request.WorkflowDataId);
                     if (workflowInstance != null)
                     {
                         // Update module properties if any
@@ -125,7 +125,7 @@ namespace AppWorkflow.Infrastructure.Services
                             // Update module properties logic here
                         }
 
-                        await _workflowEngine.ResumeWorkflowAsync(request.WorkflowId);
+                        await _workflowEngine.ResumeWorkflowAsync(request.WorkflowDataId);
                     }
                 }
                 else

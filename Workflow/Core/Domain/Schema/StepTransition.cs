@@ -2,6 +2,7 @@ namespace AppWorkflow.Core.Domain.Schema;
 
 public class StepTransition
 {
+    public Guid Id { get; set; }
     public Guid SourceStepId { get; set; }
     public Guid TargetStepId { get; set; }
     public string Name { get; set; }

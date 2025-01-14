@@ -11,8 +11,8 @@ namespace AppWorkflow.Core.Domain.Data
     public class ApprovalRequest
     {
         public Guid Id { get; set; }
-        public Guid WorkflowId { get; set; }
-        public Guid StepId { get; set; }
+        public Guid WorkflowDataId { get; set; }
+        public Guid StepDataId { get; set; }
         public List<string> ApproverIds { get; set; }
         public List<ApprovalPropertyConfig> EditableProperties { get; set; }
         public WorkflowModuleData ModuleData { get; set; }

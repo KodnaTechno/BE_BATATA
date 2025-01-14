@@ -37,7 +37,7 @@ namespace AppWorkflow.Infrastructure.Services
             try
             {
                 // Get existing workflow data
-                var workflowData = await _dbContext.WorkflowDatas
+                var workflowData = await _dbContext.WorkflowData
                     .Include(w => w.StepInstances)
                     .FirstOrDefaultAsync(w => w.Id == context.InstanceId);
 
@@ -115,7 +115,7 @@ namespace AppWorkflow.Infrastructure.Services
             }
 
             // Load from database
-            var workflowData = await _dbContext.WorkflowDatas
+            var workflowData = await _dbContext.WorkflowData
                 .Include(w => w.StepInstances)
                 .FirstOrDefaultAsync(w => w.Id == instanceId);
 
@@ -160,7 +160,7 @@ namespace AppWorkflow.Infrastructure.Services
 
         public async Task<bool> HasActiveCheckpointAsync(Guid instanceId)
         {
-            return await _dbContext.WorkflowDatas
+            return await _dbContext.WorkflowData
                 .AnyAsync(w => w.Id == instanceId &&
                              w.StepInstances.Any(s => s.Status == StepStatus.Completed));
         }
@@ -172,7 +172,7 @@ namespace AppWorkflow.Infrastructure.Services
                 TimeSpan.FromSeconds(30)
             );
 
-            var workflowData = await _dbContext.WorkflowDatas
+            var workflowData = await _dbContext.WorkflowData
                 .Include(w => w.StepInstances)
                 .FirstOrDefaultAsync(w => w.Id == instanceId);
 
@@ -220,7 +220,7 @@ namespace AppWorkflow.Infrastructure.Services
                 throw new WorkflowException($"No checkpoint found for workflow instance {instanceId}");
             }
 
-            var workflowData = await _dbContext.WorkflowDatas
+            var workflowData = await _dbContext.WorkflowData
                 .Include(w => w.StepInstances)
                 .FirstOrDefaultAsync(w => w.Id == instanceId);
 

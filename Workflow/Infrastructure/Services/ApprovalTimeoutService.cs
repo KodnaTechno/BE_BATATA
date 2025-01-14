@@ -59,14 +59,14 @@ namespace AppWorkflow.Infrastructure.Services
                 try
                 {
                     await workflowEngine.HandleApprovalTimeoutAsync(
-                        approval.WorkflowId,
-                        approval.StepId);
+                        approval.WorkflowDataId,
+                        approval.StepDataId);
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex,
                         "Error handling approval timeout for workflow {WorkflowId}",
-                        approval.WorkflowId);
+                        approval.WorkflowDataId);
                 }
             }
 

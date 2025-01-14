@@ -17,7 +17,9 @@ using FileStorge;
 using Events;
 using Application.SeederServices;
 using Application.Services;
+using AppWorkflow.Infrastructure.Data.Context;
 using AppWorkflow.Infrastructure;
+using AppWorkflow.Core.Interfaces.Services;
 
 namespace Api.Extensions
 {
@@ -37,13 +39,21 @@ namespace Api.Extensions
                 });
             });
 
-
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(AppConfigration.AppDbConnection, sqlOptions =>
                 {
                     sqlOptions.MigrationsAssembly("AppMigration.SqlServer");
                     sqlOptions.MigrationsHistoryTable("__App_MigrationTable");
+                });
+            });
+            
+            services.AddDbContext<WorkflowDbContext>(options =>
+            {
+                options.UseSqlServer(AppConfigration.AppDbConnection, sqlOptions =>
+                {
+                    sqlOptions.MigrationsAssembly("AppMigration.SqlServer");
+                    sqlOptions.MigrationsHistoryTable("__AppWorkFlow_MigrationTable");
                 });
             });
 

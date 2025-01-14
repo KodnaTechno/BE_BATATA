@@ -11,4 +11,12 @@ namespace AppWorkflow.Infrastructure.Services
     {
         Task<List<string>> ResolveTargetUsersAsync(ActionContext context);
     }
+    public class ApprovalTargetResolver: IApprovalTargetResolver
+    {
+        public Task<List<string>> ResolveTargetUsersAsync(ActionContext context)
+        {
+            throw new NotImplementedException();
+        }
+    }
+ 
 }

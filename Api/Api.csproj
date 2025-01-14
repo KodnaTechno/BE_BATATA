@@ -38,6 +38,7 @@
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
     <ProjectReference Include="..\Localization\Localization.csproj" />
     <ProjectReference Include="..\Module\Module.csproj" />
+    <ProjectReference Include="..\Workflow\AppWorkflow.csproj" />
   </ItemGroup>
 
 </Project>

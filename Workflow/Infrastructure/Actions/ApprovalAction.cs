@@ -43,8 +43,8 @@ namespace AppWorkflow.Infrastructure.Actions
                 // Create approval request
                 var approvalRequest = new ApprovalRequest
                 {
-                    WorkflowId = context.WorkflowDataId,
-                    StepId = context.StepId,
+                    WorkflowDataId = context.WorkflowDataId,
+                    StepDataId = context.StepId,
                     ApproverIds = targetUsers,
                     EditableProperties = config.EditableProperties,
                     ModuleData = context.ModuleData,

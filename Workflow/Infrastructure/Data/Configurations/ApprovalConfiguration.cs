@@ -38,7 +38,7 @@ namespace AppWorkflow.Infrastructure.Data.Configurations
                     v => JsonSerializer.Serialize(v, JsonSerializerOptions.Default),
                     v => JsonSerializer.Deserialize<Dictionary<string,object>>(v, JsonSerializerOptions.Default));
 
-            entity.HasIndex(e => e.WorkflowId);
+            entity.HasIndex(e => e.WorkflowDataId);
             entity.HasIndex(e => e.Status);
             entity.HasIndex(e => e.ExpiresAt);
         }
