@@ -5,19 +5,16 @@ using AppIdentity.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace AppMigration.SqlServer.AppIdentity
+namespace AppMigration.SqlServer.Identity
 {
     [DbContext(typeof(AppIdentityDbContext))]
-    [Migration("20241029222035_init")]
-    partial class init
+    partial class AppIdentityDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -166,8 +163,8 @@ namespace AppMigration.SqlServer.AppIdentity
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AppUserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid?>("AppUserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -175,8 +172,8 @@ namespace AppMigration.SqlServer.AppIdentity
                     b.Property<int>("GroupId")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -197,8 +194,8 @@ namespace AppMigration.SqlServer.AppIdentity
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AppRoleId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid?>("AppRoleId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Command")
                         .HasColumnType("nvarchar(450)");
@@ -206,8 +203,8 @@ namespace AppMigration.SqlServer.AppIdentity
                     b.Property<string>("DisplayName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ModuleId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("ModuleId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModuleType")
                         .HasColumnType("nvarchar(max)");
@@ -225,8 +222,9 @@ namespace AppMigration.SqlServer.AppIdentity
 
             modelBuilder.Entity("AppIdentity.Domain.AppRole", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -235,7 +233,10 @@ namespace AppMigration.SqlServer.AppIdentity
                     b.Property<string>("ExtraInfo")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ModuleId")
+                    b.Property<Guid?>("ModuleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("ModuleType")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -287,9 +288,8 @@ namespace AppMigration.SqlServer.AppIdentity
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RoleId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -302,8 +302,9 @@ namespace AppMigration.SqlServer.AppIdentity
 
             modelBuilder.Entity("AppIdentity.Domain.AppUser", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
@@ -409,9 +410,8 @@ namespace AppMigration.SqlServer.AppIdentity
                     b.Property<string>("ClaimValueRef")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Username")
                         .HasColumnType("nvarchar(max)");
@@ -425,14 +425,14 @@ namespace AppMigration.SqlServer.AppIdentity
 
             modelBuilder.Entity("AppIdentity.Domain.AppUserRole", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("ModuleId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("ModuleId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("UserId", "RoleId", "ModuleId");
 
@@ -462,7 +462,7 @@ namespace AppMigration.SqlServer.AppIdentity
                     b.ToTable("instanceGroupPermission", "identity");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(450)");
@@ -473,9 +473,8 @@ namespace AppMigration.SqlServer.AppIdentity
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -484,10 +483,10 @@ namespace AppMigration.SqlServer.AppIdentity
                     b.ToTable("AspNetUserLogins", "identity");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(450)");
@@ -556,7 +555,8 @@ namespace AppMigration.SqlServer.AppIdentity
                     b.HasOne("AppIdentity.Domain.AppUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.Navigation("Group");
 
@@ -622,7 +622,7 @@ namespace AppMigration.SqlServer.AppIdentity
                     b.Navigation("Group");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
                     b.HasOne("AppIdentity.Domain.AppUser", null)
                         .WithMany()
@@ -631,7 +631,7 @@ namespace AppMigration.SqlServer.AppIdentity
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
                     b.HasOne("AppIdentity.Domain.AppUser", null)
                         .WithMany()

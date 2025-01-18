@@ -9,10 +9,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace AppMigration.SqlServer.File
+namespace AppMigration.SqlServer.Files
 {
     [DbContext(typeof(FileDbContext))]
-    [Migration("20241029213642_init")]
+    [Migration("20250118122943_init")]
     partial class init
     {
         /// <inheritdoc />

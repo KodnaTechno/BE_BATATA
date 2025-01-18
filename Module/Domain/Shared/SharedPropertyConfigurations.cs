@@ -1,4 +1,5 @@
 ﻿using AppCommon.DTOs;
+using AppCommon.EnumShared;
 using Module.Domain.Base;
 
 namespace Module.Domain.Shared

@@ -1,7 +1,11 @@
 namespace AppWorkflow.Core.Domain.Schema;
 
+using AppCommon.DTOs.Modules;
+using AppWorkflow.Core.Models;
 using AppWorkflow.Infrastructure.Data.Configurations;
+using AppWorkflow.Services.Interfaces;
 using AppWorkflow.Triggers;
+using Module.Domain.Schema.Properties;
 
 public class Workflow
 {
@@ -15,6 +19,7 @@ public class Workflow
     public bool IsLatestVersion { get; set; }
     public List<WorkflowVariable> Variables { get; set; } = new();
     public List<WorkflowStep> Steps { get; set; } = new();
+    public List<string> PropertiesKeys { get; set; }
     public Dictionary<string, string> Metadata { get; set; } = new();
     public TimeSpan? Timeout { get; set; }
     public RetryPolicy RetryPolicy { get; set; }
@@ -26,4 +31,8 @@ public class Workflow
     public string AuditLog { get; set; }
     public List<TriggerConfiguration> TriggerConfigs { get; set; }
 
+    public List<PropertyDto> GetProperties(IPropertiesProvider propertiesProvider)
+    {
+        return propertiesProvider.GetProperties(PropertiesKeys);
+    }
 }

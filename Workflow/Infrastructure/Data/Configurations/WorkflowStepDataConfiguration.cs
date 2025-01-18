@@ -20,12 +20,12 @@ namespace AppWorkflow.Infrastructure.Data.Configurations
             builder.Property(e => e.InputData)
                 .HasConversion(
                     v => JsonSerializer.Serialize(v, JsonSerializerOptions.Default),
-                    v => JsonSerializer.Deserialize<JsonDocument>(v, JsonSerializerOptions.Default));
+                    v => JsonSerializer.Deserialize<Dictionary<string, object>>(v, JsonSerializerOptions.Default));
 
             builder.Property(e => e.OutputData)
                 .HasConversion(
                     v => JsonSerializer.Serialize(v, JsonSerializerOptions.Default),
-                    v => JsonSerializer.Deserialize<JsonDocument>(v, JsonSerializerOptions.Default));
+                    v => JsonSerializer.Deserialize<Dictionary<string, object>>(v, JsonSerializerOptions.Default));
 
             builder.Property(e => e.Metadata)
                 .HasConversion(

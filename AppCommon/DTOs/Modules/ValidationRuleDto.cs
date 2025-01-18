@@ -1,8 +1,8 @@
 ﻿using AppCommon.EnumShared;
 
-namespace Module.Domain.Schema.Properties
+namespace AppCommon.DTOs.Modules
 {
-    public class ValidationRule
+    public  class ValidationRuleDto
     {
         public Guid Id { get; set; }
         public RuleTypeEnum RuleType { get; set; }
@@ -10,6 +10,5 @@ namespace Module.Domain.Schema.Properties
         public string Configuration { get; set; }
         public string ErrorMessage { get; set; }
         public Guid PropertyId { get; set; }
-        public virtual Property Property { get; set; }
     }
 }

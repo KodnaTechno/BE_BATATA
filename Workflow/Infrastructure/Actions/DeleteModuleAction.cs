@@ -7,7 +7,7 @@ namespace AppWorkflow.Infrastructure.Actions
 {
     public class DeleteModuleAction : WorkflowActionBase
     {
-        public DeleteModuleAction(ILogger logger, IServiceProvider serviceProvider) : base(logger, serviceProvider)
+        public DeleteModuleAction(ILogger<DeleteModuleAction> logger, IServiceProvider serviceProvider) : base(logger, serviceProvider)
         {
         }
 

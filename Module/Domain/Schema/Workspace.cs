@@ -1,6 +1,6 @@
-﻿using Module.Domain.Base;
+﻿using AppCommon.EnumShared;
+using Module.Domain.Base;
 using Module.Domain.Data;
-using Module.Domain.Shared;
 
 namespace Module.Domain.Schema
 {

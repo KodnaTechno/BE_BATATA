@@ -44,7 +44,7 @@ namespace AppWorkflow.Infrastructure.Repositories
                 var workflow = await _context.Workflows
                     .Include(w => w.Steps)
                         .ThenInclude(s => s.Transitions)
-                    .Include(w => w.Variables)
+              
                     .FirstOrDefaultAsync(w => w.Id == id && !w.IsDeleted);
 
                 if (workflow != null)

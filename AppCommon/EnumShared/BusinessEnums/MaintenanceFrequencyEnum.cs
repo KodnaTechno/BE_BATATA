@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Module.Domain.Shared.BusinessEnums
+namespace AppCommon.EnumShared.BusinessEnums
 {
    
     public enum MaintenanceFrequencyEnum

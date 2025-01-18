@@ -1,10 +1,10 @@
-﻿    using Module.Domain.Base;
-    using Module.Domain.Schema.Properties;
-    using Module.Domain.Shared;
+﻿using AppCommon.EnumShared;
+using Module.Domain.Base;
+using Module.Domain.Schema.Properties;
 
-    namespace Module.Domain.Data
-    {
-        public class PropertyData : BaseEntity
+namespace Module.Domain.Data
+{
+    public class PropertyData : BaseEntity
         {
             public Guid PropertyId { get; set; }
             public virtual Property Property { get; set; }

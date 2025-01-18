@@ -25,12 +25,7 @@
     <ProjectReference Include="..\Identity\AppIdentity.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
     <ProjectReference Include="..\Module\Module.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="AppIdentity\" />
-    <Folder Include="Application\" />
-    <Folder Include="File\" />
+    <ProjectReference Include="..\Workflow\AppWorkflow.csproj" />
   </ItemGroup>
 
 </Project>

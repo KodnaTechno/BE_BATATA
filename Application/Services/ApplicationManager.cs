@@ -1,4 +1,5 @@
-﻿using AppIdentity.Domain;
+﻿using AppCommon.EnumShared;
+using AppIdentity.Domain;
 using AppIdentity.Domain.Enums;
 using AppIdentity.IServices;
 using AppIdentity.Services;
@@ -23,7 +24,7 @@ namespace Application.Services
         public async Task LinkRolesBasedOnTeamModules(List<Module.Domain.Schema.WorkspaceModule> workSpaceModules)
         {
             //Make Sure All Current Modules Are Team Modules
-            workSpaceModules = workSpaceModules.Where(x => x.Module.Type == Module.Domain.Shared.ModuleTypeEnum.Team).ToList();
+            workSpaceModules = workSpaceModules.Where(x => x.Module.Type == ModuleTypeEnum.Team).ToList();
 
             //Create New Roles 
             var roles = workSpaceModules.Select(m => new AppIdentity.Resources.AddRoleRes
@@ -40,7 +41,7 @@ namespace Application.Services
         public async Task UnLinkRolesBasedOnTeamModules(List<Module.Domain.Schema.WorkspaceModule> workSpaceModules)
         {
             //Make Sure All Current Modules Are Team Modules
-            workSpaceModules = workSpaceModules.Where(x => x.Module.Type == Module.Domain.Shared.ModuleTypeEnum.Team).ToList();
+            workSpaceModules = workSpaceModules.Where(x => x.Module.Type == ModuleTypeEnum.Team).ToList();
 
             //Fetch Linked Roles
             var Ids = workSpaceModules.Select(x => x.Id).ToList();

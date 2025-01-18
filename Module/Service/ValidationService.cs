@@ -1,4 +1,5 @@
-﻿using Module.Domain.Schema.Properties;
+﻿using AppCommon.EnumShared;
+using Module.Domain.Schema.Properties;
 using Module.Domain.Shared;
 using System.Text.RegularExpressions;
 

@@ -13,7 +13,7 @@ namespace AppWorkflow.Infrastructure.Actions
 
     public class UpdateModuleAction : WorkflowActionBase
     {
-        public UpdateModuleAction(ILogger logger, IServiceProvider serviceProvider) : base(logger, serviceProvider)
+        public UpdateModuleAction(ILogger<UpdateModuleAction> logger, IServiceProvider serviceProvider) : base(logger, serviceProvider)
         {
         }
 

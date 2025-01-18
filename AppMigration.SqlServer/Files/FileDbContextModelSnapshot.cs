@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace AppMigration.SqlServer.File
+namespace AppMigration.SqlServer.Files
 {
     [DbContext(typeof(FileDbContext))]
     partial class FileDbContextModelSnapshot : ModelSnapshot

@@ -1,11 +1,5 @@
-﻿using Module.Domain.BusinessDomain.Schema;
-using Module.Domain.Shared.BusinessEnums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Module.Domain.Shared.BusinessEnums.MaintenanceFrequencyEnum;
+﻿using AppCommon.EnumShared.BusinessEnums;
+using Module.Domain.BusinessDomain.Schema;
 
 namespace Module.Domain.BusinessDomain
 {

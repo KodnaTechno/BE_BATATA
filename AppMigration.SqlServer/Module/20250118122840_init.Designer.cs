@@ -12,8 +12,8 @@ using Module;
 namespace AppMigration.SqlServer.Module
 {
     [DbContext(typeof(ModuleDbContext))]
-    [Migration("20250104134440_Init")]
-    partial class Init
+    [Migration("20250118122840_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

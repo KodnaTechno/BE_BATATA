@@ -1,4 +1,5 @@
 ﻿using AppCommon.DTOs;
+using AppCommon.EnumShared;
 using AppCommon.GlobalHelpers;
 using Module.Domain.Schema.Properties;
 using Module.Domain.Shared;

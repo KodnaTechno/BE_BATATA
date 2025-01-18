@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppMigration.SqlServer.Workflow
 {
     [DbContext(typeof(WorkflowDbContext))]
-    [Migration("20250113210414_init")]
+    [Migration("20250118123328_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -277,7 +277,7 @@ namespace AppMigration.SqlServer.Workflow
 
                     b.Property<string>("StepData")
                         .IsRequired()
-                        .HasColumnType("jsonb");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Variables")
                         .IsRequired()
@@ -600,6 +600,10 @@ namespace AppMigration.SqlServer.Workflow
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("PropertiesKeys")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RetryPolicy")
                         .IsRequired()

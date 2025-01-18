@@ -16,8 +16,8 @@ public class WorkflowStepData
     public string ErrorDetails { get; set; }
     public int RetryCount { get; set; }
     public Dictionary<string, object> StepVariables { get; set; } = new();
-    public JsonDocument InputData { get; set; }
-    public JsonDocument OutputData { get; set; }
+    public Dictionary<string, object> InputData { get; set; }
+    public Dictionary<string, object> OutputData { get; set; }
     public TimeSpan? Duration => CompletedAt.HasValue ? CompletedAt.Value - StartedAt : null;
     public List<StepExecutionLog> ExecutionLogs { get; set; } = new();
     public Dictionary<string, string> Metadata { get; set; } = new();

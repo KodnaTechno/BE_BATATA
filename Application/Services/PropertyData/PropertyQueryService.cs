@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Globalization;
+using AppCommon.EnumShared;
 
 namespace Application.Services.PropertyData
 {

@@ -1,4 +1,5 @@
-﻿using AppCommon.GlobalHelpers;
+﻿using AppCommon.EnumShared;
+using AppCommon.GlobalHelpers;
 using Import.IServices;
 using Import.Models;
 using Infrastructure.Database;

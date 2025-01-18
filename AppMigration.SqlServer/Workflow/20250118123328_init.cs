@@ -108,7 +108,7 @@ namespace AppMigration.SqlServer.Workflow
                     Variables = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CurrentStepId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CheckpointTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    StepData = table.Column<string>(type: "jsonb", nullable: false)
+                    StepData = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -154,6 +154,7 @@ namespace AppMigration.SqlServer.Workflow
                     Version = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     IsLatestVersion = table.Column<bool>(type: "bit", nullable: false),
                     Variables = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PropertiesKeys = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Metadata = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Timeout = table.Column<TimeSpan>(type: "time", nullable: true),
                     RetryPolicy = table.Column<string>(type: "nvarchar(max)", nullable: false),

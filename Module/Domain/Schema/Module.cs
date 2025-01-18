@@ -1,5 +1,5 @@
-﻿using Module.Domain.Base;
-using Module.Domain.Shared;
+﻿using AppCommon.EnumShared;
+using Module.Domain.Base;
 
 namespace Module.Domain.Schema
 {

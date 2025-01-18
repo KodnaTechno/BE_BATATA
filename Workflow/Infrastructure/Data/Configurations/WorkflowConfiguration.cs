@@ -33,6 +33,12 @@ namespace AppWorkflow.Infrastructure.Data.Configurations
                 .HasMaxLength(50);
 
             // JSON conversions
+            builder.Property(e => e.PropertiesKeys)
+                .HasConversion(
+                    v => JsonSerializer.Serialize(v, JsonSerializerOptions.Default),
+                    v => JsonSerializer.Deserialize<List<string>>(v, JsonSerializerOptions.Default));
+
+            // JSON conversions
             builder.Property(e => e.TriggerConfigs)
                 .HasConversion(
                     v => JsonSerializer.Serialize(v, JsonSerializerOptions.Default),

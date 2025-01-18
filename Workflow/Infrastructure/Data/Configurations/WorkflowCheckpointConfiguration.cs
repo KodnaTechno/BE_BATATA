@@ -23,7 +23,6 @@ namespace AppWorkflow.Infrastructure.Data.Configurations
                     v => JsonSerializer.Deserialize<Dictionary<string, object>>(v, JsonSerializerOptions.Default));
 
             builder.Property(e => e.StepData)
-                .HasColumnType("jsonb")
                 .HasConversion(
                     v => JsonSerializer.Serialize(v, JsonSerializerOptions.Default),
                     v => JsonSerializer.Deserialize<Dictionary<Guid, Dictionary<string, object>>>(v, JsonSerializerOptions.Default));

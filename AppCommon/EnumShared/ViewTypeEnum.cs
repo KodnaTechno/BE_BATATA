@@ -1,5 +1,5 @@
-﻿namespace Module.Domain.Shared
-{
+﻿namespace AppCommon.EnumShared
+{ 
     public enum ViewTypeEnum
     {
         Text, 

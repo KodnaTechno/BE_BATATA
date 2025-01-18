@@ -17,10 +17,10 @@ public class WorkflowEngine: IWorkflowEngine
     private readonly IActionResolver _actionResolver;
     private readonly IWorkflowRepository _workflowRepository;
     private readonly IWorkflowDataRepository _instanceRepository;
-    private readonly IExpressionEvaluator _expressionEvaluator;
-    private readonly IStepExecutorFactory _stepExecutorFactory;
-    private readonly IWorkflowStateManager _stateManager;
-    private readonly IWorkflowEventHandler _eventHandler;
+    //private readonly IExpressionEvaluator _expressionEvaluator;
+    //private readonly IStepExecutorFactory _stepExecutorFactory;
+    //private readonly IWorkflowStateManager _stateManager;
+    //private readonly IWorkflowEventHandler _eventHandler;
     private readonly IDistributedLockManager _lockManager;
     private readonly ILogger<WorkflowEngine> _logger;
     private readonly ITelemetryTracker _telemetry;
@@ -42,10 +42,6 @@ public class WorkflowEngine: IWorkflowEngine
         _actionResolver = actionResolver;
         _workflowRepository = workflowRepository;
         _instanceRepository = instanceRepository;
-        _expressionEvaluator = expressionEvaluator;
-        _stepExecutorFactory = stepExecutorFactory;
-        _stateManager = stateManager;
-        _eventHandler = eventHandler;
         _lockManager = lockManager;
         _telemetry = telemetry;
         _logger = logger;
@@ -67,14 +63,23 @@ public class WorkflowEngine: IWorkflowEngine
                 CurrentStepId = workflow.InitialStepId,
                 ModuleData =moduleData,
                 Variables = initialVariables ?? new Dictionary<string, object>(),
-                StartedAt = DateTime.UtcNow
+                StartedAt = DateTime.UtcNow,
+                AuditLog="",
+                CreatedAt= DateTime.UtcNow,
+                CreatedBy = "",
+                UpdatedAt = null,
+                UpdatedBy = "",
+                IsDeleted = false,
+                ErrorDetails = "",
+                
+
             };
 
             await _instanceRepository.CreateAsync(instance);
             await _telemetry.TrackWorkflowStarted(instance);
 
             // Start execution of initial step
-            _ = Task.Run(() => ExecuteStepAsync(instance.Id, workflow.InitialStepId));
+            _ = await Task.Run(async () => await ExecuteStepAsync(instance.Id, workflow.InitialStepId));
 
             return instance;
         }
@@ -115,9 +120,7 @@ public class WorkflowEngine: IWorkflowEngine
 
     public async Task<StepExecutionResult> ExecuteStepAsync(Guid instanceId, Guid stepId)
     {
-        using var lockScope = await _lockManager.AcquireLockAsync(
-            $"workflow-execution-{instanceId}",
-            TimeSpan.FromMinutes(5));
+        
 
         try
         {
@@ -410,8 +413,8 @@ public class WorkflowEngine: IWorkflowEngine
             CompletedAt = si.CompletedAt,
             RetryCount = si.RetryCount,
             ErrorDetails = si.ErrorDetails,
-            InputData = si.InputData?.Deserialize<Dictionary<string, object>>(),
-            OutputData = si.OutputData?.Deserialize<Dictionary<string, object>>()
+            InputData = si.InputData,
+            OutputData = si.OutputData
         }).ToList();
     }
     private async Task<StepExecutionResult> ExecuteParallelStepsAsync(WorkflowData instance, WorkflowStep step)

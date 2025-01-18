@@ -1,4 +1,4 @@
-﻿namespace Module.Domain.Shared
+﻿namespace AppCommon.EnumShared
 {
     public enum ModuleTypeEnum
     {

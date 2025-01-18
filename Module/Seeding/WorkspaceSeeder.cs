@@ -4,6 +4,7 @@ using Module.Domain.Shared;
 using Module.Domain.Schema.Properties;
 using AppCommon.DTOs;
 using AppCommon.GlobalHelpers;
+using AppCommon.EnumShared;
 
 namespace Module.Seeding
 {

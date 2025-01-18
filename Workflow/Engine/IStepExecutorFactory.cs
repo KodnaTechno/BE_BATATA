@@ -16,3 +16,29 @@ public interface IStepExecutor
         void RegisterExecutor<T>(string stepType) where T : IStepExecutor;
         bool HasExecutor(string stepType);
     }
+    public class StepExecutorFactory: IStepExecutorFactory
+{
+    private readonly Dictionary<string, Type> _executors = new();
+    private readonly IServiceProvider _serviceProvider;
+    public StepExecutorFactory(IServiceProvider serviceProvider)
+    {
+        _serviceProvider = serviceProvider;
+    }
+    public IStepExecutor CreateExecutor(string stepType)
+    {
+        if (!_executors.TryGetValue(stepType, out var executorType))
+        {
+            throw new InvalidOperationException($"No executor registered for step type {stepType}");
+        }
+        return (IStepExecutor)_serviceProvider.GetRequiredService(executorType);
+    }
+    public void RegisterExecutor<T>(string stepType) where T : IStepExecutor
+    {
+        _executors[stepType] = typeof(T);
+    }
+    public bool HasExecutor(string stepType)
+    {
+        return _executors.ContainsKey(stepType);
+    }
+}
+  
