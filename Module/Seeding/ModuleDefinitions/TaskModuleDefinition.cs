@@ -1,6 +1,7 @@
 ﻿using AppCommon.DTOs;
 using AppCommon.EnumShared;
 using AppCommon.GlobalHelpers;
+using Module.Domain.Schema;
 using Module.Domain.Schema.Properties;
 using Module.Domain.Shared;
 
@@ -22,7 +23,7 @@ namespace Module.Seeding.ModuleDefinitions
                 Order = 1,
                 Details = new TranslatableValue { Ar = "Details", En = "تفاصيل" }.AsText(),
                 CreatedAt = _seedDate,
-                CreatedBy = _systemUserId
+                CreatedBy = _systemUserId,
             };
         }
 
@@ -85,6 +86,17 @@ namespace Module.Seeding.ModuleDefinitions
             properties.AddRange(commonProperties);
 
             return properties;
+        }
+        public override IEnumerable<AppAction> GetBaseActions()
+        {
+
+            return new List<AppAction>()
+            {
+                CreateSystemAppAction( SystemModuleConstants.Basic.TaskModule.Actions.CreateActionGuid, new(){Ar ="اضافة",En = "Create"},ActionType.Create,description:"",ModuleId:SystemModuleConstants.Basic.TaskModule.Id),
+                CreateSystemAppAction( SystemModuleConstants.Basic.TaskModule.Actions.UpdateActionGuid, new(){Ar ="تعديل",En = "Update"},ActionType.Update,description:"",ModuleId:SystemModuleConstants.Basic.TaskModule.Id),
+                CreateSystemAppAction( SystemModuleConstants.Basic.TaskModule.Actions.DeleteActionGuid, new(){Ar ="حذف",En = "Delete"},ActionType.Delete,description:"",ModuleId:SystemModuleConstants.Basic.TaskModule.Id),
+                CreateSystemAppAction( SystemModuleConstants.Basic.TaskModule.Actions.ViewActionGuid, new(){Ar ="معاينة",En = "Read"},ActionType.Read,description:"",ModuleId:SystemModuleConstants.Basic.TaskModule.Id),
+            };
         }
     }
 

@@ -40,7 +40,13 @@
             public static class TaskModule
             {
                 public static readonly Guid Id = new("89A9748E-41D5-4C31-9C5C-52A10C4F7419");
-
+                public static class Actions
+                {
+                    public static readonly Guid CreateActionGuid = new("63E6138A-2903-4500-A2E8-15AF07867DF3");
+                    public static readonly Guid UpdateActionGuid = new("62E6138A-2903-4500-A2E8-15AF07867DF3");
+                    public static readonly Guid DeleteActionGuid = new("65E6118A-2903-4500-A2E8-15AF07867DF3");
+                    public static readonly Guid ViewActionGuid = new("66E6118A-2903-4500-A2E8-15AF07867DF3");
+                } 
                 public static class Properties
                 {
                     public static readonly Guid CreatedAtId = new("63E6128A-2903-4500-A2E8-15AF07867DF3");

@@ -16,5 +16,6 @@ namespace Module.Domain.Schema
         public virtual ICollection<WorkspaceModule> WorkspaceModules { get; set; }
         public virtual ICollection<WorkspaceModuleBlock> WorkspaceModuleBlocks { get; set; }
         public virtual ICollection<WorkspaceData> WorkspaceData {  get; set; }
+        public virtual ICollection<AppAction> Actions { get; set; }    
     }
 }

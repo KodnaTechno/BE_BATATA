@@ -1,6 +1,7 @@
 ﻿using AppCommon.DTOs;
 using AppCommon.EnumShared;
 using AppCommon.GlobalHelpers;
+using Module.Domain.Schema;
 using Module.Domain.Schema.Properties;
 using Module.Domain.Shared;
 using static Module.Domain.Shared.SharedPropertyConfigurations.Common;
@@ -14,6 +15,20 @@ namespace Module.Seeding.ModuleDefinitions
 
         public abstract Domain.Schema.Module GetModule();
         public abstract IEnumerable<Property> GetProperties();
+
+        public abstract IEnumerable<AppAction> GetBaseActions();
+
+        protected AppAction CreateSystemAppAction(Guid Id,TranslatableValue Name,ActionType actionType, string description,Guid ModuleId)
+        {
+            return new AppAction
+            {
+                Id = Id,
+                Name = Name,
+                Type = actionType,
+                Description = description,
+                ModuleId = ModuleId
+            };
+        }
 
         protected Property CreateSystemProperty(
             Guid id,

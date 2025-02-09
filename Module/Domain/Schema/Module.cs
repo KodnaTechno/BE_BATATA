@@ -15,5 +15,7 @@ namespace Module.Domain.Schema
         public Guid? ApplicationId { get; set; }
         public Application Application { get; set; }
         public virtual ICollection<WorkspaceModule> WorkspaceModules { get; set; }
+        public virtual ICollection<AppAction> Actions { get; set; }
+
     }
 }

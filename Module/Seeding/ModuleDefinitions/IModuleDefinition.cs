@@ -1,4 +1,5 @@
-﻿using Module.Domain.Schema.Properties;
+﻿using Module.Domain.Schema;
+using Module.Domain.Schema.Properties;
 
 namespace Module.Seeding.ModuleDefinitions
 {
@@ -6,5 +7,6 @@ namespace Module.Seeding.ModuleDefinitions
     {
         Domain.Schema.Module GetModule();
         IEnumerable<Property> GetProperties();
+        IEnumerable<AppAction> GetBaseActions();
     }
 }

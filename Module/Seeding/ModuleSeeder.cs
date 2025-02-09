@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Module.Domain.Schema;
 using Module.Domain.Schema.Properties;
 using Module.Seeding.ModuleDefinitions;
 
@@ -17,6 +18,7 @@ namespace Module.Seeding
             {
                 modelBuilder.Entity<Domain.Schema.Module>().HasData(definition.GetModule());
                 modelBuilder.Entity<Property>().HasData(definition.GetProperties());
+                modelBuilder.Entity<AppAction>().HasData(definition.GetBaseActions());
             }
         }
     }

@@ -8,5 +8,6 @@ namespace Module.Domain.Schema
         public virtual Workspace Workspace { get; set; }
         public Guid ModuleId { get; set; }
         public virtual Module Module { get; set; }
+        public virtual ICollection<AppAction> Actions { get; set; }
     }
 }
