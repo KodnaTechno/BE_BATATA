@@ -15,7 +15,7 @@ public class Workflow
     public WorkflowStatus Status { get; set; }
     public string ModuleType { get; set; }
     public Guid InitialStepId { get; set; }
-    public string Version { get; set; }
+    public int Version { get; set; }
     public bool IsLatestVersion { get; set; }
     public List<WorkflowVariable> Variables { get; set; } = new();
     public List<WorkflowStep> Steps { get; set; } = new();

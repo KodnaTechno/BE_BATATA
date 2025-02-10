@@ -8,7 +8,7 @@ public class WorkflowStep
     public string Description { get; set; }
     public StepStatus Status { get; set; }
     public string ActionType { get; set; }
-    public JsonDocument ActionConfiguration { get; set; }
+    public new Dictionary<string, object> ActionConfiguration { get; set; }
     public List<StepTransition> Transitions { get; set; } = new();
     public TimeSpan? Timeout { get; set; }
     public RetryPolicy RetryPolicy { get; set; }

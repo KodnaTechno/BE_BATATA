@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AppWorkflow.Infrastructure.Repositories.IRepository
@@ -16,7 +17,7 @@ namespace AppWorkflow.Infrastructure.Repositories.IRepository
         Task<Workflow> GetWorkflowVersionAsync(Guid workflowId, string version);
         Task<IEnumerable<Workflow>> GetVersionHistoryAsync(Guid workflowId);
         Task<WorkflowData> GetInstanceAsync(Guid instanceId);
-        Task CreateAsync(Workflow workflow);
+        Task CreateAsync(Workflow workflow,CancellationToken cancellationToken);
         Task UpdateAsync(Workflow workflow);
         Task DeleteAsync(Guid id);
         Task<bool> ExistsAsync(Guid id);

@@ -136,7 +136,7 @@ namespace AppWorkflow.Infrastructure.Repositories
             }
         }
 
-        public async Task CreateAsync(Workflow workflow)
+        public async Task CreateAsync(Workflow workflow, CancellationToken cancellationToken)
         {
             try
             {
