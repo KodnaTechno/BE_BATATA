@@ -13,7 +13,7 @@ namespace Module.Seeding
             var seedDate = new DateTime(2024, 1, 1);
             modelBuilder.Entity<Application>().HasData(new Application
             {
-                Id = SystemApplicationConstants.AssetManagementApplicationId,
+                Id = SystemApplicationConstants.ProjectManagementApplicationId,
                 Title = new TranslatableValue { En = "Asset Management", Ar = "إداره المرافق" }.AsText(),
                 Icon = "fa-solid fa-warehouse",
                 Description = new TranslatableValue

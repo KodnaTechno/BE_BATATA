@@ -1,9 +1,4 @@
 ﻿using Module.Domain.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AppCommon.DTOs;
 
 namespace Module.Domain.Schema
@@ -11,7 +6,7 @@ namespace Module.Domain.Schema
     public class AppAction: SoftDeleteEntity
     {
         public TranslatableValue Name { get; set; }
-        public string Description { get; set; }
+        public TranslatableValue Description { get; set; }
         public ActionType Type { get; set; }
         public Guid? ModuleId { get; set; }
         public virtual Module Module { get; set; }

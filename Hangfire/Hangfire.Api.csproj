@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AppCommon\AppCommon.csproj" />
     <ProjectReference Include="..\Hangfire.Shared\Hangfire.Shared.csproj" />
     <ProjectReference Include="..\JobsProcessor\JobsProcessor.csproj" />
     <ProjectReference Include="..\Module\Module.csproj" />

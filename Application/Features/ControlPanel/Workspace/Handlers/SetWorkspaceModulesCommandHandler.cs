@@ -67,7 +67,7 @@ namespace Application.Features.ControlPanel.Workspace.Handlers
             var newWorkspaceModules = newModuleIds.Select(moduleId => new WorkspaceModule
             {
                 CreatedAt = DateTime.UtcNow,
-                CreatedBy = Guid.Parse(request.UserId),
+                CreatedBy = request.UserId,
                 ModuleId = moduleId,
                 WorkspaceId = workspace.Id,
             }).ToList();

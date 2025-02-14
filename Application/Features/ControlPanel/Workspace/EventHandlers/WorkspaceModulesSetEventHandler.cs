@@ -15,7 +15,7 @@ namespace Application.Features.ControlPanel.Workspace.EventHandlers
 
         public async Task Handle(WorkspaceModulesSetEvent notification, CancellationToken cancellationToken)
         {
-            _backgroundJobClient.Enqueue(() => Console.WriteLine($"Title is {notification.Title}"));
+            _backgroundJobClient.Enqueue(() => Console.WriteLine($"Title"));
 
             await Task.CompletedTask;
         }

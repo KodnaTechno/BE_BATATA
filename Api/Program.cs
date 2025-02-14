@@ -35,7 +35,11 @@ var app = builder.Build();
 ServiceActivator.Configure(app.Services);
 
 
-app.ApplyMigrations(typeof(ModuleDbContext), typeof(AppIdentityDbContext), typeof(ApplicationDbContext), typeof(FileDbContext), typeof(WorkflowDbContext));
+app.ApplyMigrations(typeof(ModuleDbContext),
+    typeof(AppIdentityDbContext),
+    typeof(ApplicationDbContext),
+    typeof(FileDbContext),
+    typeof(WorkflowDbContext));
 
 app.SeedDatabaseAsync().Wait();
 

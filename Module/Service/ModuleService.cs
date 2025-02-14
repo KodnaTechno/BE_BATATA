@@ -27,46 +27,6 @@ public class ModuleService : IModuleService
         module.UpdatedBy= UserId;
         module.CreatedBy = UserId;
         module.IsActive = true;
-
-        module.Actions = new List<AppAction>()
-        {
-            new AppAction
-            {
-                Id = Guid.NewGuid(),
-                Name =new(){Ar = "اضافة",En = "Create"},
-                Description = "Create module",
-                Type = ActionType.Create,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
-            },
-            new AppAction
-            {
-                Id = Guid.NewGuid(),
-                Name =new(){Ar = "تعديل",En = "Update"},
-                Description = "Update module",
-                Type = ActionType.Update,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
-            },
-            new AppAction
-            {
-                Id = Guid.NewGuid(),
-                Name =new(){Ar = "حذف",En = "Delete"},
-                Description = "Delete module",
-                CreatedAt = DateTime.UtcNow,
-                Type = ActionType.Delete,
-                UpdatedAt = DateTime.UtcNow
-            },
-            new AppAction
-            {
-                Id = Guid.NewGuid(),
-                Name =new(){Ar = "معاينة",En = "Read"},
-                Description = "Read module",
-                Type = ActionType.Read,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
-            },
-        };
         await _context.Modules.AddAsync(module);
         await _context.SaveChangesAsync();
 

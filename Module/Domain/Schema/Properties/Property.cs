@@ -1,14 +1,15 @@
-﻿using AppCommon.EnumShared;
+﻿using AppCommon.DTOs;
+using AppCommon.EnumShared;
 using Module.Domain.Base;
 
 namespace Module.Domain.Schema.Properties
 {
     public class Property : SoftDeleteEntity
     {
-        public string Title { get; set; }
+        public TranslatableValue Title { get; set; }
         public string Key { get; set; }
         public string NormalizedKey { get; set; }
-        public string Description { get; set; }
+        public TranslatableValue Description { get; set; }
         public ViewTypeEnum ViewType { get; set; }
         public DataTypeEnum DataType { get; set; }
         public string Configuration { get; set; }

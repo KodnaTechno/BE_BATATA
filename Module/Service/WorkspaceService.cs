@@ -30,47 +30,6 @@ namespace Module.Service
             workspace.UpdatedBy = UserId;
             workspace.CreatedBy = UserId;
 
-            // Add default actions for the workspace
-            workspace.Actions = new List<AppAction>()
-        {
-            new AppAction
-            {
-                Id = Guid.NewGuid(),
-                Name = new() { Ar = "اضافة", En = "Create" },
-                Description = "Create workspace",
-                Type = ActionType.Create,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
-            },
-            new AppAction
-            {
-                Id = Guid.NewGuid(),
-                Name = new() { Ar = "تعديل", En = "Update" },
-                Description = "Update workspace",
-                Type = ActionType.Update,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
-            },
-            new AppAction
-            {
-                Id = Guid.NewGuid(),
-                Name = new() { Ar = "حذف", En = "Delete" },
-                Description = "Delete workspace",
-                Type = ActionType.Delete,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
-            },
-            new AppAction
-            {
-                Id = Guid.NewGuid(),
-                Name = new() { Ar = "معاينة", En = "Read" },
-                Description = "Read workspace",
-                Type = ActionType.Read,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
-            }
-        };
-
             await _context.Workspaces.AddAsync(workspace);
             await _context.SaveChangesAsync();
 

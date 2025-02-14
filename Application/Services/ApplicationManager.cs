@@ -1,4 +1,5 @@
-﻿using AppCommon.EnumShared;
+﻿using AppCommon.DTOs;
+using AppCommon.EnumShared;
 using AppIdentity.Domain;
 using AppIdentity.Domain.Enums;
 using AppIdentity.IServices;
@@ -29,7 +30,7 @@ namespace Application.Services
             //Create New Roles 
             var roles = workSpaceModules.Select(m => new AppIdentity.Resources.AddRoleRes
             {
-                DisplayName = new Translatable { Ar = $"{m.Workspace.Title} {m.Module.Name}" , En = $"{m.Workspace.Title} {m.Module.Name}" },
+                DisplayName = new TranslatableValue { Ar = $"{m.Workspace.Title} {m.Module.Name}" , En = $"{m.Workspace.Title} {m.Module.Name}" },
                 Name = $"{m.Workspace.Title}_{m.Module.Name}",
                 NormalizedName = m.Module.Name,
                 ModuleId = m.Id,

@@ -8,6 +8,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Module;
+using Module.Service;
 
 namespace Application.Features.ControlPanel.Workspace.Handlers
 {
@@ -20,16 +21,28 @@ namespace Application.Features.ControlPanel.Workspace.Handlers
             ILogger<BaseCommandHandler<CreateWorkspaceCommand, WorkspaceDto>> logger,
             IEventLogger eventLogger,
             IHttpContextAccessor httpContextAccessor,
-            ModuleDbContext moduleDbContext,
-            WorkspaceMapper workspaceMapper) : base(mediator, logger, eventLogger, httpContextAccessor)
+            WorkspaceMapper workspaceMapper,
+            IWorkspaceService workspaceService,
+            ModuleDbContext moduleDbContext) : base(mediator, logger, eventLogger, httpContextAccessor)
         {
-            _moduleDbContext = moduleDbContext;
             _workspaceMapper = workspaceMapper;
+            _moduleDbContext = moduleDbContext;
         }
 
         protected override async Task<ApiResponse<WorkspaceDto>> HandleCommand(CreateWorkspaceCommand request, CancellationToken cancellationToken)
         {
-            var workspace = _workspaceMapper.MapToEntity(request);
+            var workspace = new Module.Domain.Schema.Workspace
+            {
+                Title = request.Title,
+                Details = request.Details,
+                ApplicationId = request.ApplicationId,
+                Type = AppCommon.EnumShared.WorkspaceTypeEnum.Custom,
+                CreatedAt = DateTime.UtcNow,
+                CreatedBy = request.UserId,
+                UpdatedAt = DateTime.UtcNow,
+                UpdatedBy = request.UserId,
+            };
+
             _moduleDbContext.Workspaces.Add(workspace);
             await _moduleDbContext.SaveChangesAsync(cancellationToken);
 

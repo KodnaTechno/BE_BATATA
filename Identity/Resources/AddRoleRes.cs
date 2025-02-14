@@ -1,3 +1,4 @@
+using AppCommon.DTOs;
 using AppIdentity.Domain;
 using AppIdentity.Domain.Enums;
 
@@ -12,6 +13,6 @@ public record AddRoleRes
     public List<KeyValuePair<string, string>> ExtraInfo { get; set; }
     public string NormalizedName { get; set; }
    
-    public Translatable DisplayName { get; set; }
+    public TranslatableValue DisplayName { get; set; }
 }
 

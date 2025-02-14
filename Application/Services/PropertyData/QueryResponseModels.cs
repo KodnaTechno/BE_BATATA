@@ -1,4 +1,5 @@
-﻿using AppCommon.EnumShared;
+﻿using AppCommon.DTOs;
+using AppCommon.EnumShared;
 using Module.Domain.Schema.Properties;
 using Module.Domain.Shared;
 
@@ -100,8 +101,10 @@ namespace Application.Services.PropertyData
     {
         public Guid Id { get; set; }
         public string Key { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
+        public string DisplayTitle { get; set; }
+        public TranslatableValue Title { get; set; }
+        public string DisplayDescription { get; set; }
+        public TranslatableValue Description { get; set; }
         public DataTypeEnum DataType { get; set; }
         public ViewTypeEnum ViewType { get; set; }
         public object Value { get; set; }

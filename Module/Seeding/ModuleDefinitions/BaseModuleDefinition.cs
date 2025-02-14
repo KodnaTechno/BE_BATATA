@@ -1,4 +1,5 @@
-﻿using AppCommon.DTOs;
+﻿using AppCommon;
+using AppCommon.DTOs;
 using AppCommon.EnumShared;
 using AppCommon.GlobalHelpers;
 using Module.Domain.Schema;
@@ -10,7 +11,7 @@ namespace Module.Seeding.ModuleDefinitions
 {
     public abstract class BaseModuleDefinition : IModuleDefinition
     {
-        protected readonly Guid _systemUserId = Guid.Parse("11111111-1111-1111-1111-111111111111");
+        protected readonly Guid _systemUserId = SystemUsers.SystemUserId;
         protected readonly DateTime _seedDate = new(2024, 1, 1);
 
         public abstract Domain.Schema.Module GetModule();
@@ -18,7 +19,7 @@ namespace Module.Seeding.ModuleDefinitions
 
         public abstract IEnumerable<AppAction> GetBaseActions();
 
-        protected AppAction CreateSystemAppAction(Guid Id,TranslatableValue Name,ActionType actionType, string description,Guid ModuleId)
+        protected AppAction CreateSystemAppAction(Guid Id,TranslatableValue Name,ActionType actionType, TranslatableValue description,Guid ModuleId)
         {
             return new AppAction
             {
@@ -37,7 +38,7 @@ namespace Module.Seeding.ModuleDefinitions
             ViewTypeEnum viewType,
             DataTypeEnum dataType,
             int order,
-            string description,
+            TranslatableValue description,
             string systemPropertyPath,
             string normalizedKey,
             Guid moduleId,
@@ -47,7 +48,7 @@ namespace Module.Seeding.ModuleDefinitions
             return new Property
             {
                 Id = id,
-                Title = title.AsText(),
+                Title = title,
                 Key = key.ToLower(),
                 NormalizedKey = normalizedKey.ToUpper(),
                 Description = description,
@@ -75,12 +76,13 @@ namespace Module.Seeding.ModuleDefinitions
             Guid DeletedById,
             int startingOrder = 1)
         {
+            prefix = prefix.ToLower();
             var commonProperties = new List<Property>
             {
                 CreateSystemProperty(
                     CreatedAtId,
                     CreatedAtTitle,
-                    $"{prefix}_CreatedAt",
+                    $"{prefix}_{CreatedAt.NormalizedKey.ToLower()}",
                     CreatedAt.ViewType,
                     CreatedAt.DataType,
                     startingOrder,
@@ -93,7 +95,7 @@ namespace Module.Seeding.ModuleDefinitions
                 CreateSystemProperty(
                     CreatedById,
                     CreatedByTitle,
-                    $"{prefix}_CreatedBy",
+                    $"{prefix}_{CreatedBy.NormalizedKey.ToLower()}",
                     CreatedBy.ViewType,
                     CreatedBy.DataType,
                     startingOrder + 1,
@@ -106,7 +108,7 @@ namespace Module.Seeding.ModuleDefinitions
                 CreateSystemProperty(
                     UpdatedAtId,
                     UpdatedAtTitle,
-                    $"{prefix}_UpdatedAt",
+                    $"{prefix}_{UpdatedAt.NormalizedKey.ToLower()}",
                     UpdatedAt.ViewType,
                     UpdatedAt.DataType,
                     startingOrder + 2,
@@ -119,7 +121,7 @@ namespace Module.Seeding.ModuleDefinitions
                 CreateSystemProperty(
                     UpdatedById,
                     UpdatedByTitle,
-                    $"{prefix}_UpdatedBy",
+                    $"{prefix}_{UpdatedBy.NormalizedKey.ToLower()}",
                     UpdatedBy.ViewType,
                     UpdatedBy.DataType,
                     startingOrder + 3,
@@ -132,7 +134,7 @@ namespace Module.Seeding.ModuleDefinitions
                 CreateSystemProperty(
                     DeletedAtId,
                     DeletedAtTitle,
-                    $"{prefix}_DeletedAt",
+                    $"{prefix}_{DeletedAt.NormalizedKey.ToLower()}",
                     DeletedAt.ViewType,
                     DeletedAt.DataType,
                     startingOrder + 4,
@@ -145,7 +147,7 @@ namespace Module.Seeding.ModuleDefinitions
                 CreateSystemProperty(
                     DeletedById,
                     DeletedByTitle,
-                    $"{prefix}_DeletedBy",
+                    $"{prefix}_{DeletedBy.NormalizedKey.ToLower()}",
                     DeletedBy.ViewType,
                     DeletedBy.DataType,
                     startingOrder + 5,

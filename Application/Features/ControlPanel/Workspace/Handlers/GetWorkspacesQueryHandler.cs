@@ -31,10 +31,7 @@ namespace Application.Features.ControlPanel.Workspace.Handlers
 
         protected override async Task<ApiResponse<PaginatedList<WorkspaceDto>>> HandleQuery(GetWorkspacesQuery request, CancellationToken cancellationToken)
         {
-            var query = _moduleDbContext.Workspaces.AsNoTracking().AsQueryable();
-
-            if (!string.IsNullOrEmpty(request.SearchTerm))
-                query = query.Where(w => EF.Functions.Like(w.Title, $"%{request.SearchTerm}%"));
+            var query = _moduleDbContext.Workspaces.Where(x => x.ApplicationId == request.ApplicationId).AsNoTracking().AsQueryable();
 
             PaginatedList<Module.Domain.Schema.Workspace> dbWorkspaces;
 

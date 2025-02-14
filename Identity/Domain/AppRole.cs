@@ -1,6 +1,6 @@
+using AppCommon.DTOs;
 using AppIdentity.Domain.Enums;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.VisualBasic;
 
 namespace AppIdentity.Domain;
 
@@ -13,5 +13,5 @@ public class AppRole : IdentityRole<Guid>
     
     public ICollection<AppPermission> Permissions { get; set; }
   
-    public Translatable DisplayName { get; set; }
+    public TranslatableValue DisplayName { get; set; }
 }

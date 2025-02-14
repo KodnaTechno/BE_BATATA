@@ -1,4 +1,5 @@
-﻿using AppCommon.EnumShared;
+﻿using AppCommon.DTOs;
+using AppCommon.EnumShared;
 using Module.Domain.Base;
 using Module.Domain.Data;
 
@@ -6,11 +7,11 @@ namespace Module.Domain.Schema
 {
     public class Workspace : BaseProperty
     {
-        public string Title { get; set; }
+        public TranslatableValue Title { get; set; }
         public WorkspaceTypeEnum Type { get; set; }
-        public string NormlizedTitle { get; set; }
+        public string Key { get; set; }
         public int Order { get; set; }
-        public string Details { get; set; }
+        public TranslatableValue Details { get; set; }
         public Guid ApplicationId { get; set; }
         public Application Application { get; set; }
         public virtual ICollection<WorkspaceModule> WorkspaceModules { get; set; }

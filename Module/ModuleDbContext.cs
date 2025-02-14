@@ -23,6 +23,8 @@ namespace Module
         public DbSet<PropertyConnection> PropertyConnections{ get; set; }
         public DbSet<ValidationRule> ValidationRules { get; set; }
         public DbSet<PropertyFormula> PropertyFormulas { get; set; }
+
+        public DbSet<AppAction> AppActions { get; set; }
         #endregion
 
         #region SchemaData

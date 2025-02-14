@@ -7,7 +7,7 @@ namespace Events
         Guid EventId { get; }
         DateTime Timestamp { get; }
         string CorrelationId { get; set; }
-        string UserId { get; set; }
+        Guid UserId { get; set; }
     }
 
     public abstract class BaseEvent : IEvent
@@ -15,6 +15,6 @@ namespace Events
         public Guid EventId { get; } = Guid.NewGuid();
         public DateTime Timestamp { get; } = DateTime.UtcNow;
         public string CorrelationId { get; set; }
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
     }
 }

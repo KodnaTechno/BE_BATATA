@@ -1,4 +1,5 @@
-﻿using Application.Common.Models;
+﻿using AppCommon;
+using Application.Common.Models;
 using Application.Interfaces;
 using Application.Services.EventsLogger;
 using Events;
@@ -90,17 +91,17 @@ namespace Application.Common.Handlers
 
                 if (httpContext.User.Identity.IsAuthenticated)
                 {
-                    request.UserId = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                    request.UserId = Guid.Parse(httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
                 }
                 else
                 {
-                    request.UserId = "Anonymous";
+                    request.UserId = SystemUsers.AnonymousUserId;
                 }
             }
             else
             {
                 request.CorrelationId = Guid.NewGuid().ToString();
-                request.UserId = "System";
+                request.UserId = SystemUsers.SystemUserId;
             }
         }
     }

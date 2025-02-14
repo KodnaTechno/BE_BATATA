@@ -12,7 +12,7 @@ namespace Application.Interfaces
     public abstract class BaseCommand<TResult> : ICommand<TResult>
     {
         public string CorrelationId { get; set; }
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
         public abstract IEvent GetEvent(ApiResponse<TResult> response);
     }
 }
