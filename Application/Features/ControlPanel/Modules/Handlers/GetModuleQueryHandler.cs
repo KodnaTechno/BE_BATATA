@@ -1,6 +1,8 @@
 ﻿using AppCommon.DTOs.Modules;
 using Application.Common.Handlers;
 using Application.Common.Models;
+using Application.Features.ControlPanel.Modules.Mapping;
+using Application.Features.ControlPanel.Modules.Queries;
 using Application.Features.ControlPanel.Workspace.Mapping;
 using Application.Features.ControlPanel.Workspace.Queries;
 using Infrastructure.Caching;
@@ -12,38 +14,34 @@ using Module;
 
 namespace Application.Features.ControlPanel.Workspace.Handlers
 {
-    public class GetWorkspaceQueryHandler : BaseQueryHandler<GetWorkspaceQuery, WorkspaceDto>
+    public class GetModuleQueryHandler : BaseQueryHandler<GetModuleQuery, ModuleDto>
     {
         private readonly ModuleDbContext _moduleDbContext;
-        private readonly WorkspaceMapper _workspaceMapper;
+        private readonly ModuleMapper _moduleMapper;
         private readonly IStringLocalizer<object> _localization;
-        public GetWorkspaceQueryHandler(
+        public GetModuleQueryHandler(
             IMediator mediator,
-            ILogger<BaseQueryHandler<GetWorkspaceQuery, WorkspaceDto>> logger,
+            ILogger<BaseQueryHandler<GetModuleQuery, ModuleDto>> logger,
             IHttpContextAccessor httpContextAccessor,
             ModuleDbContext moduleDbContext,
-            WorkspaceMapper workspaceMapper,
+            ModuleMapper moduleMapper,
             IEntityCacheService entityCacheService,
             IStringLocalizer<object> localization)
             : base(mediator, logger, httpContextAccessor)
         {
             _moduleDbContext = moduleDbContext;
-            _workspaceMapper = workspaceMapper;
+            _moduleMapper = moduleMapper;
             _localization = localization;
         }
 
-        protected override async Task<ApiResponse<WorkspaceDto>> HandleQuery(GetWorkspaceQuery request, CancellationToken cancellationToken)
+        protected override async Task<ApiResponse<ModuleDto>> HandleQuery(GetModuleQuery request, CancellationToken cancellationToken)
         {
-            //var workspace = await _entityCacheService.GetOrSetAsync(
-            //    CacheKeys.Workspace(request.WorkspaceId),
-            //   async () => await _moduleDbContext.Workspaces.FindAsync([request.WorkspaceId], cancellationToken)
-            //);
 
-            var workspace = await _moduleDbContext.Workspaces.FindAsync([request.WorkspaceId], cancellationToken);
-            if (workspace == null)
-                return ApiResponse<WorkspaceDto>.Fail(ErrorCodes.NotFound, _localization[ErrorCodes.NotFound]);
+            var module = await _moduleDbContext.Modules.FindAsync([request.ModuleId], cancellationToken);
+            if (module == null)
+                return ApiResponse<ModuleDto>.Fail(ErrorCodes.NotFound, _localization[ErrorCodes.NotFound]);
 
-            return ApiResponse<WorkspaceDto>.Success(_workspaceMapper.MapToDto(workspace));
+            return ApiResponse<ModuleDto>.Success(_moduleMapper.MapToDto(module));
         }
     }
 }
