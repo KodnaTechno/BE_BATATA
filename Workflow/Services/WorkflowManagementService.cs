@@ -34,7 +34,7 @@ namespace AppWorkflow.Services
                 Name = createDto.Name,
                 Description = createDto.Description,
                 CreatedAt = DateTime.UtcNow,
-                Version = 1,
+                Version = "1",
                 Status = WorkflowStatus.Draft,
                 Metadata = createDto.Metadata ?? new Dictionary<string, string>(),
             };
@@ -48,7 +48,7 @@ namespace AppWorkflow.Services
                     Id = Guid.NewGuid(),
                     Name = stepDto.Name,
                     ActionType = stepDto.Type,
-                    ActionConfiguration = stepDto.Configuration ?? new Dictionary<string, object>()
+                    ActionConfiguration = stepDto.Configuration ?? default,
                 };
                 stepDict[step.Name] = step;
                 return step;

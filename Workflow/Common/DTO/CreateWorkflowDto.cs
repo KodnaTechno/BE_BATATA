@@ -19,7 +19,7 @@ namespace AppWorkflow.Common.DTO
     {
         public string Name { get; set; }
         public string Type { get; set; }
-        public Dictionary<string, object> Configuration { get; set; }
+        public JsonDocument Configuration { get; set; }
         public List<CreateStepTransitionDto> Transitions { get; set; }
     }
 
@@ -58,7 +58,7 @@ namespace AppWorkflow.Common.DTO
         public string Name { get; set; }
         public string Description { get; set; }
         public WorkflowStatus Status { get; set; }
-        public int Version { get; set; }
+        public string Version { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public DateTime? PublishedAt { get; set; }
@@ -102,7 +102,7 @@ namespace AppWorkflow.Common.DTO
         public string Name { get; set; }
         public string Description { get; set; }
         public WorkflowStatus Status { get; set; }
-        public int Version { get; set; }
+        public string Version { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
