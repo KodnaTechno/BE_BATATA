@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 using Module.Domain.Schema.Properties;
+using AppCommon.GlobalHelpers;
 
 namespace Module.Configurations
 {
@@ -10,6 +11,12 @@ namespace Module.Configurations
         {
             builder.Property(e => e.ViewType).HasConversion<string>();
             builder.Property(e => e.DataType).HasConversion<string>();
+
+            builder.Property(e => e.Title)
+             .HasJsonConversion();
+
+            builder.Property(e => e.Description)
+                .HasJsonConversion();
 
             builder.HasOne(e => e.Module)
                 .WithMany(m => m.Properties)  

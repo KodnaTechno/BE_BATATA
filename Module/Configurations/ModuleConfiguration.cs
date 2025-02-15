@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
+using AppCommon.GlobalHelpers;
 
 namespace Module.Configurations
 {
@@ -13,6 +14,12 @@ namespace Module.Configurations
                 .WithMany(e => e.Modules)
                 .HasForeignKey(e => e.ApplicationId)
                 .IsRequired(false);
+
+            builder.Property(e => e.Title)
+              .HasJsonConversion();
+
+            builder.Property(e => e.Details)
+                .HasJsonConversion();
 
             builder.HasMany(e => e.WorkspaceModules).WithOne(e => e.Module).HasForeignKey(e => e.ModuleId);
         }
