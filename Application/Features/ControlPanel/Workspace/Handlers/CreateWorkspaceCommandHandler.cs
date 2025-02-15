@@ -22,7 +22,6 @@ namespace Application.Features.ControlPanel.Workspace.Handlers
             IEventLogger eventLogger,
             IHttpContextAccessor httpContextAccessor,
             WorkspaceMapper workspaceMapper,
-            IWorkspaceService workspaceService,
             ModuleDbContext moduleDbContext) : base(mediator, logger, eventLogger, httpContextAccessor)
         {
             _workspaceMapper = workspaceMapper;

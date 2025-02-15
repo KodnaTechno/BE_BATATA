@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppMigration.SqlServer.Workflow
 {
     [DbContext(typeof(WorkflowDbContext))]
-    [Migration("20250118123328_init")]
-    partial class init
+    [Migration("20250215202123_init workflow")]
+    partial class initworkflow
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

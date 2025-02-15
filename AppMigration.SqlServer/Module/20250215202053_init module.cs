@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AppMigration.SqlServer.Module
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class initmodule : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -61,7 +61,7 @@ namespace AppMigration.SqlServer.Module
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Key = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Domain = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     Order = table.Column<int>(type: "int", nullable: false),
@@ -94,7 +94,7 @@ namespace AppMigration.SqlServer.Module
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    NormlizedTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Key = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Order = table.Column<int>(type: "int", nullable: false),
                     Details = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ApplicationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -338,6 +338,50 @@ namespace AppMigration.SqlServer.Module
                 });
 
             migrationBuilder.CreateTable(
+                name: "AppActions",
+                schema: "module",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ModuleId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    WorkspaceId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ValidationFormula = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    WorkspaceModuleId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    UpdatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppActions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AppActions_Modules_ModuleId",
+                        column: x => x.ModuleId,
+                        principalSchema: "module",
+                        principalTable: "Modules",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_AppActions_WorkspaceModules_WorkspaceModuleId",
+                        column: x => x.WorkspaceModuleId,
+                        principalSchema: "module",
+                        principalTable: "WorkspaceModules",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_AppActions_Workspaces_WorkspaceId",
+                        column: x => x.WorkspaceId,
+                        principalSchema: "module",
+                        principalTable: "Workspaces",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Properties",
                 schema: "module",
                 columns: table => new
@@ -554,14 +598,26 @@ namespace AppMigration.SqlServer.Module
             migrationBuilder.InsertData(
                 schema: "module",
                 table: "Modules",
-                columns: new[] { "Id", "ApplicationId", "CreatedAt", "CreatedBy", "DeletedAt", "DeletedBy", "Details", "Domain", "IsActive", "IsDeleted", "Name", "Order", "Title", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"), new Guid("a1b2c3d4-e5f6-47ae-8eb7-d1e1e83a6f9c"), new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("11111111-1111-1111-1111-111111111111"), null, null, "{\r\n  \"en\": \"تفاصيل\",\r\n  \"ar\": \"Details\"\r\n}", "Module.Domain.BusinessDomain.Task", true, false, "Task", 1, "{\r\n  \"en\": \"المهام\",\r\n  \"ar\": \"Tasks\"\r\n}", "Basic", null, null });
+                columns: new[] { "Id", "ApplicationId", "CreatedAt", "CreatedBy", "DeletedAt", "DeletedBy", "Details", "Domain", "IsActive", "IsDeleted", "Key", "Order", "Title", "Type", "UpdatedAt", "UpdatedBy" },
+                values: new object[] { new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"), new Guid("a1b2c3d4-e5f6-47ae-8eb7-d1e1e83a6f9c"), new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000000-0000-0000-0000-000000000002"), null, null, "{\"En\":\"\\u062A\\u0641\\u0627\\u0635\\u064A\\u0644\",\"Ar\":\"Details\"}", "Module.Domain.BusinessDomain.Task", true, false, "Task", 1, "{\"En\":\"\\u0627\\u0644\\u0645\\u0647\\u0627\\u0645\",\"Ar\":\"Tasks\"}", "Basic", null, null });
 
             migrationBuilder.InsertData(
                 schema: "module",
                 table: "Workspaces",
-                columns: new[] { "Id", "ApplicationId", "CreatedAt", "CreatedBy", "DeletedAt", "DeletedBy", "Details", "IsDeleted", "NormlizedTitle", "Order", "Title", "Type", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420"), new Guid("a1b2c3d4-e5f6-47ae-8eb7-d1e1e83a6f9c"), new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("11111111-1111-1111-1111-111111111111"), null, null, "{\r\n  \"en\": \"First Location\",\r\n  \"ar\": \"الموقع الأول\"\r\n}", false, "FIRSTLOCATION", 1, "{\r\n  \"en\": \"First Location\",\r\n  \"ar\": \"الموقع الأول\"\r\n}", "Basic", null, null });
+                columns: new[] { "Id", "ApplicationId", "CreatedAt", "CreatedBy", "DeletedAt", "DeletedBy", "Details", "IsDeleted", "Key", "Order", "Title", "Type", "UpdatedAt", "UpdatedBy" },
+                values: new object[] { new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420"), new Guid("a1b2c3d4-e5f6-47ae-8eb7-d1e1e83a6f9c"), new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000000-0000-0000-0000-000000000002"), null, null, "{\"En\":\"Project\",\"Ar\":\"\\u0645\\u0634\\u0631\\u0648\\u0639\"}", false, "PROJECT", 1, "{\"En\":\"Project\",\"Ar\":\"\\u0645\\u0634\\u0631\\u0648\\u0639\"}", "Basic", null, null });
+
+            migrationBuilder.InsertData(
+                schema: "module",
+                table: "AppActions",
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DeletedAt", "DeletedBy", "Description", "IsDeleted", "ModuleId", "Name", "Type", "UpdatedAt", "UpdatedBy", "ValidationFormula", "WorkspaceId", "WorkspaceModuleId" },
+                values: new object[,]
+                {
+                    { new Guid("62e6138a-2903-4500-a2e8-15af07867df3"), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000000-0000-0000-0000-000000000000"), null, null, "{\"En\":\"Update\",\"Ar\":\"\\u062A\\u0639\\u062F\\u064A\\u0644\"}", false, new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"), "{\"En\":\"Update\",\"Ar\":\"\\u062A\\u0639\\u062F\\u064A\\u0644\"}", "Update", null, null, null, null, null },
+                    { new Guid("63e6138a-2903-4500-a2e8-15af07867df3"), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000000-0000-0000-0000-000000000000"), null, null, "{\"En\":\"Create\",\"Ar\":\"\\u0627\\u0636\\u0627\\u0641\\u0629\"}", false, new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"), "{\"En\":\"Create\",\"Ar\":\"\\u0627\\u0636\\u0627\\u0641\\u0629\"}", "Create", null, null, null, null, null },
+                    { new Guid("65e6118a-2903-4500-a2e8-15af07867df3"), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000000-0000-0000-0000-000000000000"), null, null, "{\"En\":\"Delete\",\"Ar\":\"\\u062D\\u0630\\u0641\"}", false, new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"), "{\"En\":\"Delete\",\"Ar\":\"\\u062D\\u0630\\u0641\"}", "Delete", null, null, null, null, null },
+                    { new Guid("66e6118a-2903-4500-a2e8-15af07867df3"), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000000-0000-0000-0000-000000000000"), null, null, "{\"En\":\"Read\",\"Ar\":\"\\u0645\\u0639\\u0627\\u064A\\u0646\\u0629\"}", false, new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"), "{\"En\":\"Read\",\"Ar\":\"\\u0645\\u0639\\u0627\\u064A\\u0646\\u0629\"}", "Read", null, null, null, null, null }
+                });
 
             migrationBuilder.InsertData(
                 schema: "module",
@@ -569,29 +625,40 @@ namespace AppMigration.SqlServer.Module
                 columns: new[] { "Id", "Configuration", "CreatedAt", "CreatedBy", "DataType", "DefaultValue", "DeletedAt", "DeletedBy", "Description", "IsCalculated", "IsDeleted", "IsEncrypted", "IsInternal", "IsSystem", "IsTranslatable", "Key", "ModuleId", "NormalizedKey", "Order", "SystemPropertyPath", "Title", "UpdatedAt", "UpdatedBy", "ViewType", "WorkspaceId", "WorkspaceModuleId" },
                 values: new object[,]
                 {
-                    { new Guid("1894b31a-c4c4-411e-b116-e3d3ea0d5124"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("11111111-1111-1111-1111-111111111111"), "DateTime", null, null, null, null, true, false, false, true, true, false, "task_updatedat", new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"), "UPDATED_AT", 6, "UpdatedAt", "{\r\n  \"en\": \"Updated At\",\r\n  \"ar\": \"تاريخ التحديث\"\r\n}", null, null, "DateTime", null, null },
-                    { new Guid("2224fae6-3dff-45c9-8fd2-6996fb14e9e0"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("11111111-1111-1111-1111-111111111111"), "DateTime", null, null, null, null, true, false, false, true, true, false, "location_updatedat", null, "LOCATION_UPDATEDAT", 10, "UpdatedAt", "{\r\n  \"en\": \"Updated At\",\r\n  \"ar\": \"تاريخ التحديث\"\r\n}", null, null, "DateTime", new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420"), null },
-                    { new Guid("2392d348-6af0-4b67-9271-ba6a8aeebed0"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("11111111-1111-1111-1111-111111111111"), "DateTime", null, null, null, null, true, false, false, true, true, false, "location_createdat", null, "LOCATION_CREATEDAT", 8, "CreatedAt", "{\r\n  \"en\": \"Created At\",\r\n  \"ar\": \"تاريخ الإنشاء\"\r\n}", null, null, "DateTime", new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420"), null },
-                    { new Guid("24a02e7e-5872-4e29-9db4-3ae3c3a7a6c1"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("11111111-1111-1111-1111-111111111111"), "String", null, null, null, null, false, false, false, true, true, true, "location_city", null, "LOCATION_CITY", 3, "City", "{\r\n  \"en\": \"City\",\r\n  \"ar\": \"المدينة\"\r\n}", null, null, "Text", new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420"), null },
-                    { new Guid("3ce24ad1-1e3f-4cc6-b0ac-a0cbd00f7f03"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("11111111-1111-1111-1111-111111111111"), "String", null, null, null, null, false, false, false, true, true, true, "location_country", null, "LOCATION_COUNTRY", 4, "Country", "{\r\n  \"en\": \"Country\",\r\n  \"ar\": \"الدولة\"\r\n}", null, null, "Text", new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420"), null },
-                    { new Guid("63e6128a-2903-4500-a2e8-15af07867df3"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("11111111-1111-1111-1111-111111111111"), "DateTime", null, null, null, null, true, false, false, true, true, false, "task_createdat", new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"), "CREATED_AT", 4, "CreatedAt", "{\r\n  \"en\": \"Created At\",\r\n  \"ar\": \"تاريخ الإنشاء\"\r\n}", null, null, "DateTime", null, null },
-                    { new Guid("64b8369e-497f-462d-bc30-ac97c3e43b30"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("11111111-1111-1111-1111-111111111111"), "Guid", null, null, null, null, true, false, false, true, true, false, "task_deletedby", new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"), "DELETED_BY", 9, "DeletedBy", "{\r\n  \"en\": \"Deleted By\",\r\n  \"ar\": \"تم الحذف بواسطة\"\r\n}", null, null, "User", null, null },
-                    { new Guid("665f8454-3b41-4d4b-9c76-18bba18ecf2a"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("11111111-1111-1111-1111-111111111111"), "Bool", null, null, null, null, false, false, false, true, true, false, "location_isactive", null, "LOCATION_ISACTIVE", 7, "IsActive", "{\r\n  \"en\": \"Is Active\",\r\n  \"ar\": \"نشط\"\r\n}", null, null, "CheckBox", new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420"), null },
-                    { new Guid("71c58090-d4c0-4bee-8b9b-417f938de7f4"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("11111111-1111-1111-1111-111111111111"), "DateTime", null, null, null, null, true, false, false, true, true, false, "location_deletedat", null, "LOCATION_DELETEDAT", 12, "DeletedAt", "{\r\n  \"en\": \"Deleted At\",\r\n  \"ar\": \"تاريخ الحذف\"\r\n}", null, null, "DateTime", new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420"), null },
-                    { new Guid("81cc79f8-200b-49bc-ac71-b6d2e19b4cc4"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("11111111-1111-1111-1111-111111111111"), "Guid", null, null, null, null, true, false, false, true, true, false, "task_updatedby", new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"), "UPDATED_BY", 7, "UpdatedBy", "{\r\n  \"en\": \"Updated By\",\r\n  \"ar\": \"تم التحديث بواسطة\"\r\n}", null, null, "User", null, null },
-                    { new Guid("9d6b2976-c5ea-4c7a-91e7-c684f3b57f33"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("11111111-1111-1111-1111-111111111111"), "String", null, null, null, null, false, false, false, true, true, true, "task_title", new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"), "TITLE", 1, "Title", "{\r\n  \"en\": \"Title\",\r\n  \"ar\": \"العنوان\"\r\n}", null, null, "Text", null, null },
-                    { new Guid("a2f61de5-c906-4a0e-8a79-37a119fb6a59"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("11111111-1111-1111-1111-111111111111"), "String", null, null, null, null, false, false, false, true, true, true, "location_name", null, "LOCATION_NAME", 1, "LocationName", "{\r\n  \"en\": \"Location Name\",\r\n  \"ar\": \"اسم الموقع\"\r\n}", null, null, "Text", new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420"), null },
-                    { new Guid("a73e4ce5-50b6-4a79-a979-81722b6d4352"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("11111111-1111-1111-1111-111111111111"), "Guid", null, null, null, null, true, false, false, true, true, false, "location_updatedby", null, "LOCATION_UPDATEDBY", 11, "UpdatedBy", "{\r\n  \"en\": \"Updated By\",\r\n  \"ar\": \"تم التحديث بواسطة\"\r\n}", null, null, "User", new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420"), null },
-                    { new Guid("b653054d-75a9-4c48-9fe8-c5704459e578"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("11111111-1111-1111-1111-111111111111"), "DateOnly", null, null, null, null, false, false, false, true, true, false, "task_duedate", new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"), "DUEDATE", 3, "DueDate", "{\r\n  \"en\": \"Due Date\",\r\n  \"ar\": \"تاريخ الاستحقاق\"\r\n}", null, null, "Date", null, null },
-                    { new Guid("b753054d-75a9-4c48-9fe8-c5704459e579"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("11111111-1111-1111-1111-111111111111"), "String", null, null, null, null, false, false, false, true, true, true, "location_address", null, "LOCATION_ADDRESS", 2, "Address", "{\r\n  \"en\": \"Address\",\r\n  \"ar\": \"العنوان\"\r\n}", null, null, "Text", new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420"), null },
-                    { new Guid("dd8a1a35-1b7c-4dd7-8ab7-4c4d9ff4f870"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("11111111-1111-1111-1111-111111111111"), "Decimal", null, null, null, null, false, false, false, true, true, false, "location_latitude", null, "LOCATION_LATITUDE", 5, "Latitude", "{\r\n  \"en\": \"Latitude\",\r\n  \"ar\": \"خط العرض\"\r\n}", null, null, "Float", new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420"), null },
-                    { new Guid("e0a3bbff-5314-41fe-9a9d-5b13b2151a67"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("11111111-1111-1111-1111-111111111111"), "Guid", null, null, null, null, true, false, false, true, true, false, "task_createdby", new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"), "CREATED_BY", 5, "CreatedBy", "{\r\n  \"en\": \"Created By\",\r\n  \"ar\": \"تم الإنشاء بواسطة\"\r\n}", null, null, "User", null, null },
-                    { new Guid("ee1b3c39-2d3a-4a89-af98-22d629092ba5"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("11111111-1111-1111-1111-111111111111"), "Decimal", null, null, null, null, false, false, false, true, true, false, "location_longitude", null, "LOCATION_LONGITUDE", 6, "Longitude", "{\r\n  \"en\": \"Longitude\",\r\n  \"ar\": \"خط الطول\"\r\n}", null, null, "Float", new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420"), null },
-                    { new Guid("ee82a724-8aa7-412d-add7-cfc25b4d15f6"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("11111111-1111-1111-1111-111111111111"), "DateTime", null, null, null, null, true, false, false, true, true, false, "task_deletedat", new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"), "DELETED_AT", 8, "DeletedAt", "{\r\n  \"en\": \"Deleted At\",\r\n  \"ar\": \"تاريخ الحذف\"\r\n}", null, null, "DateTime", null, null },
-                    { new Guid("f1f61de5-c906-4a0e-8a79-37a119fb6a54"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("11111111-1111-1111-1111-111111111111"), "Guid", null, null, null, null, false, false, false, true, true, false, "task_assignedto", new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"), "ASSIGNDTO", 2, "AssigndTo", "{\r\n  \"en\": \"Assigned To\",\r\n  \"ar\": \"مسند إلى\"\r\n}", null, null, "User", null, null },
-                    { new Guid("f2a4b262-5e35-4ce7-98ca-e4af8c08cc60"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("11111111-1111-1111-1111-111111111111"), "Guid", null, null, null, null, true, false, false, true, true, false, "location_deletedby", null, "LOCATION_DELETEDBY", 13, "DeletedBy", "{\r\n  \"en\": \"Deleted By\",\r\n  \"ar\": \"تم الحذف بواسطة\"\r\n}", null, null, "User", new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420"), null },
-                    { new Guid("fb23f579-e069-4ecc-bbfd-58ebe8dd2350"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("11111111-1111-1111-1111-111111111111"), "Guid", null, null, null, null, true, false, false, true, true, false, "location_createdby", null, "LOCATION_CREATEDBY", 9, "CreatedBy", "{\r\n  \"en\": \"Created By\",\r\n  \"ar\": \"تم الإنشاء بواسطة\"\r\n}", null, null, "User", new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420"), null }
+                    { new Guid("1894b31a-c4c4-411e-b116-e3d3ea0d5124"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000000-0000-0000-0000-000000000002"), "DateTime", null, null, null, null, true, false, false, true, true, false, "task_updated_at", new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"), "UPDATED_AT", 6, "UpdatedAt", "{\"En\":\"Updated At\",\"Ar\":\"\\u062A\\u0627\\u0631\\u064A\\u062E \\u0627\\u0644\\u062A\\u062D\\u062F\\u064A\\u062B\"}", null, null, "DateTime", null, null },
+                    { new Guid("2224fae6-3dff-45c9-8fd2-6996fb14e9e0"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000000-0000-0000-0000-000000000002"), "DateTime", null, null, null, null, true, false, false, true, true, false, "project_updated_at", null, "UPDATED_AT", 10, "UpdatedAt", "{\"En\":\"Updated At\",\"Ar\":\"\\u062A\\u0627\\u0631\\u064A\\u062E \\u0627\\u0644\\u062A\\u062D\\u062F\\u064A\\u062B\"}", null, null, "DateTime", new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420"), null },
+                    { new Guid("2392d348-6af0-4b67-9271-ba6a8aeebed0"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000000-0000-0000-0000-000000000002"), "DateTime", null, null, null, null, true, false, false, true, true, false, "project_created_at", null, "CREATED_AT", 8, "CreatedAt", "{\"En\":\"Created At\",\"Ar\":\"\\u062A\\u0627\\u0631\\u064A\\u062E \\u0627\\u0644\\u0625\\u0646\\u0634\\u0627\\u0621\"}", null, null, "DateTime", new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420"), null },
+                    { new Guid("63e6128a-2903-4500-a2e8-15af07867df3"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000000-0000-0000-0000-000000000002"), "DateTime", null, null, null, null, true, false, false, true, true, false, "task_created_at", new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"), "CREATED_AT", 4, "CreatedAt", "{\"En\":\"Created At\",\"Ar\":\"\\u062A\\u0627\\u0631\\u064A\\u062E \\u0627\\u0644\\u0625\\u0646\\u0634\\u0627\\u0621\"}", null, null, "DateTime", null, null },
+                    { new Guid("64b8369e-497f-462d-bc30-ac97c3e43b30"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000000-0000-0000-0000-000000000002"), "Guid", null, null, null, null, true, false, false, true, true, false, "task_deleted_by", new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"), "DELETED_BY", 9, "DeletedBy", "{\"En\":\"Deleted By\",\"Ar\":\"\\u062A\\u0645 \\u0627\\u0644\\u062D\\u0630\\u0641 \\u0628\\u0648\\u0627\\u0633\\u0637\\u0629\"}", null, null, "User", null, null },
+                    { new Guid("71c58090-d4c0-4bee-8b9b-417f938de7f4"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000000-0000-0000-0000-000000000002"), "DateTime", null, null, null, null, true, false, false, true, true, false, "project_deleted_at", null, "DELETED_AT", 12, "DeletedAt", "{\"En\":\"Deleted At\",\"Ar\":\"\\u062A\\u0627\\u0631\\u064A\\u062E \\u0627\\u0644\\u062D\\u0630\\u0641\"}", null, null, "DateTime", new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420"), null },
+                    { new Guid("81cc79f8-200b-49bc-ac71-b6d2e19b4cc4"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000000-0000-0000-0000-000000000002"), "Guid", null, null, null, null, true, false, false, true, true, false, "task_updated_by", new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"), "UPDATED_BY", 7, "UpdatedBy", "{\"En\":\"Updated By\",\"Ar\":\"\\u062A\\u0645 \\u0627\\u0644\\u062A\\u062D\\u062F\\u064A\\u062B \\u0628\\u0648\\u0627\\u0633\\u0637\\u0629\"}", null, null, "User", null, null },
+                    { new Guid("9d6b2976-c5ea-4c7a-91e7-c684f3b57f33"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000000-0000-0000-0000-000000000002"), "String", null, null, null, null, false, false, false, true, true, true, "task_title", new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"), "TITLE", 1, "Title", "{\"En\":\"Title\",\"Ar\":\"\\u0627\\u0644\\u0639\\u0646\\u0648\\u0627\\u0646\"}", null, null, "Text", null, null },
+                    { new Guid("a73e4ce5-50b6-4a79-a979-81722b6d4352"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000000-0000-0000-0000-000000000002"), "Guid", null, null, null, null, true, false, false, true, true, false, "project_updated_by", null, "UPDATED_BY", 11, "UpdatedBy", "{\"En\":\"Updated By\",\"Ar\":\"\\u062A\\u0645 \\u0627\\u0644\\u062A\\u062D\\u062F\\u064A\\u062B \\u0628\\u0648\\u0627\\u0633\\u0637\\u0629\"}", null, null, "User", new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420"), null },
+                    { new Guid("b653054d-75a9-4c48-9fe8-c5704459e578"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000000-0000-0000-0000-000000000002"), "DateOnly", null, null, null, null, false, false, false, true, true, false, "task_duedate", new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"), "DUEDATE", 3, "DueDate", "{\"En\":\"Due Date\",\"Ar\":\"\\u062A\\u0627\\u0631\\u064A\\u062E \\u0627\\u0644\\u0627\\u0633\\u062A\\u062D\\u0642\\u0627\\u0642\"}", null, null, "Date", null, null },
+                    { new Guid("e0a3bbff-5314-41fe-9a9d-5b13b2151a67"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000000-0000-0000-0000-000000000002"), "Guid", null, null, null, null, true, false, false, true, true, false, "task_created_by", new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"), "CREATED_BY", 5, "CreatedBy", "{\"En\":\"Created By\",\"Ar\":\"\\u062A\\u0645 \\u0627\\u0644\\u0625\\u0646\\u0634\\u0627\\u0621 \\u0628\\u0648\\u0627\\u0633\\u0637\\u0629\"}", null, null, "User", null, null },
+                    { new Guid("ee82a724-8aa7-412d-add7-cfc25b4d15f6"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000000-0000-0000-0000-000000000002"), "DateTime", null, null, null, null, true, false, false, true, true, false, "task_deleted_at", new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"), "DELETED_AT", 8, "DeletedAt", "{\"En\":\"Deleted At\",\"Ar\":\"\\u062A\\u0627\\u0631\\u064A\\u062E \\u0627\\u0644\\u062D\\u0630\\u0641\"}", null, null, "DateTime", null, null },
+                    { new Guid("f1f61de5-c906-4a0e-8a79-37a119fb6a54"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000000-0000-0000-0000-000000000002"), "Guid", null, null, null, null, false, false, false, true, true, false, "task_assignedto", new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"), "ASSIGNDTO", 2, "AssigndTo", "{\"En\":\"Assigned To\",\"Ar\":\"\\u0645\\u0633\\u0646\\u062F \\u0625\\u0644\\u0649\"}", null, null, "User", null, null },
+                    { new Guid("f2a4b262-5e35-4ce7-98ca-e4af8c08cc60"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000000-0000-0000-0000-000000000002"), "Guid", null, null, null, null, true, false, false, true, true, false, "project_deleted_by", null, "DELETED_BY", 13, "DeletedBy", "{\"En\":\"Deleted By\",\"Ar\":\"\\u062A\\u0645 \\u0627\\u0644\\u062D\\u0630\\u0641 \\u0628\\u0648\\u0627\\u0633\\u0637\\u0629\"}", null, null, "User", new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420"), null },
+                    { new Guid("fb23f579-e069-4ecc-bbfd-58ebe8dd2350"), null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000000-0000-0000-0000-000000000002"), "Guid", null, null, null, null, true, false, false, true, true, false, "project_created_by", null, "CREATED_BY", 9, "CreatedBy", "{\"En\":\"Created By\",\"Ar\":\"\\u062A\\u0645 \\u0627\\u0644\\u0625\\u0646\\u0634\\u0627\\u0621 \\u0628\\u0648\\u0627\\u0633\\u0637\\u0629\"}", null, null, "User", new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420"), null }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AppActions_ModuleId",
+                schema: "module",
+                table: "AppActions",
+                column: "ModuleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AppActions_WorkspaceId",
+                schema: "module",
+                table: "AppActions",
+                column: "WorkspaceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AppActions_WorkspaceModuleId",
+                schema: "module",
+                table: "AppActions",
+                column: "WorkspaceModuleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ModuleBlockModules_ModuleBlockId",
@@ -754,6 +821,10 @@ namespace AppMigration.SqlServer.Module
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AppActions",
+                schema: "module");
+
             migrationBuilder.DropTable(
                 name: "ModuleBlockModules",
                 schema: "module");

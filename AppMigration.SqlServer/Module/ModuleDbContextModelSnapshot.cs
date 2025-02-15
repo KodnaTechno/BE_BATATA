@@ -213,6 +213,112 @@ namespace AppMigration.SqlServer.Module
                     b.ToTable("WorkspaceData", "module");
                 });
 
+            modelBuilder.Entity("Module.Domain.Schema.AppAction", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("ModuleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ValidationFormula")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("WorkspaceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("WorkspaceModuleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ModuleId");
+
+                    b.HasIndex("WorkspaceId");
+
+                    b.HasIndex("WorkspaceModuleId");
+
+                    b.ToTable("AppActions", "module");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("63e6138a-2903-4500-a2e8-15af07867df3"),
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            Description = "{\"En\":\"Create\",\"Ar\":\"\\u0627\\u0636\\u0627\\u0641\\u0629\"}",
+                            IsDeleted = false,
+                            ModuleId = new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"),
+                            Name = "{\"En\":\"Create\",\"Ar\":\"\\u0627\\u0636\\u0627\\u0641\\u0629\"}",
+                            Type = "Create"
+                        },
+                        new
+                        {
+                            Id = new Guid("62e6138a-2903-4500-a2e8-15af07867df3"),
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            Description = "{\"En\":\"Update\",\"Ar\":\"\\u062A\\u0639\\u062F\\u064A\\u0644\"}",
+                            IsDeleted = false,
+                            ModuleId = new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"),
+                            Name = "{\"En\":\"Update\",\"Ar\":\"\\u062A\\u0639\\u062F\\u064A\\u0644\"}",
+                            Type = "Update"
+                        },
+                        new
+                        {
+                            Id = new Guid("65e6118a-2903-4500-a2e8-15af07867df3"),
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            Description = "{\"En\":\"Delete\",\"Ar\":\"\\u062D\\u0630\\u0641\"}",
+                            IsDeleted = false,
+                            ModuleId = new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"),
+                            Name = "{\"En\":\"Delete\",\"Ar\":\"\\u062D\\u0630\\u0641\"}",
+                            Type = "Delete"
+                        },
+                        new
+                        {
+                            Id = new Guid("66e6118a-2903-4500-a2e8-15af07867df3"),
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            Description = "{\"En\":\"Read\",\"Ar\":\"\\u0645\\u0639\\u0627\\u064A\\u0646\\u0629\"}",
+                            IsDeleted = false,
+                            ModuleId = new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"),
+                            Name = "{\"En\":\"Read\",\"Ar\":\"\\u0645\\u0639\\u0627\\u064A\\u0646\\u0629\"}",
+                            Type = "Read"
+                        });
+                });
+
             modelBuilder.Entity("Module.Domain.Schema.Application", b =>
                 {
                     b.Property<Guid>("Id")
@@ -289,7 +395,7 @@ namespace AppMigration.SqlServer.Module
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Key")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Order")
@@ -320,14 +426,14 @@ namespace AppMigration.SqlServer.Module
                             Id = new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"),
                             ApplicationId = new Guid("a1b2c3d4-e5f6-47ae-8eb7-d1e1e83a6f9c"),
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
-                            Details = "{\r\n  \"en\": \"تفاصيل\",\r\n  \"ar\": \"Details\"\r\n}",
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000002"),
+                            Details = "{\"En\":\"\\u062A\\u0641\\u0627\\u0635\\u064A\\u0644\",\"Ar\":\"Details\"}",
                             Domain = "Module.Domain.BusinessDomain.Task",
                             IsActive = true,
                             IsDeleted = false,
-                            Name = "Task",
+                            Key = "Task",
                             Order = 1,
-                            Title = "{\r\n  \"en\": \"المهام\",\r\n  \"ar\": \"Tasks\"\r\n}",
+                            Title = "{\"En\":\"\\u0627\\u0644\\u0645\\u0647\\u0627\\u0645\",\"Ar\":\"Tasks\"}",
                             Type = "Basic"
                         });
                 });
@@ -478,149 +584,9 @@ namespace AppMigration.SqlServer.Module
                     b.HasData(
                         new
                         {
-                            Id = new Guid("a2f61de5-c906-4a0e-8a79-37a119fb6a59"),
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
-                            DataType = "String",
-                            IsCalculated = false,
-                            IsDeleted = false,
-                            IsEncrypted = false,
-                            IsInternal = true,
-                            IsSystem = true,
-                            IsTranslatable = true,
-                            Key = "location_name",
-                            NormalizedKey = "LOCATION_NAME",
-                            Order = 1,
-                            SystemPropertyPath = "LocationName",
-                            Title = "{\r\n  \"en\": \"Location Name\",\r\n  \"ar\": \"اسم الموقع\"\r\n}",
-                            ViewType = "Text",
-                            WorkspaceId = new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420")
-                        },
-                        new
-                        {
-                            Id = new Guid("b753054d-75a9-4c48-9fe8-c5704459e579"),
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
-                            DataType = "String",
-                            IsCalculated = false,
-                            IsDeleted = false,
-                            IsEncrypted = false,
-                            IsInternal = true,
-                            IsSystem = true,
-                            IsTranslatable = true,
-                            Key = "location_address",
-                            NormalizedKey = "LOCATION_ADDRESS",
-                            Order = 2,
-                            SystemPropertyPath = "Address",
-                            Title = "{\r\n  \"en\": \"Address\",\r\n  \"ar\": \"العنوان\"\r\n}",
-                            ViewType = "Text",
-                            WorkspaceId = new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420")
-                        },
-                        new
-                        {
-                            Id = new Guid("24a02e7e-5872-4e29-9db4-3ae3c3a7a6c1"),
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
-                            DataType = "String",
-                            IsCalculated = false,
-                            IsDeleted = false,
-                            IsEncrypted = false,
-                            IsInternal = true,
-                            IsSystem = true,
-                            IsTranslatable = true,
-                            Key = "location_city",
-                            NormalizedKey = "LOCATION_CITY",
-                            Order = 3,
-                            SystemPropertyPath = "City",
-                            Title = "{\r\n  \"en\": \"City\",\r\n  \"ar\": \"المدينة\"\r\n}",
-                            ViewType = "Text",
-                            WorkspaceId = new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420")
-                        },
-                        new
-                        {
-                            Id = new Guid("3ce24ad1-1e3f-4cc6-b0ac-a0cbd00f7f03"),
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
-                            DataType = "String",
-                            IsCalculated = false,
-                            IsDeleted = false,
-                            IsEncrypted = false,
-                            IsInternal = true,
-                            IsSystem = true,
-                            IsTranslatable = true,
-                            Key = "location_country",
-                            NormalizedKey = "LOCATION_COUNTRY",
-                            Order = 4,
-                            SystemPropertyPath = "Country",
-                            Title = "{\r\n  \"en\": \"Country\",\r\n  \"ar\": \"الدولة\"\r\n}",
-                            ViewType = "Text",
-                            WorkspaceId = new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420")
-                        },
-                        new
-                        {
-                            Id = new Guid("dd8a1a35-1b7c-4dd7-8ab7-4c4d9ff4f870"),
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
-                            DataType = "Decimal",
-                            IsCalculated = false,
-                            IsDeleted = false,
-                            IsEncrypted = false,
-                            IsInternal = true,
-                            IsSystem = true,
-                            IsTranslatable = false,
-                            Key = "location_latitude",
-                            NormalizedKey = "LOCATION_LATITUDE",
-                            Order = 5,
-                            SystemPropertyPath = "Latitude",
-                            Title = "{\r\n  \"en\": \"Latitude\",\r\n  \"ar\": \"خط العرض\"\r\n}",
-                            ViewType = "Float",
-                            WorkspaceId = new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420")
-                        },
-                        new
-                        {
-                            Id = new Guid("ee1b3c39-2d3a-4a89-af98-22d629092ba5"),
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
-                            DataType = "Decimal",
-                            IsCalculated = false,
-                            IsDeleted = false,
-                            IsEncrypted = false,
-                            IsInternal = true,
-                            IsSystem = true,
-                            IsTranslatable = false,
-                            Key = "location_longitude",
-                            NormalizedKey = "LOCATION_LONGITUDE",
-                            Order = 6,
-                            SystemPropertyPath = "Longitude",
-                            Title = "{\r\n  \"en\": \"Longitude\",\r\n  \"ar\": \"خط الطول\"\r\n}",
-                            ViewType = "Float",
-                            WorkspaceId = new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420")
-                        },
-                        new
-                        {
-                            Id = new Guid("665f8454-3b41-4d4b-9c76-18bba18ecf2a"),
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
-                            DataType = "Bool",
-                            IsCalculated = false,
-                            IsDeleted = false,
-                            IsEncrypted = false,
-                            IsInternal = true,
-                            IsSystem = true,
-                            IsTranslatable = false,
-                            Key = "location_isactive",
-                            NormalizedKey = "LOCATION_ISACTIVE",
-                            Order = 7,
-                            SystemPropertyPath = "IsActive",
-                            Title = "{\r\n  \"en\": \"Is Active\",\r\n  \"ar\": \"نشط\"\r\n}",
-                            ViewType = "CheckBox",
-                            WorkspaceId = new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420")
-                        },
-                        new
-                        {
                             Id = new Guid("2392d348-6af0-4b67-9271-ba6a8aeebed0"),
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000002"),
                             DataType = "DateTime",
                             IsCalculated = true,
                             IsDeleted = false,
@@ -628,11 +594,11 @@ namespace AppMigration.SqlServer.Module
                             IsInternal = true,
                             IsSystem = true,
                             IsTranslatable = false,
-                            Key = "location_createdat",
-                            NormalizedKey = "LOCATION_CREATEDAT",
+                            Key = "project_created_at",
+                            NormalizedKey = "CREATED_AT",
                             Order = 8,
                             SystemPropertyPath = "CreatedAt",
-                            Title = "{\r\n  \"en\": \"Created At\",\r\n  \"ar\": \"تاريخ الإنشاء\"\r\n}",
+                            Title = "{\"En\":\"Created At\",\"Ar\":\"\\u062A\\u0627\\u0631\\u064A\\u062E \\u0627\\u0644\\u0625\\u0646\\u0634\\u0627\\u0621\"}",
                             ViewType = "DateTime",
                             WorkspaceId = new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420")
                         },
@@ -640,7 +606,7 @@ namespace AppMigration.SqlServer.Module
                         {
                             Id = new Guid("fb23f579-e069-4ecc-bbfd-58ebe8dd2350"),
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000002"),
                             DataType = "Guid",
                             IsCalculated = true,
                             IsDeleted = false,
@@ -648,11 +614,11 @@ namespace AppMigration.SqlServer.Module
                             IsInternal = true,
                             IsSystem = true,
                             IsTranslatable = false,
-                            Key = "location_createdby",
-                            NormalizedKey = "LOCATION_CREATEDBY",
+                            Key = "project_created_by",
+                            NormalizedKey = "CREATED_BY",
                             Order = 9,
                             SystemPropertyPath = "CreatedBy",
-                            Title = "{\r\n  \"en\": \"Created By\",\r\n  \"ar\": \"تم الإنشاء بواسطة\"\r\n}",
+                            Title = "{\"En\":\"Created By\",\"Ar\":\"\\u062A\\u0645 \\u0627\\u0644\\u0625\\u0646\\u0634\\u0627\\u0621 \\u0628\\u0648\\u0627\\u0633\\u0637\\u0629\"}",
                             ViewType = "User",
                             WorkspaceId = new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420")
                         },
@@ -660,7 +626,7 @@ namespace AppMigration.SqlServer.Module
                         {
                             Id = new Guid("2224fae6-3dff-45c9-8fd2-6996fb14e9e0"),
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000002"),
                             DataType = "DateTime",
                             IsCalculated = true,
                             IsDeleted = false,
@@ -668,11 +634,11 @@ namespace AppMigration.SqlServer.Module
                             IsInternal = true,
                             IsSystem = true,
                             IsTranslatable = false,
-                            Key = "location_updatedat",
-                            NormalizedKey = "LOCATION_UPDATEDAT",
+                            Key = "project_updated_at",
+                            NormalizedKey = "UPDATED_AT",
                             Order = 10,
                             SystemPropertyPath = "UpdatedAt",
-                            Title = "{\r\n  \"en\": \"Updated At\",\r\n  \"ar\": \"تاريخ التحديث\"\r\n}",
+                            Title = "{\"En\":\"Updated At\",\"Ar\":\"\\u062A\\u0627\\u0631\\u064A\\u062E \\u0627\\u0644\\u062A\\u062D\\u062F\\u064A\\u062B\"}",
                             ViewType = "DateTime",
                             WorkspaceId = new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420")
                         },
@@ -680,7 +646,7 @@ namespace AppMigration.SqlServer.Module
                         {
                             Id = new Guid("a73e4ce5-50b6-4a79-a979-81722b6d4352"),
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000002"),
                             DataType = "Guid",
                             IsCalculated = true,
                             IsDeleted = false,
@@ -688,11 +654,11 @@ namespace AppMigration.SqlServer.Module
                             IsInternal = true,
                             IsSystem = true,
                             IsTranslatable = false,
-                            Key = "location_updatedby",
-                            NormalizedKey = "LOCATION_UPDATEDBY",
+                            Key = "project_updated_by",
+                            NormalizedKey = "UPDATED_BY",
                             Order = 11,
                             SystemPropertyPath = "UpdatedBy",
-                            Title = "{\r\n  \"en\": \"Updated By\",\r\n  \"ar\": \"تم التحديث بواسطة\"\r\n}",
+                            Title = "{\"En\":\"Updated By\",\"Ar\":\"\\u062A\\u0645 \\u0627\\u0644\\u062A\\u062D\\u062F\\u064A\\u062B \\u0628\\u0648\\u0627\\u0633\\u0637\\u0629\"}",
                             ViewType = "User",
                             WorkspaceId = new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420")
                         },
@@ -700,7 +666,7 @@ namespace AppMigration.SqlServer.Module
                         {
                             Id = new Guid("71c58090-d4c0-4bee-8b9b-417f938de7f4"),
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000002"),
                             DataType = "DateTime",
                             IsCalculated = true,
                             IsDeleted = false,
@@ -708,11 +674,11 @@ namespace AppMigration.SqlServer.Module
                             IsInternal = true,
                             IsSystem = true,
                             IsTranslatable = false,
-                            Key = "location_deletedat",
-                            NormalizedKey = "LOCATION_DELETEDAT",
+                            Key = "project_deleted_at",
+                            NormalizedKey = "DELETED_AT",
                             Order = 12,
                             SystemPropertyPath = "DeletedAt",
-                            Title = "{\r\n  \"en\": \"Deleted At\",\r\n  \"ar\": \"تاريخ الحذف\"\r\n}",
+                            Title = "{\"En\":\"Deleted At\",\"Ar\":\"\\u062A\\u0627\\u0631\\u064A\\u062E \\u0627\\u0644\\u062D\\u0630\\u0641\"}",
                             ViewType = "DateTime",
                             WorkspaceId = new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420")
                         },
@@ -720,7 +686,7 @@ namespace AppMigration.SqlServer.Module
                         {
                             Id = new Guid("f2a4b262-5e35-4ce7-98ca-e4af8c08cc60"),
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000002"),
                             DataType = "Guid",
                             IsCalculated = true,
                             IsDeleted = false,
@@ -728,11 +694,11 @@ namespace AppMigration.SqlServer.Module
                             IsInternal = true,
                             IsSystem = true,
                             IsTranslatable = false,
-                            Key = "location_deletedby",
-                            NormalizedKey = "LOCATION_DELETEDBY",
+                            Key = "project_deleted_by",
+                            NormalizedKey = "DELETED_BY",
                             Order = 13,
                             SystemPropertyPath = "DeletedBy",
-                            Title = "{\r\n  \"en\": \"Deleted By\",\r\n  \"ar\": \"تم الحذف بواسطة\"\r\n}",
+                            Title = "{\"En\":\"Deleted By\",\"Ar\":\"\\u062A\\u0645 \\u0627\\u0644\\u062D\\u0630\\u0641 \\u0628\\u0648\\u0627\\u0633\\u0637\\u0629\"}",
                             ViewType = "User",
                             WorkspaceId = new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420")
                         },
@@ -740,7 +706,7 @@ namespace AppMigration.SqlServer.Module
                         {
                             Id = new Guid("9d6b2976-c5ea-4c7a-91e7-c684f3b57f33"),
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000002"),
                             DataType = "String",
                             IsCalculated = false,
                             IsDeleted = false,
@@ -753,14 +719,14 @@ namespace AppMigration.SqlServer.Module
                             NormalizedKey = "TITLE",
                             Order = 1,
                             SystemPropertyPath = "Title",
-                            Title = "{\r\n  \"en\": \"Title\",\r\n  \"ar\": \"العنوان\"\r\n}",
+                            Title = "{\"En\":\"Title\",\"Ar\":\"\\u0627\\u0644\\u0639\\u0646\\u0648\\u0627\\u0646\"}",
                             ViewType = "Text"
                         },
                         new
                         {
                             Id = new Guid("f1f61de5-c906-4a0e-8a79-37a119fb6a54"),
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000002"),
                             DataType = "Guid",
                             IsCalculated = false,
                             IsDeleted = false,
@@ -773,14 +739,14 @@ namespace AppMigration.SqlServer.Module
                             NormalizedKey = "ASSIGNDTO",
                             Order = 2,
                             SystemPropertyPath = "AssigndTo",
-                            Title = "{\r\n  \"en\": \"Assigned To\",\r\n  \"ar\": \"مسند إلى\"\r\n}",
+                            Title = "{\"En\":\"Assigned To\",\"Ar\":\"\\u0645\\u0633\\u0646\\u062F \\u0625\\u0644\\u0649\"}",
                             ViewType = "User"
                         },
                         new
                         {
                             Id = new Guid("b653054d-75a9-4c48-9fe8-c5704459e578"),
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000002"),
                             DataType = "DateOnly",
                             IsCalculated = false,
                             IsDeleted = false,
@@ -793,14 +759,14 @@ namespace AppMigration.SqlServer.Module
                             NormalizedKey = "DUEDATE",
                             Order = 3,
                             SystemPropertyPath = "DueDate",
-                            Title = "{\r\n  \"en\": \"Due Date\",\r\n  \"ar\": \"تاريخ الاستحقاق\"\r\n}",
+                            Title = "{\"En\":\"Due Date\",\"Ar\":\"\\u062A\\u0627\\u0631\\u064A\\u062E \\u0627\\u0644\\u0627\\u0633\\u062A\\u062D\\u0642\\u0627\\u0642\"}",
                             ViewType = "Date"
                         },
                         new
                         {
                             Id = new Guid("63e6128a-2903-4500-a2e8-15af07867df3"),
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000002"),
                             DataType = "DateTime",
                             IsCalculated = true,
                             IsDeleted = false,
@@ -808,19 +774,19 @@ namespace AppMigration.SqlServer.Module
                             IsInternal = true,
                             IsSystem = true,
                             IsTranslatable = false,
-                            Key = "task_createdat",
+                            Key = "task_created_at",
                             ModuleId = new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"),
                             NormalizedKey = "CREATED_AT",
                             Order = 4,
                             SystemPropertyPath = "CreatedAt",
-                            Title = "{\r\n  \"en\": \"Created At\",\r\n  \"ar\": \"تاريخ الإنشاء\"\r\n}",
+                            Title = "{\"En\":\"Created At\",\"Ar\":\"\\u062A\\u0627\\u0631\\u064A\\u062E \\u0627\\u0644\\u0625\\u0646\\u0634\\u0627\\u0621\"}",
                             ViewType = "DateTime"
                         },
                         new
                         {
                             Id = new Guid("e0a3bbff-5314-41fe-9a9d-5b13b2151a67"),
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000002"),
                             DataType = "Guid",
                             IsCalculated = true,
                             IsDeleted = false,
@@ -828,19 +794,19 @@ namespace AppMigration.SqlServer.Module
                             IsInternal = true,
                             IsSystem = true,
                             IsTranslatable = false,
-                            Key = "task_createdby",
+                            Key = "task_created_by",
                             ModuleId = new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"),
                             NormalizedKey = "CREATED_BY",
                             Order = 5,
                             SystemPropertyPath = "CreatedBy",
-                            Title = "{\r\n  \"en\": \"Created By\",\r\n  \"ar\": \"تم الإنشاء بواسطة\"\r\n}",
+                            Title = "{\"En\":\"Created By\",\"Ar\":\"\\u062A\\u0645 \\u0627\\u0644\\u0625\\u0646\\u0634\\u0627\\u0621 \\u0628\\u0648\\u0627\\u0633\\u0637\\u0629\"}",
                             ViewType = "User"
                         },
                         new
                         {
                             Id = new Guid("1894b31a-c4c4-411e-b116-e3d3ea0d5124"),
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000002"),
                             DataType = "DateTime",
                             IsCalculated = true,
                             IsDeleted = false,
@@ -848,19 +814,19 @@ namespace AppMigration.SqlServer.Module
                             IsInternal = true,
                             IsSystem = true,
                             IsTranslatable = false,
-                            Key = "task_updatedat",
+                            Key = "task_updated_at",
                             ModuleId = new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"),
                             NormalizedKey = "UPDATED_AT",
                             Order = 6,
                             SystemPropertyPath = "UpdatedAt",
-                            Title = "{\r\n  \"en\": \"Updated At\",\r\n  \"ar\": \"تاريخ التحديث\"\r\n}",
+                            Title = "{\"En\":\"Updated At\",\"Ar\":\"\\u062A\\u0627\\u0631\\u064A\\u062E \\u0627\\u0644\\u062A\\u062D\\u062F\\u064A\\u062B\"}",
                             ViewType = "DateTime"
                         },
                         new
                         {
                             Id = new Guid("81cc79f8-200b-49bc-ac71-b6d2e19b4cc4"),
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000002"),
                             DataType = "Guid",
                             IsCalculated = true,
                             IsDeleted = false,
@@ -868,19 +834,19 @@ namespace AppMigration.SqlServer.Module
                             IsInternal = true,
                             IsSystem = true,
                             IsTranslatable = false,
-                            Key = "task_updatedby",
+                            Key = "task_updated_by",
                             ModuleId = new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"),
                             NormalizedKey = "UPDATED_BY",
                             Order = 7,
                             SystemPropertyPath = "UpdatedBy",
-                            Title = "{\r\n  \"en\": \"Updated By\",\r\n  \"ar\": \"تم التحديث بواسطة\"\r\n}",
+                            Title = "{\"En\":\"Updated By\",\"Ar\":\"\\u062A\\u0645 \\u0627\\u0644\\u062A\\u062D\\u062F\\u064A\\u062B \\u0628\\u0648\\u0627\\u0633\\u0637\\u0629\"}",
                             ViewType = "User"
                         },
                         new
                         {
                             Id = new Guid("ee82a724-8aa7-412d-add7-cfc25b4d15f6"),
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000002"),
                             DataType = "DateTime",
                             IsCalculated = true,
                             IsDeleted = false,
@@ -888,19 +854,19 @@ namespace AppMigration.SqlServer.Module
                             IsInternal = true,
                             IsSystem = true,
                             IsTranslatable = false,
-                            Key = "task_deletedat",
+                            Key = "task_deleted_at",
                             ModuleId = new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"),
                             NormalizedKey = "DELETED_AT",
                             Order = 8,
                             SystemPropertyPath = "DeletedAt",
-                            Title = "{\r\n  \"en\": \"Deleted At\",\r\n  \"ar\": \"تاريخ الحذف\"\r\n}",
+                            Title = "{\"En\":\"Deleted At\",\"Ar\":\"\\u062A\\u0627\\u0631\\u064A\\u062E \\u0627\\u0644\\u062D\\u0630\\u0641\"}",
                             ViewType = "DateTime"
                         },
                         new
                         {
                             Id = new Guid("64b8369e-497f-462d-bc30-ac97c3e43b30"),
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000002"),
                             DataType = "Guid",
                             IsCalculated = true,
                             IsDeleted = false,
@@ -908,12 +874,12 @@ namespace AppMigration.SqlServer.Module
                             IsInternal = true,
                             IsSystem = true,
                             IsTranslatable = false,
-                            Key = "task_deletedby",
+                            Key = "task_deleted_by",
                             ModuleId = new Guid("89a9748e-41d5-4c31-9c5c-52a10c4f7419"),
                             NormalizedKey = "DELETED_BY",
                             Order = 9,
                             SystemPropertyPath = "DeletedBy",
-                            Title = "{\r\n  \"en\": \"Deleted By\",\r\n  \"ar\": \"تم الحذف بواسطة\"\r\n}",
+                            Title = "{\"En\":\"Deleted By\",\"Ar\":\"\\u062A\\u0645 \\u0627\\u0644\\u062D\\u0630\\u0641 \\u0628\\u0648\\u0627\\u0633\\u0637\\u0629\"}",
                             ViewType = "User"
                         });
                 });
@@ -1048,7 +1014,7 @@ namespace AppMigration.SqlServer.Module
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<string>("NormlizedTitle")
+                    b.Property<string>("Key")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Order")
@@ -1079,12 +1045,12 @@ namespace AppMigration.SqlServer.Module
                             Id = new Guid("e9a8748e-41d5-4c31-9c5c-52a10c4f7420"),
                             ApplicationId = new Guid("a1b2c3d4-e5f6-47ae-8eb7-d1e1e83a6f9c"),
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
-                            Details = "{\r\n  \"en\": \"First Location\",\r\n  \"ar\": \"الموقع الأول\"\r\n}",
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000002"),
+                            Details = "{\"En\":\"Project\",\"Ar\":\"\\u0645\\u0634\\u0631\\u0648\\u0639\"}",
                             IsDeleted = false,
-                            NormlizedTitle = "FIRSTLOCATION",
+                            Key = "PROJECT",
                             Order = 1,
-                            Title = "{\r\n  \"en\": \"First Location\",\r\n  \"ar\": \"الموقع الأول\"\r\n}",
+                            Title = "{\"En\":\"Project\",\"Ar\":\"\\u0645\\u0634\\u0631\\u0648\\u0639\"}",
                             Type = "Basic"
                         });
                 });
@@ -1273,6 +1239,27 @@ namespace AppMigration.SqlServer.Module
                     b.Navigation("Workspace");
                 });
 
+            modelBuilder.Entity("Module.Domain.Schema.AppAction", b =>
+                {
+                    b.HasOne("Module.Domain.Schema.Module", "Module")
+                        .WithMany("Actions")
+                        .HasForeignKey("ModuleId");
+
+                    b.HasOne("Module.Domain.Schema.Workspace", "Workspace")
+                        .WithMany("Actions")
+                        .HasForeignKey("WorkspaceId");
+
+                    b.HasOne("Module.Domain.Schema.WorkspaceModule", "WorkspaceModule")
+                        .WithMany("Actions")
+                        .HasForeignKey("WorkspaceModuleId");
+
+                    b.Navigation("Module");
+
+                    b.Navigation("Workspace");
+
+                    b.Navigation("WorkspaceModule");
+                });
+
             modelBuilder.Entity("Module.Domain.Schema.Module", b =>
                 {
                     b.HasOne("Module.Domain.Schema.Application", "Application")
@@ -1449,6 +1436,8 @@ namespace AppMigration.SqlServer.Module
 
             modelBuilder.Entity("Module.Domain.Schema.Module", b =>
                 {
+                    b.Navigation("Actions");
+
                     b.Navigation("Properties");
 
                     b.Navigation("WorkspaceModules");
@@ -1472,6 +1461,8 @@ namespace AppMigration.SqlServer.Module
 
             modelBuilder.Entity("Module.Domain.Schema.Workspace", b =>
                 {
+                    b.Navigation("Actions");
+
                     b.Navigation("Properties");
 
                     b.Navigation("WorkspaceData");
@@ -1488,6 +1479,8 @@ namespace AppMigration.SqlServer.Module
 
             modelBuilder.Entity("Module.Domain.Schema.WorkspaceModule", b =>
                 {
+                    b.Navigation("Actions");
+
                     b.Navigation("Properties");
                 });
 #pragma warning restore 612, 618

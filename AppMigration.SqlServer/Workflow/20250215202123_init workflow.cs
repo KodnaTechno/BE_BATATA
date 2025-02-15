@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AppMigration.SqlServer.Workflow
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class initworkflow : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
