@@ -43,7 +43,7 @@ public class ModuleService : IModuleService
             throw new KeyNotFoundException($"Module with ID {module.Id} not found");
 
         // Update basic properties
-        existingModule.Name = module.Name;
+        existingModule.Key = module.Key;
         existingModule.IsActive = module.IsActive;
         existingModule.UpdatedAt = DateTime.UtcNow;
         existingModule.UpdatedBy = UserId;

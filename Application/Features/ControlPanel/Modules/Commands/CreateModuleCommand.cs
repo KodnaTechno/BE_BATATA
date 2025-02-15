@@ -13,7 +13,6 @@ namespace Application.Features.ControlPanel.Modules.Commands
        => response.IsSuccess
            ? new ModuleCreatedEvent
            {
-               Title = response.Data.Title,
                Id = response.Data.Id
            }
            : null;

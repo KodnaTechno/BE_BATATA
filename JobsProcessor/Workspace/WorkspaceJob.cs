@@ -17,5 +17,11 @@ namespace JobsProcessor.Workspace
             _defaultWorkspaceSetupService.AddDefaultProperties(notification.Id, notification.UserId);
 
         }
+
+        public void ProcessWorkspaceModulesAssignedEvent(WorkspaceModulesAssignedEvent notification)
+        {
+            _defaultWorkspaceSetupService
+                .AddDefaultActionsForWorkspaceModules(notification.WorkspaceId, notification.UserId);
+        }
     }
 }

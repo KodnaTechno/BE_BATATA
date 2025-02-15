@@ -15,7 +15,7 @@ namespace Application.Features.ControlPanel.Modules.EventHandlers
 
         public async Task Handle(ModuleCreatedEvent notification, CancellationToken cancellationToken)
         {
-            _backgroundJobClient.Enqueue(() => Console.WriteLine($"Title is {notification.Title}"));
+            _backgroundJobClient.Enqueue<IModuleJob>(job => job.ProcessModuleCreatedEvent(notification));
 
             await Task.CompletedTask;
         }

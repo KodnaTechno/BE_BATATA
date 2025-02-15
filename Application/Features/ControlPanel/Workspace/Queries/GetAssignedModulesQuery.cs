@@ -4,8 +4,8 @@ using Application.Interfaces;
 
 namespace Application.Features.ControlPanel.Workspace.Queries
 {
-    public class GetWorkspacesQuery : BasePagingQuery<PaginatedList<WorkspaceDto>>
+    public class GetAssignedModulesQuery : BasePagingQuery<PaginatedList<WorkspaceModuleDto>>
     {
-        public Guid ApplicationId { get; set; }
+        public Guid WorkspaceId { get; set; }
     }
 }

@@ -2,15 +2,7 @@
 {
     public interface IWorkspaceJob
     {
-        void ProcessWorkspaceCreatedEvent(WorkspaceCreatedEvent notification);
-    }
-
-
-    public class WorkspaceJob : IWorkspaceJob
-    {
-        public void ProcessWorkspaceCreatedEvent(WorkspaceCreatedEvent notification)
-        {
-            Console.WriteLine($"Title is {notification.Title}");
-        }
+        void ProcessWorkspaceCreatedEvent(WorkspaceCreatedEvent @event);
+        void ProcessWorkspaceModulesAssignedEvent(WorkspaceModulesAssignedEvent notification);
     }
 }

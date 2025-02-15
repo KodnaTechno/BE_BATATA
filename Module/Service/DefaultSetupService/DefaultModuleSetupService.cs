@@ -5,18 +5,18 @@ using Module.Domain.Shared;
 
 namespace Module.Service.DefaultSetupService
 {
-    public class DefaultWorkspaceSetupService : IDefaultWorkspaceSetupService
+    public class DefaultModuleSetupService : IDefaultModuleSetupService
     {
         private readonly ModuleDbContext _context;
 
-        public DefaultWorkspaceSetupService(ModuleDbContext context)
+        public DefaultModuleSetupService(ModuleDbContext context)
         {
             _context = context;
         }
 
-        public void AddDefaultActions(Guid workspaceId, Guid userId)
+        public void AddDefaultActions(Guid moduleId, Guid userId)
         {
-            var workspace = _context.Workspaces.Find(workspaceId);
+            var workspace = _context.Modules.Find(moduleId);
             if (workspace == null) return;
 
             var now = DateTime.UtcNow;
@@ -24,11 +24,11 @@ namespace Module.Service.DefaultSetupService
             var defaultActions = new List<AppAction>
             {
                 new() {
-                    WorkspaceId = workspaceId,
+                    ModuleId = moduleId,
                     Name = new() { Ar = "اضافة", En = "Create" },
                     Description = new TranslatableValue {
                         Ar = "إنشاء مساحة العمل",
-                        En = "Create workspace"
+                        En = "Create module"
                     },
                     Type = ActionType.Create,
                     CreatedAt = now,
@@ -36,11 +36,11 @@ namespace Module.Service.DefaultSetupService
                     CreatedBy = userId,
                 },
                 new() {
-                    WorkspaceId = workspaceId,
+                    ModuleId = moduleId,
                     Name = new() { Ar = "تعديل", En = "Update" },
                     Description = new TranslatableValue {
-                        Ar = "تحديث مساحة العمل",
-                        En = "Update workspace"
+                        Ar = "تعديل",
+                        En = "Update module"
                     },
                     Type = ActionType.Update,
                     CreatedAt = now,
@@ -48,11 +48,11 @@ namespace Module.Service.DefaultSetupService
                     CreatedBy = userId,
                 },
                 new() {
-                    WorkspaceId = workspaceId,
+                    ModuleId = moduleId,
                     Name = new() { Ar = "حذف", En = "Delete" },
                     Description = new TranslatableValue {
-                        Ar = "حذف مساحة العمل",
-                        En = "Delete workspace"
+                        Ar = "حذف",
+                        En = "Delete module"
                     },
                     Type = ActionType.Delete,
                     CreatedAt = now,
@@ -60,11 +60,11 @@ namespace Module.Service.DefaultSetupService
                     CreatedBy = userId,
                 },
                 new() {
-                    WorkspaceId = workspaceId,
+                    ModuleId = moduleId,
                     Name = new() { Ar = "معاينة", En = "Read" },
                     Description = new TranslatableValue {
-                        Ar = "قراءة مساحة العمل",
-                        En = "Read workspace"
+                        Ar = "معاينة",
+                        En = "Read module"
                     },
                     Type = ActionType.Read,
                     CreatedAt = now,
@@ -76,11 +76,10 @@ namespace Module.Service.DefaultSetupService
             _context.AppActions.AddRange(defaultActions);
             _context.SaveChanges();
         }
-
-        public void AddDefaultProperties(Guid workspaceId, Guid userId)
+        public void AddDefaultProperties(Guid moduleId, Guid userId)
         {
-            var workspace = _context.Workspaces.Find(workspaceId);
-            if (workspace == null) return;
+            var module = _context.Modules.Find(moduleId);
+            if (module == null) return;
 
             var now = DateTime.UtcNow;
 
@@ -88,7 +87,7 @@ namespace Module.Service.DefaultSetupService
             {
                 new() {
                     Title = SharedPropertyConfigurations.Common.CreatedAtTitle,
-                    Key = workspace.Key + "_" + SharedPropertyConfigurations.Common.CreatedAt.NormalizedKey.ToLower(),
+                    Key = module.Key + "_" + SharedPropertyConfigurations.Common.CreatedAt.NormalizedKey.ToLower(),
                     NormalizedKey = SharedPropertyConfigurations.Common.CreatedAt.NormalizedKey,
                     Description = new TranslatableValue {
                         Ar = "تاريخ إنشاء مساحة العمل",
@@ -100,14 +99,14 @@ namespace Module.Service.DefaultSetupService
                     IsSystem = true,
                     IsInternal = false,
                     Order = SharedPropertyConfigurations.Common.CreatedAt.DefaultOrder,
-                    WorkspaceId = workspaceId,
+                    ModuleId = moduleId,
                     CreatedAt = now,
                     UpdatedAt = now,
                     CreatedBy = userId,
                 },
                 new() {
                     Title = SharedPropertyConfigurations.Common.CreatedByTitle,
-                    Key = workspace.Key + "_" +SharedPropertyConfigurations.Common.CreatedBy.NormalizedKey.ToLower(),
+                    Key = module.Key + "_" +SharedPropertyConfigurations.Common.CreatedBy.NormalizedKey.ToLower(),
                     NormalizedKey = SharedPropertyConfigurations.Common.CreatedBy.NormalizedKey,
                     Description = new TranslatableValue {
                         Ar = "المستخدم الذي أنشأ مساحة العمل",
@@ -119,14 +118,14 @@ namespace Module.Service.DefaultSetupService
                     IsSystem = true,
                     IsInternal = false,
                     Order = SharedPropertyConfigurations.Common.CreatedBy.DefaultOrder,
-                    WorkspaceId = workspaceId,
+                    ModuleId = moduleId,
                     CreatedAt = now,
                     UpdatedAt = now,
                     CreatedBy = userId,
                 },
                 new() {
                     Title = SharedPropertyConfigurations.Common.UpdatedAtTitle,
-                    Key = workspace.Key + "_" +SharedPropertyConfigurations.Common.UpdatedAt.NormalizedKey.ToLower(),
+                    Key = module.Key + "_" +SharedPropertyConfigurations.Common.UpdatedAt.NormalizedKey.ToLower(),
                     NormalizedKey = SharedPropertyConfigurations.Common.UpdatedAt.NormalizedKey,
                     Description = new TranslatableValue {
                         Ar = "تاريخ آخر تحديث",
@@ -138,14 +137,14 @@ namespace Module.Service.DefaultSetupService
                     IsSystem = true,
                     IsInternal = false,
                     Order = SharedPropertyConfigurations.Common.UpdatedAt.DefaultOrder,
-                    WorkspaceId = workspaceId,
+                    ModuleId = moduleId,
                     CreatedAt = now,
                     UpdatedAt = now,
                     CreatedBy = userId,
                 },
                 new() {
                     Title = SharedPropertyConfigurations.Common.UpdatedByTitle,
-                    Key = workspace.Key + "_" +SharedPropertyConfigurations.Common.UpdatedBy.NormalizedKey.ToLower(),
+                    Key = module.Key + "_" +SharedPropertyConfigurations.Common.UpdatedBy.NormalizedKey.ToLower(),
                     NormalizedKey = SharedPropertyConfigurations.Common.UpdatedBy.NormalizedKey,
                     Description = new TranslatableValue {
                         Ar = "آخر مستخدم قام بتحديث مساحة العمل",
@@ -157,14 +156,14 @@ namespace Module.Service.DefaultSetupService
                     IsSystem = true,
                     IsInternal = false,
                     Order = SharedPropertyConfigurations.Common.UpdatedBy.DefaultOrder,
-                    WorkspaceId = workspaceId,
+                    ModuleId = moduleId,
                     CreatedAt = now,
                     UpdatedAt = now,
                     CreatedBy = userId,
                 },
                 new() {
                     Title = SharedPropertyConfigurations.Common.DeletedAtTitle,
-                    Key = workspace.Key + "_" +SharedPropertyConfigurations.Common.DeletedAt.NormalizedKey.ToLower(),
+                    Key = module.Key + "_" +SharedPropertyConfigurations.Common.DeletedAt.NormalizedKey.ToLower(),
                     NormalizedKey = SharedPropertyConfigurations.Common.DeletedAt.NormalizedKey,
                     Description = new TranslatableValue {
                         Ar = "تاريخ حذف مساحة العمل",
@@ -176,14 +175,14 @@ namespace Module.Service.DefaultSetupService
                     IsSystem = true,
                     IsInternal = false,
                     Order = SharedPropertyConfigurations.Common.DeletedAt.DefaultOrder,
-                    WorkspaceId = workspaceId,
+                    ModuleId = moduleId,
                     CreatedAt = now,
                     UpdatedAt = now,
                     CreatedBy = userId,
                 },
                 new() {
                     Title = SharedPropertyConfigurations.Common.DeletedByTitle,
-                    Key = workspace.Key + "_" +SharedPropertyConfigurations.Common.DeletedBy.NormalizedKey.ToLower(),
+                    Key = module.Key + "_" +SharedPropertyConfigurations.Common.DeletedBy.NormalizedKey.ToLower(),
                     NormalizedKey = SharedPropertyConfigurations.Common.DeletedBy.NormalizedKey,
                     Description = new TranslatableValue {
                         Ar = "المستخدم الذي قام بحذف مساحة العمل",
@@ -195,7 +194,7 @@ namespace Module.Service.DefaultSetupService
                     IsSystem = true,
                     IsInternal = false,
                     Order = SharedPropertyConfigurations.Common.DeletedBy.DefaultOrder,
-                    WorkspaceId = workspaceId,
+                    ModuleId = moduleId,
                     CreatedAt = now,
                     UpdatedAt = now,
                     CreatedBy = userId,
@@ -205,116 +204,5 @@ namespace Module.Service.DefaultSetupService
             _context.Properties.AddRange(defaultProperties);
             _context.SaveChanges();
         }
-
-        public void AddDefaultActionsForWorkspaceModules(Guid workspaceId, Guid userId)
-        {
-            var existingWsmIds = _context.WorkspaceModules
-                .Where(wsm => wsm.WorkspaceId == workspaceId)
-                .Select(wsm => wsm.Id)
-                .ToList();
-
-            var orphanedActions = _context.AppActions
-                .Where(a => a.WorkspaceId == workspaceId
-                         && a.WorkspaceModuleId.HasValue
-                         && !existingWsmIds.Contains(a.WorkspaceModuleId.Value))
-                .ToList();
-
-            if (orphanedActions.Count != 0)
-            {
-                _context.AppActions.RemoveRange(orphanedActions);
-                _context.SaveChanges();
-            }
-
-            var now = DateTime.UtcNow;
-
-            var existingActions = _context.AppActions
-                .Where(a => a.WorkspaceId == workspaceId
-                         && a.WorkspaceModuleId.HasValue
-                         && existingWsmIds.Contains(a.WorkspaceModuleId.Value))
-                .Select(a => new { a.WorkspaceModuleId, a.Type })
-                .ToList();
-
-            var actionsToAdd = new List<AppAction>();
-
-            var actionTranslations = new Dictionary<ActionType, (string enName, string arName, string enDesc, string arDesc)>
-            {
-                {
-                    ActionType.Create,
-                    (
-                        enName: "Create Record",
-                        arName: "إنشاء سجل",
-                        enDesc: "Default Create action",
-                        arDesc: "الإجراء الافتراضي لإنشاء سجل"
-                    )
-                },
-                {
-                    ActionType.Read,
-                    (
-                        enName: "Read Record",
-                        arName: "عرض سجل",
-                        enDesc: "Default Read action",
-                        arDesc: "الإجراء الافتراضي لعرض سجل"
-                    )
-                },
-                {
-                    ActionType.Update,
-                    (
-                        enName: "Update Record",
-                        arName: "تعديل سجل",
-                        enDesc: "Default Update action",
-                        arDesc: "الإجراء الافتراضي لتعديل سجل"
-                    )
-                },
-                {
-                    ActionType.Delete,
-                    (
-                        enName: "Delete Record",
-                        arName: "حذف سجل",
-                        enDesc: "Default Delete action",
-                        arDesc: "الإجراء الافتراضي لحذف سجل"
-                    )
-                },
-            };
-
-            foreach (var wsmId in existingWsmIds)
-            {
-                foreach (var actionType in actionTranslations.Keys)
-                {
-                    bool alreadyExists = existingActions.Any(e =>
-                        e.WorkspaceModuleId == wsmId && e.Type == actionType);
-                    if (alreadyExists) continue;
-
-                    var (enName, arName, enDesc, arDesc) = actionTranslations[actionType];
-
-                    actionsToAdd.Add(new AppAction
-                    {
-                        WorkspaceId = workspaceId,
-                        WorkspaceModuleId = wsmId,
-                        Type = actionType,
-                        Name = new TranslatableValue
-                        {
-                            En = enName,
-                            Ar = arName
-                        },
-                        Description = new TranslatableValue
-                        {
-                            En = enDesc,
-                            Ar = arDesc
-                        },
-                        CreatedBy = userId,
-                        UpdatedBy = userId,
-                        CreatedAt = now,
-                        UpdatedAt = now
-                    });
-                }
-            }
-
-            if (actionsToAdd.Count != 0)
-            {
-                _context.AppActions.AddRange(actionsToAdd);
-                _context.SaveChanges();
-            }
-        }
-
     }
 }

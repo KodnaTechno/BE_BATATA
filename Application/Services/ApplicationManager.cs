@@ -30,9 +30,9 @@ namespace Application.Services
             //Create New Roles 
             var roles = workSpaceModules.Select(m => new AppIdentity.Resources.AddRoleRes
             {
-                DisplayName = new TranslatableValue { Ar = $"{m.Workspace.Title} {m.Module.Name}" , En = $"{m.Workspace.Title} {m.Module.Name}" },
-                Name = $"{m.Workspace.Title}_{m.Module.Name}",
-                NormalizedName = m.Module.Name,
+                DisplayName = new TranslatableValue { Ar = $"{m.Workspace.Title} {m.Module.Key}" , En = $"{m.Workspace.Title} {m.Module.Key}" },
+                Name = $"{m.Workspace.Title}_{m.Module.Key}",
+                NormalizedName = m.Module.Key,
                 ModuleId = m.Id,
                 ModuleType = RoleModulesEnum.WorkspaceModule
             }).ToList();

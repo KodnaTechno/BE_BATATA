@@ -16,7 +16,6 @@
     <Folder Include="Common\Behaviors\" />
     <Folder Include="Common\Exceptions\" />
     <Folder Include="Common\Constants\" />
-    <Folder Include="Features\ControlPanel\Modules\Queries\" />
     <Folder Include="Services\Caching\" />
   </ItemGroup>
 

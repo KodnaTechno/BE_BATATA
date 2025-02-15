@@ -15,13 +15,13 @@ namespace Module.Seeding.ModuleDefinitions
             {
                 Id = SystemModuleConstants.Basic.TaskModule.Id,
                 ApplicationId = SystemApplicationConstants.ProjectManagementApplicationId,
-                Title = new TranslatableValue { Ar = "Tasks", En = "المهام"}.AsText(),
-                Name = nameof(Domain.BusinessDomain.Task),
+                Title = new TranslatableValue { Ar = "Tasks", En = "المهام"},
+                Key = nameof(Domain.BusinessDomain.Task),
                 Domain = typeof(Domain.BusinessDomain.Task).FullName,
                 Type = ModuleTypeEnum.Basic,
                 IsActive = true,
                 Order = 1,
-                Details = new TranslatableValue { Ar = "Details", En = "تفاصيل" }.AsText(),
+                Details = new TranslatableValue { Ar = "Details", En = "تفاصيل" },
                 CreatedAt = _seedDate,
                 CreatedBy = _systemUserId,
             };

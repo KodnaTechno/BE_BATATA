@@ -16,6 +16,7 @@ namespace Application.Features.ControlPanel.Workspace.Mapping
                 Display = source.Title.GetLocalizedValue(),
                 Title = source.Title,
                 Type = source.Type.ToString(),
+                ApplicationId = source.ApplicationId,
                 CreatedAt = MapDateTime(source.CreatedAt),
                 UpdatedAt = MapDateTime(source.UpdatedAt)
             };

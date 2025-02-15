@@ -10,5 +10,6 @@
         public DateTimeParseResult UpdatedAt { get; set; }
 
         public List<AppActionDto> Actions { get; set; }
+        public Guid ApplicationId { get; set; }
     }
 }

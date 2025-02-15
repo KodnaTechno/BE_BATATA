@@ -17,7 +17,6 @@ namespace Application.Features.ControlPanel.Workspace.Commands
        => response.IsSuccess
            ? new WorkspaceCreatedEvent
            {
-               Title = response.Data.Title,
                Id = response.Data.Id
            }
            : null;

@@ -41,7 +41,7 @@ namespace AppWorkflow.Services
                 await _workflowRepository.UpdateAsync(currentWorkflow);
 
                 // Save new version
-                await _workflowRepository.CreateAsync(newWorkflow);
+                await _workflowRepository.CreateAsync(newWorkflow, default);
 
                 // Log version creation
                 //await _auditLogService.LogAsync(new AuditLogEntry

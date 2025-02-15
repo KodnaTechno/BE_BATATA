@@ -66,7 +66,7 @@ namespace Application.Common.Handlers
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error handling command {typeof(TCommand).Name}");
-                return ApiResponse<TResult>.Fail("INTERNAL_ERROR", "An unexpected error occurred.");
+                return ApiResponse<TResult>.Fail(ErrorCodes.InternalServerError, "An unexpected error occurred.");
             }
         }
 
