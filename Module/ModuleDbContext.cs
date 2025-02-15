@@ -64,6 +64,7 @@ namespace Module
             modelBuilder.ApplyConfiguration(new WorkspaceModuleBlockConfiguration());
             modelBuilder.ApplyConfiguration(new PropertyFormulaConfiguration());
             modelBuilder.ApplyConfiguration(new ApplicationConfiguration());
+            modelBuilder.ApplyConfiguration(new AppActionConfiguration());
             modelBuilder.ApplyConfiguration(new TaskConfiguration());
 
             #region Seeding
