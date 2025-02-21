@@ -1,4 +1,4 @@
-﻿namespace Module.Service.DefaultSetupService
+﻿namespace Application.Services.DefaultSetupService
 {
     public interface IDefaultModuleSetupService
     {

@@ -1,0 +1,16 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "Api\\Api.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      },
+      {
+        "Path": "Hangfire\\Hangfire.Api.csproj",
+        "Action": "StartWithoutDebugging"
+      }
+    ]
+  }
+]

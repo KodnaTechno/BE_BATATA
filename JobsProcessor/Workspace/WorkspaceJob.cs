@@ -13,7 +13,8 @@ namespace JobsProcessor.Workspace
 
         public void ProcessWorkspaceCreatedEvent(WorkspaceCreatedEvent notification)
         {
-            _defaultWorkspaceSetupService.AddDefaultActions(notification.Id, notification.UserId);
+            var addedActions=_defaultWorkspaceSetupService.AddDefaultActions(notification.Id, notification.UserId);
+            _defaultWorkspaceSetupService.AddDefaultWorkflows(addedActions, notification.UserId);
             _defaultWorkspaceSetupService.AddDefaultProperties(notification.Id, notification.UserId);
 
         }

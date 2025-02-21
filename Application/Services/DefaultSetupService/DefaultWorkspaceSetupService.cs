@@ -1,23 +1,30 @@
-﻿using AppCommon.DTOs;
+﻿using System.Text.Json;
+using AppCommon.DTOs;
+using AppCommon.GlobalHelpers;
+using Application.Common.Helpers;
+using AppWorkflow.Common.DTO;
+using AppWorkflow.Services.Interfaces;
+using Module;
 using Module.Domain.Schema;
 using Module.Domain.Schema.Properties;
 using Module.Domain.Shared;
 
-namespace Module.Service.DefaultSetupService
+namespace Application.Services.DefaultSetupService
 {
     public class DefaultWorkspaceSetupService : IDefaultWorkspaceSetupService
     {
         private readonly ModuleDbContext _context;
-
-        public DefaultWorkspaceSetupService(ModuleDbContext context)
+        private readonly IWorkflowManagementService _workflowManagementService;
+        public DefaultWorkspaceSetupService(ModuleDbContext context, IWorkflowManagementService workflowManagementService)
         {
             _context = context;
+            _workflowManagementService = workflowManagementService;
         }
 
-        public void AddDefaultActions(Guid workspaceId, Guid userId)
+        public List<AppAction> AddDefaultActions(Guid workspaceId, Guid userId)
         {
             var workspace = _context.Workspaces.Find(workspaceId);
-            if (workspace == null) return;
+            if (workspace == null) return new();
 
             var now = DateTime.UtcNow;
 
@@ -75,12 +82,13 @@ namespace Module.Service.DefaultSetupService
 
             _context.AppActions.AddRange(defaultActions);
             _context.SaveChanges();
+            return defaultActions;
         }
 
-        public void AddDefaultProperties(Guid workspaceId, Guid userId)
+        public List<Property> AddDefaultProperties(Guid workspaceId, Guid userId)
         {
             var workspace = _context.Workspaces.Find(workspaceId);
-            if (workspace == null) return;
+            if (workspace == null) return new();
 
             var now = DateTime.UtcNow;
 
@@ -204,6 +212,7 @@ namespace Module.Service.DefaultSetupService
 
             _context.Properties.AddRange(defaultProperties);
             _context.SaveChanges();
+            return defaultProperties;
         }
 
         public void AddDefaultActionsForWorkspaceModules(Guid workspaceId, Guid userId)
@@ -316,5 +325,33 @@ namespace Module.Service.DefaultSetupService
             }
         }
 
+        public void AddDefaultWorkflows(List<AppAction> actions, Guid userId)
+        {
+            foreach (var appAction in actions.Where(x=>x.Type!= ActionType.Read))
+            {
+                var workflowDto = new CreateWorkflowDto
+                {
+                    Name = new TranslatableValue
+                    {
+                        En = $"{appAction.Name.En} Workflow",
+                        Ar = $"{appAction.Name.Ar} سير العمل"
+                    }.AsText(),
+                    Metadata = new Dictionary<string, string>{{"ModuleType","Action"},{"ModuleId",$"{appAction.Id}"}},
+                    Description = $"Workflow for {appAction.Name.En} action",
+                    Steps = new List<CreateWorkflowStepDto>
+                    {
+                        new CreateWorkflowStepDto
+                        {
+                            Name = "Initial Step",
+                            Type = appAction.Type.GetWorkFlowActionType(),
+                            Configuration = JsonDocument.Parse(JsonSerializer.Serialize(new { ActionId = appAction.Id })),
+                        }
+                    },
+                 
+                };
+
+                _workflowManagementService.CreateWorkflowAsync(workflowDto).Wait();
+            }
+        }
     }
 }

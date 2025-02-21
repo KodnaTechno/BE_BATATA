@@ -35,7 +35,7 @@ namespace AppWorkflow.Services
                 Description = createDto.Description,
                 CreatedAt = DateTime.UtcNow,
                 Version = "1",
-                Status = WorkflowStatus.Draft,
+                Status = WorkflowStatus.Active,
                 Metadata = createDto.Metadata ?? new Dictionary<string, string>(),
             };
 

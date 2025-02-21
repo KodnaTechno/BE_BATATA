@@ -1,5 +1,5 @@
-﻿using Events.Modules.Modules;
-using Module.Service.DefaultSetupService;
+﻿using Application.Services.DefaultSetupService;
+using Events.Modules.Modules;
 
 namespace JobsProcessor.Modules
 {

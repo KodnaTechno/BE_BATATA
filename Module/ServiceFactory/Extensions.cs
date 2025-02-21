@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Module.Service.DefaultSetupService;
 
 namespace Module.ServiceFactory
 {
@@ -12,8 +11,7 @@ namespace Module.ServiceFactory
             string connectionString = configuration.GetConnectionString("DefaultConnection");
             string databaseProvider = configuration["DatabaseProvider"];
 
-            services.AddTransient<IDefaultWorkspaceSetupService, DefaultWorkspaceSetupService>();
-            services.AddTransient<IDefaultModuleSetupService, DefaultModuleSetupService>();
+          
             switch (databaseProvider)
             {
                 case "SqlServer":

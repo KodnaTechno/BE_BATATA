@@ -32,7 +32,6 @@
     <ProjectReference Include="..\Identity\AppIdentity.csproj" />
     <ProjectReference Include="..\Hangfire.Shared\Hangfire.Shared.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
-    <ProjectReference Include="..\JobsProcessor\JobsProcessor.csproj" />
     <ProjectReference Include="..\Module\Module.csproj" />
     <ProjectReference Include="..\Workflow\AppWorkflow.csproj" />
   </ItemGroup>

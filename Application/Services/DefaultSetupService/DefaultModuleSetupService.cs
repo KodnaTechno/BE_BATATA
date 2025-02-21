@@ -1,9 +1,10 @@
 ﻿using AppCommon.DTOs;
+using Module;
 using Module.Domain.Schema;
 using Module.Domain.Schema.Properties;
 using Module.Domain.Shared;
 
-namespace Module.Service.DefaultSetupService
+namespace Application.Services.DefaultSetupService
 {
     public class DefaultModuleSetupService : IDefaultModuleSetupService
     {
