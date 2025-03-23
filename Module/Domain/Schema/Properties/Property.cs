@@ -29,6 +29,10 @@ namespace Module.Domain.Schema.Properties
 
         public Guid? WorkspaceModuleId { get; set; }
         public virtual WorkspaceModule WorkspaceModule { get; set; }
+
+        public Guid? ApplicationId { get; set; }
+        public virtual Application Application { get; set; }
+
         public virtual ICollection<PropertyFormula> PropertyFormulas { get; set; }
         public virtual ICollection<ValidationRule> ValidationRules { get; set; }
 

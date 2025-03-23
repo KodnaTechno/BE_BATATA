@@ -5,7 +5,7 @@ using System.Reflection;
 using Application.Features.ControlPanel.AppActions.Mapper;
 using Application.Features.ControlPanel.Modules.Mapping;
 using Application.Services.DefaultSetupService;
-using Module.Service;
+using Application.Features.ControlPanel.Properties.Mapper;
 
 namespace Application
 {
@@ -22,6 +22,7 @@ namespace Application
             services.AddScoped<IEventLogger, DbEventLogger>();
             services.AddSingleton<WorkspaceMapper>();
             services.AddSingleton<ModuleMapper>();
+            services.AddSingleton<PropertyMapper>();
             services.AddSingleton<AppActionMapper>();
 
             return services;

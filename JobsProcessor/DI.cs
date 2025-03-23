@@ -1,6 +1,8 @@
 ﻿using Events.Modules.Modules;
+using Events.Modules.Properties;
 using Events.Modules.Workspace;
 using JobsProcessor.Modules;
+using JobsProcessor.Properties;
 using JobsProcessor.Workspace;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,6 +14,7 @@ namespace JobsProcessor
         {
             services.AddTransient<IWorkspaceJob, WorkspaceJob>();
             services.AddTransient<IModuleJob, ModuleJob>();
+            services.AddTransient<IPropertyJob, PropertyJob>();
         }
     }
 }
