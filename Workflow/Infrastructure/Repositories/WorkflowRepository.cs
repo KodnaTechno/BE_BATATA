@@ -217,5 +217,15 @@ namespace AppWorkflow.Infrastructure.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public async Task<Workflow> FindByActionIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            return  _context.Workflows.ToList()
+                        .Where(c =>
+                            c.Metadata.Any(m => m.Key == "ModuleId" && m.Value.ToLower() == id.ToString().ToLower())
+                            && c.Metadata.Any(m => m.Key == "ModuleType" && m.Value == "Action")
+                        )
+                        .SingleOrDefault();
+        }
     }
 }

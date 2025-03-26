@@ -1,24 +1,30 @@
 ﻿using AppCommon.DTOs;
+using AppCommon.GlobalHelpers;
+using Application.Common.Helpers;
+using AppWorkflow.Common.DTO;
+using AppWorkflow.Services.Interfaces;
 using Module;
 using Module.Domain.Schema;
 using Module.Domain.Schema.Properties;
 using Module.Domain.Shared;
+using System.Text.Json;
 
 namespace Application.Services.DefaultSetupService
 {
     public class DefaultModuleSetupService : IDefaultModuleSetupService
     {
         private readonly ModuleDbContext _context;
-
-        public DefaultModuleSetupService(ModuleDbContext context)
+        private readonly IWorkflowManagementService _workflowManagementService;
+        public DefaultModuleSetupService(ModuleDbContext context, IWorkflowManagementService workflowManagementService)
         {
             _context = context;
+            _workflowManagementService = workflowManagementService;
         }
 
-        public void AddDefaultActions(Guid moduleId, Guid userId)
+        public List<AppAction> AddDefaultActions(Guid moduleId, Guid userId)
         {
             var workspace = _context.Modules.Find(moduleId);
-            if (workspace == null) return;
+            if (workspace == null) return new List<AppAction>();
 
             var now = DateTime.UtcNow;
 
@@ -76,6 +82,7 @@ namespace Application.Services.DefaultSetupService
 
             _context.AppActions.AddRange(defaultActions);
             _context.SaveChanges();
+            return defaultActions;
         }
         public void AddDefaultProperties(Guid moduleId, Guid userId)
         {
@@ -205,5 +212,34 @@ namespace Application.Services.DefaultSetupService
             _context.Properties.AddRange(defaultProperties);
             _context.SaveChanges();
         }
+        public void AddDefaultWorkflows(List<AppAction> actions, Guid userId)
+        {
+            foreach (var appAction in actions.Where(x => x.Type != ActionType.Read))
+            {
+                var workflowDto = new CreateWorkflowDto
+                {
+                    Name = new TranslatableValue
+                    {
+                        En = $"{appAction.Name.En} Workflow",
+                        Ar = $"{appAction.Name.Ar} سير العمل"
+                    }.AsText(),
+                    Metadata = new Dictionary<string, string> { { "ModuleType", "Action" }, { "ModuleId", $"{appAction.Id}" } },
+                    Description = $"Workflow for {appAction.Name.En} action",
+                    Steps = new List<CreateWorkflowStepDto>
+                    {
+                        new CreateWorkflowStepDto
+                        {
+                            Name = "Initial Step",
+                            Type = appAction.Type.GetWorkFlowActionType(),
+                            Configuration = JsonDocument.Parse(JsonSerializer.Serialize(new { ActionId = appAction.Id })),
+                        }
+                    },
+
+                };
+
+                _workflowManagementService.CreateWorkflowAsync(workflowDto).Wait();
+            }
+        }
+      
     }
 }

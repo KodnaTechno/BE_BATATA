@@ -9,7 +9,7 @@
       },
       {
         "Path": "Hangfire\\Hangfire.Api.csproj",
-        "Action": "StartWithoutDebugging"
+        "Action": "Start"
       }
     ]
   }

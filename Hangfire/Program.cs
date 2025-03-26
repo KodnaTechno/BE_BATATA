@@ -4,6 +4,17 @@ using Hangfire;
 using AppCommon.GlobalHelpers;
 using Hangfire.Shared;
 using JobsProcessor;
+using Application.Services.DefaultSetupService;
+using AppWorkflow.Services.Interfaces;
+using AppWorkflow.Services;
+using AppWorkflow.Infrastructure.Repositories.IRepository;
+using AppWorkflow.Infrastructure.Repositories;
+using AppCommon;
+using AppWorkflow.Infrastructure.Data.Context;
+using Microsoft.EntityFrameworkCore;
+using AppWorkflow.Core.Interfaces.Services;
+using AppWorkflow.Services.HealthCheck;
+using AppWorkflow.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,13 +23,25 @@ builder.Services.AddSwaggerGen();
 
 
 builder.Services.AddModule(builder.Configuration);
-
+builder.Services.AddDistributedMemoryCache();
+AppConfigration.Configure(builder.Configuration);
+builder.Services.AddDbContext<WorkflowDbContext>(options =>
+{
+    options.UseSqlServer(AppConfigration.AppDbConnection, sqlOptions =>
+    {
+        sqlOptions.MigrationsAssembly("AppMigration.SqlServer");
+        sqlOptions.MigrationsHistoryTable("__AppWorkFlow_MigrationTable");
+    });
+});
 builder.Services.AddHangfire(builder.Configuration);
 
 
 builder.Services.AddJobsProcessor();
-
-
+WorkflowServiceRegistration.AddWorkflowInfrastructure(builder.Services,builder.Configuration);
+builder.Services.AddScoped<IDefaultWorkspaceSetupService, DefaultWorkspaceSetupService>();
+builder.Services.AddScoped<IWorkflowManagementService,  WorkflowManagementService>();
+builder.Services.AddScoped<IDefaultModuleSetupService, DefaultModuleSetupService>();
+builder.Services.AddHttpContextAccessor();
 var app = builder.Build();
 
 ServiceActivator.Configure(app.Services);

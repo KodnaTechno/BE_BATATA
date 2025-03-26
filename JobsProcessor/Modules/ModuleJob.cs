@@ -1,5 +1,6 @@
 ﻿using Application.Services.DefaultSetupService;
 using Events.Modules.Modules;
+using MediatR;
 
 namespace JobsProcessor.Modules
 {
@@ -13,8 +14,9 @@ namespace JobsProcessor.Modules
 
         public void ProcessModuleCreatedEvent(ModuleCreatedEvent @event)
         {
-            _defaultModuleSetupService.AddDefaultActions(@event.Id, @event.UserId);
+           var addedActions= _defaultModuleSetupService.AddDefaultActions(@event.Id, @event.UserId);
             _defaultModuleSetupService.AddDefaultProperties(@event.Id, @event.UserId);
+            _defaultModuleSetupService.AddDefaultWorkflows(addedActions, @event.UserId);
         }
     }
 }

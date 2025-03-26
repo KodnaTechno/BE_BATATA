@@ -36,7 +36,11 @@ namespace AppWorkflow.Services
                 CreatedAt = DateTime.UtcNow,
                 Version = "1",
                 Status = WorkflowStatus.Active,
+                CreatedBy="dummy",
                 Metadata = createDto.Metadata ?? new Dictionary<string, string>(),
+                ModuleType="ttestt",
+                RetryPolicy=new RetryPolicy(),
+                TriggerConfigs=new List<TriggerConfiguration>()
             };
 
             // Map and connect steps
@@ -48,6 +52,10 @@ namespace AppWorkflow.Services
                     Id = Guid.NewGuid(),
                     Name = stepDto.Name,
                     ActionType = stepDto.Type,
+                    CreatedBy="dummy",
+                    UpdatedBy="dummi",
+                    RetryPolicy = new RetryPolicy(),
+                    Description =stepDto.Name,
                     ActionConfiguration = stepDto.Configuration ?? default,
                 };
                 stepDict[step.Name] = step;
@@ -61,7 +69,7 @@ namespace AppWorkflow.Services
             {
                 throw new WorkflowValidationException(validationResult.Errors);
             }
-
+            workflow.InitialStepId = workflow.Steps.FirstOrDefault().Id;
             // Create workflow and version
             await workflowRepository.CreateAsync(workflow, cancellationToken);
 

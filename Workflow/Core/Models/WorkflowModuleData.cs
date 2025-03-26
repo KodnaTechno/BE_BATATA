@@ -1,4 +1,5 @@
-﻿using Module.Domain.Data;
+﻿using AppCommon.DTOs.Modules;
+using Module.Domain.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,6 @@ namespace AppWorkflow.Core.Models
         public string CreatedBy { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public string UpdatedBy { get; set; }
-        public List<List<PropertyData>> ModuleProperties { get; set; } = new(); 
+        public List<PropertyDataDto> ModuleProperties { get; set; } = new(); 
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Events;
 using Infrastructure.Database;
 using Infrastructure.Database.Domain;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using System.Text;
@@ -27,7 +28,7 @@ namespace Application.Services.EventsLogger
                 EventData = JsonConvert.SerializeObject(@event),
                 OccurredOn = @event.Timestamp,
                 CorrelationId = @event.CorrelationId,
-                UserId = @event.UserId,
+                UserId = @event.UserId.ToString(),
                 Status = "Queued",
             };
             dbContext.EventLogs.Add(eventLog);
@@ -42,31 +43,39 @@ namespace Application.Services.EventsLogger
         {
             using var scope = _serviceScopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-            var eventLog = await dbContext.EventLogs.FindAsync(
-                [eventId], cancellationToken);
-
-            if (eventLog != null)
+            try
             {
-                eventLog.Status = status;
-                if (exception != null)
+                var eventLog = await dbContext.EventLogs.FirstOrDefaultAsync(
+                x => x.Id == eventId, cancellationToken);
+
+                if (eventLog != null)
                 {
-                    var errorMessage = new StringBuilder();
-                    errorMessage.AppendLine(exception.Message);
-                    var currentException = exception.InnerException;
-                    while (currentException != null)
+                    eventLog.Status = status;
+                    if (exception != null)
                     {
-                        errorMessage.AppendLine($"Inner Exception: {currentException.Message}");
-                        currentException = currentException.InnerException;
+                        var errorMessage = new StringBuilder();
+                        errorMessage.AppendLine(exception.Message);
+                        var currentException = exception.InnerException;
+                        while (currentException != null)
+                        {
+                            errorMessage.AppendLine($"Inner Exception: {currentException.Message}");
+                            currentException = currentException.InnerException;
+                        }
+                        eventLog.ErrorMessage = errorMessage.ToString();
                     }
-                    eventLog.ErrorMessage = errorMessage.ToString();
+                    else
+                    {
+                        eventLog.ErrorMessage = null;
+                    }
+                    await dbContext.SaveChangesAsync(cancellationToken);
                 }
-                else
-                {
-                    eventLog.ErrorMessage = null;
-                }
-                await dbContext.SaveChangesAsync(cancellationToken);
             }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+            
         }
 
     }

@@ -43,7 +43,16 @@ namespace Application.Features.ControlPanel.Workspace.Handlers
             };
 
             _moduleDbContext.Workspaces.Add(workspace);
-            await _moduleDbContext.SaveChangesAsync(cancellationToken);
+            try
+            {
+                await _moduleDbContext.SaveChangesAsync(cancellationToken);
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+            
 
             return ApiResponse<WorkspaceDto>.Success(_workspaceMapper.MapToDto(workspace));
         }

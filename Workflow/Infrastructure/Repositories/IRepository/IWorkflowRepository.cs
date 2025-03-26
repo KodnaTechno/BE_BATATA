@@ -21,5 +21,6 @@ namespace AppWorkflow.Infrastructure.Repositories.IRepository
         Task UpdateAsync(Workflow workflow);
         Task DeleteAsync(Guid id);
         Task<bool> ExistsAsync(Guid id);
+        Task<Workflow> FindByActionIdAsync(Guid id, CancellationToken cancellationToken);
     }
 }

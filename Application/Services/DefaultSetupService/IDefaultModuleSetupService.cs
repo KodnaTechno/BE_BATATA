@@ -1,10 +1,12 @@
-﻿namespace Application.Services.DefaultSetupService
+﻿using Module.Domain.Schema;
+
+namespace Application.Services.DefaultSetupService
 {
     public interface IDefaultModuleSetupService
     {
-        void AddDefaultActions(Guid moduleId, Guid userId);
+        List<AppAction> AddDefaultActions(Guid workspaceId, Guid userId);
         void AddDefaultProperties(Guid moduleId, Guid userId);
-
+        void AddDefaultWorkflows(List<AppAction> actions, Guid userId);
 
     }
 }

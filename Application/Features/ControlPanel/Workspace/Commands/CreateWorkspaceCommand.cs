@@ -10,8 +10,8 @@ namespace Application.Features.ControlPanel.Workspace.Commands
     public class CreateWorkspaceCommand : BaseCommand<WorkspaceDto>
     {
         public TranslatableValue Title { get; set; }
-        public Guid ApplicationId { get; internal set; }
-        public TranslatableValue Details { get; internal set; }
+        public Guid ApplicationId { get;  set; }
+        public TranslatableValue Details { get;  set; }
 
         public override IEvent GetEvent(ApiResponse<WorkspaceDto> response)
        => response.IsSuccess

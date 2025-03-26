@@ -13,6 +13,8 @@ using AppWorkflow.Infrastructure;
 using AppCommon;
 using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using Microsoft.EntityFrameworkCore;
+using AppWorkflow.Services.Interfaces;
+using AppWorkflow.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,7 +31,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddCustomServices(builder.Configuration);
 
 builder.Services.AddHangfire(builder.Configuration, false);
-
+builder.Services.AddScoped<IWorkflowManagementService, WorkflowManagementService>();
 var app = builder.Build();
 
 ServiceActivator.Configure(app.Services);

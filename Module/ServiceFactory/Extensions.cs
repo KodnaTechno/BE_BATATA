@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AppCommon;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
 namespace Module.ServiceFactory
 {
     public static class Extensions
@@ -35,8 +35,10 @@ namespace Module.ServiceFactory
                     sqlOptions.MigrationsHistoryTable("__Module_MigrationTable");
                 });
             });
-        }
+        
 
+        }
+     
         //public static void ConfigurePostgreSQLDbContext(IServiceCollection services, string connectionString)
         //{
         //    services.AddDbContext<ModuleDbContext>(options =>
