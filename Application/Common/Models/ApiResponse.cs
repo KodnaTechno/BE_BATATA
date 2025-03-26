@@ -28,4 +28,10 @@
         public const string DuplicateEntry = "VAL_002";
         public const string InvalidOperation = "OPR_001";
     }
+
+
+    public static class ErrorMessages
+    {
+        public const string SystemPropertyDeleteMessage = "SystemPropertyDeleteMessage";
+    }
 }

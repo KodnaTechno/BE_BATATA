@@ -14,7 +14,7 @@ namespace Module.Seeding
             modelBuilder.Entity<Application>().HasData(new Application
             {
                 Id = SystemApplicationConstants.ProjectManagementApplicationId,
-                Title = new TranslatableValue { En = "Asset Management", Ar = "إداره المرافق" }.AsText(),
+                Title = new TranslatableValue { En = "Asset Management", Ar = "إداره المرافق" },
                 Icon = "fa-solid fa-warehouse",
                 Description = new TranslatableValue
                 {

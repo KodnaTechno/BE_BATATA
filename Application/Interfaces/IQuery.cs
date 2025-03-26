@@ -1,6 +1,5 @@
 ﻿using Application.Common.Models;
 using MediatR;
-using System.ComponentModel.DataAnnotations;
 
 namespace Application.Interfaces
 {

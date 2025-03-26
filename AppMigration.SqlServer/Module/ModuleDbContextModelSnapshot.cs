@@ -331,10 +331,22 @@ namespace AppMigration.SqlServer.Module
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Icon")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Key")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
@@ -358,7 +370,8 @@ namespace AppMigration.SqlServer.Module
                             CreatedBy = new Guid("11111111-1111-1111-1111-111111111111"),
                             Description = "{\r\n  \"en\": \"Manage all your organizational assets and their details.\",\r\n  \"ar\": \"إدارة جميع أصول مؤسستك وتفاصيلها\"\r\n}",
                             Icon = "fa-solid fa-warehouse",
-                            Title = "{\r\n  \"en\": \"Asset Management\",\r\n  \"ar\": \"إداره المرافق\"\r\n}"
+                            IsDeleted = false,
+                            Title = "{\"En\":\"Asset Management\",\"Ar\":\"\\u0625\\u062F\\u0627\\u0631\\u0647 \\u0627\\u0644\\u0645\\u0631\\u0627\\u0641\\u0642\"}"
                         });
                 });
 
@@ -492,6 +505,9 @@ namespace AppMigration.SqlServer.Module
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ApplicationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Configuration")
@@ -1298,9 +1314,15 @@ namespace AppMigration.SqlServer.Module
                         .WithMany("Properties")
                         .HasForeignKey("WorkspaceId");
 
+                    b.HasOne("Module.Domain.Schema.Application", "Application")
+                        .WithMany("Properties")
+                        .HasForeignKey("WorkspaceModuleId");
+
                     b.HasOne("Module.Domain.Schema.WorkspaceModule", "WorkspaceModule")
                         .WithMany("Properties")
                         .HasForeignKey("WorkspaceModuleId");
+
+                    b.Navigation("Application");
 
                     b.Navigation("Module");
 
@@ -1430,6 +1452,8 @@ namespace AppMigration.SqlServer.Module
             modelBuilder.Entity("Module.Domain.Schema.Application", b =>
                 {
                     b.Navigation("Modules");
+
+                    b.Navigation("Properties");
 
                     b.Navigation("Workspaces");
                 });

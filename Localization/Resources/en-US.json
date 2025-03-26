@@ -9,5 +9,6 @@
   "VAL_002": "Duplicate entry detected",
   "OPR_001": "Invalid operation",
   "VAL_003": "Invalid input data",
-  "DB_001": "Database operation failed"
+  "DB_001": "Database operation failed",
+  "SystemPropertyDeleteMessage": "System properties cannot be deleted"
 }

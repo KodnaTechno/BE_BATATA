@@ -47,6 +47,7 @@ public static class WorkflowServiceRegistration
         services.AddScoped<IWorkflowRepository, WorkflowRepository>();
         services.AddScoped<IWorkflowDataRepository, WorkflowDataRepository>();
         services.AddScoped<IExpressionEvaluator, ExpressionEvaluator>();
+        services.AddScoped<IWorkflowManagementService, WorkflowManagementService>();
 
         //// Infrastructure Services - Singleton
         services.AddSingleton<IDistributedLockManager, RedisDistributedLockManager>();

@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Module.Service;
+
 namespace Module.ServiceFactory
 {
     public static class Extensions
@@ -23,6 +25,8 @@ namespace Module.ServiceFactory
                 default:
                     throw new Exception("Invalid database provider");
             }
+
+            services.AddScoped<PropertyKeyGenerator>();
         }
 
         public static void ConfigureSqlServerDbContext(IServiceCollection services, string connectionString)

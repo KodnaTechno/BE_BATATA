@@ -29,6 +29,10 @@ namespace Module.Configurations
             builder.HasOne(e => e.WorkspaceModule)
                 .WithMany(wm => wm.Properties)  
                 .HasForeignKey(e => e.WorkspaceModuleId);
+
+            builder.HasOne(e => e.Application)
+               .WithMany(wm => wm.Properties)
+               .HasForeignKey(e => e.WorkspaceModuleId);
         }
     }
 
