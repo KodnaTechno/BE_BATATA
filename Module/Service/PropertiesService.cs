@@ -3,15 +3,16 @@ using AppCommon.DTOs.Modules;
 using AppCommon.DTOs.Modules.PropertyConfigs;
 using AppCommon.EnumShared;
 using AppCommon.GlobalHelpers;
+using Infrastructure.Caching;
 using Microsoft.EntityFrameworkCore;
 using Module.Domain.Data;
 
 namespace Module.Service
 {
-    
     public class PropertiesService
     {
         private readonly ModuleDbContext _moduleDbContext;
+        private readonly IEntityCacheService _cacheService;
 
         public PropertiesService(ModuleDbContext moduleDbContext)
         {
@@ -19,15 +20,41 @@ namespace Module.Service
         }
 
         public async Task<List<Domain.Schema.Properties.Property>> GetProperties(
+        Guid? applicationId,
+        Guid? moduleId,
+        Guid? workspaceId,
+        Guid? workspaceModuleId,
+        bool useCache,                    
+        TimeSpan? cacheExpiry = null,             
+        CancellationToken cancellationToken = default)
+        {
+            if (!useCache)
+                return await GetPropertiesInternal(applicationId, moduleId, workspaceId, workspaceModuleId, cancellationToken);
+
+
+            var cacheKey = BuildCacheKey(applicationId, moduleId, workspaceId, workspaceModuleId);
+
+            var list = await _cacheService.GetOrSetListAsync(
+                cacheKey,
+                async () => await GetPropertiesInternal(applicationId, moduleId, workspaceId, workspaceModuleId, cancellationToken),
+                cacheExpiry
+            );
+
+            return list;
+        }
+
+
+        private async Task<List<Domain.Schema.Properties.Property>> GetPropertiesInternal(
          Guid? applicationId,
          Guid? moduleId,
          Guid? workspaceId,
-         Guid? workspaceModuleId,
-         CancellationToken cancellationToken = default)
+        Guid? workspaceModuleId,
+        CancellationToken cancellationToken)
         {
-            // 1) Build the base query and retrieve current properties
-            var propertyQuery = BuildPropertyQuery(applicationId, moduleId, workspaceId, workspaceModuleId);
-            propertyQuery = propertyQuery.OrderBy(p => p.Order);
+            // 1) Build the base query
+            var propertyQuery = BuildPropertyQuery(applicationId, moduleId, workspaceId, workspaceModuleId)
+                                    .OrderBy(p => p.Order);
+
             var dbProperties = await propertyQuery.ToListAsync(cancellationToken);
 
             // 2) If we have a WorkspaceId, add "connection" properties
@@ -87,7 +114,7 @@ namespace Module.Service
                     Key = conn.TargetWorkspace?.Key ?? "Connection",
                     NormalizedKey = (conn.TargetWorkspace?.Key ?? "Connection").ToUpperInvariant(),
                     Title = conn.TargetWorkspace?.Title,
-                    DataType = DataTypeEnum.None,
+                    DataType = DataTypeEnum.String,
                     ViewType = ViewTypeEnum.Connection
                 };
 
@@ -194,6 +221,25 @@ namespace Module.Service
                     ViewType = ViewTypeEnum.ForeignKey
                 });
             }
+        }
+
+        private string BuildCacheKey(Guid? applicationId, Guid? moduleId, Guid? workspaceId, Guid? workspaceModuleId)
+        {
+            var key = "properties:";
+
+            if (applicationId.HasValue)
+                key += $"app_{applicationId.Value}:";
+
+            if (moduleId.HasValue)
+                key += $"mod_{moduleId.Value}:";
+
+            if (workspaceId.HasValue)
+                key += $"ws_{workspaceId.Value}:";
+
+            if (workspaceModuleId.HasValue)
+                key += $"wsm_{workspaceModuleId.Value}:";
+
+            return key.TrimEnd(':');
         }
 
         private void HandleFormulaProperties(

@@ -10,10 +10,7 @@ namespace Application.Services.Rendering
     {
         public async Task<object> RenderValueAsync(PropertyData propertyData, CancellationToken cancellationToken = default)
         {
-            if (propertyData?.Property == null)
-                return null;
-
-            var viewType = propertyData.Property.ViewType;
+            var viewType = propertyData.ViewType;
             if (viewType != ViewTypeEnum.Text
                 && viewType != ViewTypeEnum.LongText
                 && viewType != ViewTypeEnum.RichText)
