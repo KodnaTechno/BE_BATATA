@@ -1,7 +1,6 @@
 ﻿using AppCommon.DTOs.Modules;
 using AppCommon.DTOs;
 using AppCommon.EnumShared;
-using Application.Common.Models;
 using Application.Interfaces;
 using Events;
 using Events.Modules.Properties;

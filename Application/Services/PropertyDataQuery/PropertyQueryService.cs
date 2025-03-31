@@ -10,8 +10,11 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Globalization;
 using AppCommon.EnumShared;
+using Application.Services.Rendering;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Linq.Dynamic.Core;
 
-namespace Application.Services.PropertyData
+namespace Application.Services.PropertyDataQuery
 {
     public class PropertyQueryService
     {
@@ -19,17 +22,19 @@ namespace Application.Services.PropertyData
         private readonly IEntityCacheService _cacheService;
         private readonly QueryOptimizer _queryOptimizer;
         private readonly ILogger<PropertyQueryService> _logger;
-
+        private readonly IPropertyValueRendererService _rendererService;
         public PropertyQueryService(
             ModuleDbContext context,
             IEntityCacheService cacheService,
             QueryOptimizer queryOptimizer,
-            ILogger<PropertyQueryService> logger)
+            ILogger<PropertyQueryService> logger,
+            IPropertyValueRendererService rendererService)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _cacheService = cacheService ?? throw new ArgumentNullException(nameof(cacheService));
             _queryOptimizer = queryOptimizer ?? throw new ArgumentNullException(nameof(queryOptimizer));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _rendererService = rendererService;
         }
 
         public async Task<QueryResult<PropertyDataResponse>> QueryPropertiesAsync(
@@ -104,9 +109,16 @@ namespace Application.Services.PropertyData
 
                 var data = await query.ToListAsync(cancellationToken);
 
+                var results = new List<PropertyDataResponse>();
+                foreach (var item in data)
+                {
+                    var resp = await MapToResponseAsync(item, cancellationToken);
+                    results.Add(resp);
+                }
+
                 return new QueryResult<PropertyDataResponse>
                 {
-                    Data = data.Select(MapToResponse).ToList(),
+                    Data = results,
                     TotalCount = data.Count,
                     Metadata = new QueryMetadata
                     {
@@ -143,9 +155,16 @@ namespace Application.Services.PropertyData
 
                 var data = await query.ToListAsync(cancellationToken);
 
+                var results = new List<PropertyDataResponse>();
+                foreach (var item in data)
+                {
+                    var resp = await MapToResponseAsync(item, cancellationToken);
+                    results.Add(resp);
+                }
+
                 return new QueryResult<PropertyDataResponse>
                 {
-                    Data = data.Select(MapToResponse).ToList(),
+                    Data = results,
                     TotalCount = data.Count,
                     Metadata = new QueryMetadata
                     {
@@ -188,7 +207,7 @@ namespace Application.Services.PropertyData
                             query = query.Where(pd => pd.WorkspaceDataId == workspaceDataId);
 
                         var data = await query.FirstOrDefaultAsync(cancellationToken);
-                        return data != null ? MapToResponse(data) : null;
+                        return data != null ? await MapToResponseAsync(data, cancellationToken) : null;
                     },
                     cacheExpiry ?? TimeSpan.FromMinutes(30));
             }
@@ -629,25 +648,33 @@ namespace Application.Services.PropertyData
 
             // Build structured result
             var groupsDict = new Dictionary<string, IEnumerable<GroupResult>>();
+            var groupResults = new List<GroupResult>();
 
             // Convert groups to GroupResult objects
             // Assume single or multiple keys from DynamicGrouping, we must extract them as a string key
-            var groupResults = groupList.Select(g =>
+            foreach (var g in groupList)
             {
                 var keyObject = g.Key;
                 var dynamicKey = keyObject as DynamicGrouping;
                 var keyStr = BuildGroupKeyString(dynamicKey);
 
                 groupedResults.TryGetValue(g.Key, out var aggDict);
+                var results = new List<PropertyDataResponse>();
 
-                return new GroupResult
+                foreach (var item in g)
+                {
+                    var resp = await MapToResponseAsync(item, cancellationToken);
+                    results.Add(resp);
+                }
+
+                groupResults.Add(new GroupResult
                 {
                     Key = keyStr,
                     Count = g.Count(),
                     Aggregations = aggDict,
-                    Items = g.Select(MapToResponse)
-                };
-            }).ToList();
+                    Items = results
+                });
+            }
 
             groupsDict["DefaultGroup"] = groupResults;
 
@@ -820,16 +847,22 @@ namespace Application.Services.PropertyData
                 AppliedOptimizations = _queryOptimizer.GetAppliedOptimizations().ToArray()
             };
 
+            var results = new List<PropertyDataResponse>();
+            foreach (var item in dataTask.Result)
+            {
+                var resp = await MapToResponseAsync(item, cancellationToken);
+                results.Add(resp);
+            }
             return new QueryResult<PropertyDataResponse>
             {
-                Data = dataTask.Result.Select(MapToResponse).ToList(),
+                Data = results,
                 TotalCount = countTask.Result,
                 Aggregations = aggregationTask.Result,
                 Metadata = metadata
             };
         }
 
-        private PropertyDataResponse MapToResponse(Module.Domain.Data.PropertyData data)
+        private async Task<PropertyDataResponse> MapToResponseAsync(Module.Domain.Data.PropertyData data, CancellationToken cancellationToken = default)
         {
             if (data?.Property == null)
                 return null;
@@ -842,7 +875,7 @@ namespace Application.Services.PropertyData
                 Description = data.Property.Description,
                 DataType = data.DataType,
                 ViewType = data.Property.ViewType,
-                Value = data.GetValue(),
+                Value = await _rendererService.RenderValueAsync(data, cancellationToken),
                 Metadata = new PropertyMetadata
                 {
                     IsSystem = data.Property.IsSystem,

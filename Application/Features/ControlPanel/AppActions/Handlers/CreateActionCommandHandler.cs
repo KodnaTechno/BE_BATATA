@@ -1,5 +1,4 @@
 ﻿using Application.Common.Handlers;
-using Application.Common.Models;
 using Application.Services.EventsLogger;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -11,6 +10,7 @@ using AppCommon.DTOs.Modules;
 using AppCommon.EnumShared;
 using Microsoft.EntityFrameworkCore;
 using Application.Features.ControlPanel.AppActions.Mapper;
+using AppCommon.DTOs;
 
 namespace Application.Features.ControlPanel.AppActions.Handlers
 {

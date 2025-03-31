@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Module;
 
-namespace Application.Services.PropertyData
+namespace Application.Services.PropertyDataQuery
 {
     public class QueryOptimizer
     {

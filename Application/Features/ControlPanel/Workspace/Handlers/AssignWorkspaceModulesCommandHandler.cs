@@ -1,5 +1,5 @@
-﻿using Application.Common.Handlers;
-using Application.Common.Models;
+﻿using AppCommon.DTOs;
+using Application.Common.Handlers;
 using Application.Features.ControlPanel.Workspace.Commands;
 using Application.Services.EventsLogger;
 using MediatR;

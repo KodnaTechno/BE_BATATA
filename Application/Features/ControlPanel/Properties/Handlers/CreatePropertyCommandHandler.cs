@@ -1,7 +1,6 @@
 ﻿using AppCommon.DTOs;
 using AppCommon.DTOs.Modules;
 using Application.Common.Handlers;
-using Application.Common.Models;
 using Application.Features.ControlPanel.Properties.Commands;
 using Application.Features.ControlPanel.Properties.Mapper;
 using Application.Services.EventsLogger;

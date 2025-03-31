@@ -1,4 +1,8 @@
-﻿using AppCommon.GlobalHelpers;
+﻿using AppCommon.DTOs;
+using AppCommon.DTOs.Modules;
+using AppCommon.DTOs.Modules.PropertyConfigs;
+using AppCommon.EnumShared;
+using AppCommon.GlobalHelpers;
 using Microsoft.EntityFrameworkCore;
 using Module.Domain.Data;
 
@@ -14,10 +18,184 @@ namespace Module.Service
             _moduleDbContext = moduleDbContext;
         }
 
-        public PropertiesService()
+        public async Task<List<Domain.Schema.Properties.Property>> GetProperties(
+         Guid? applicationId,
+         Guid? moduleId,
+         Guid? workspaceId,
+         Guid? workspaceModuleId,
+         CancellationToken cancellationToken = default)
         {
-            
+            // 1) Build the base query and retrieve current properties
+            var propertyQuery = BuildPropertyQuery(applicationId, moduleId, workspaceId, workspaceModuleId);
+            propertyQuery = propertyQuery.OrderBy(p => p.Order);
+            var dbProperties = await propertyQuery.ToListAsync(cancellationToken);
+
+            // 2) If we have a WorkspaceId, add "connection" properties
+            if (workspaceId.HasValue)
+            {
+                var connectionProps = await GetConnectionProperties(workspaceId.Value, cancellationToken);
+                dbProperties.AddRange(connectionProps);
+            }
+
+            // 3) Add the "virtual" foreign-key-like properties (if applicable)
+            AddVirtualProperties(dbProperties, applicationId, moduleId, workspaceId, workspaceModuleId);
+
+            return dbProperties;
         }
+
+        private IQueryable<Domain.Schema.Properties.Property> BuildPropertyQuery(
+            Guid? applicationId,
+            Guid? moduleId,
+            Guid? workspaceId,
+            Guid? workspaceModuleId)
+        {
+            var query = _moduleDbContext.Properties.AsQueryable()
+                .Where(p => !p.IsDeleted);
+
+            if (applicationId.HasValue)
+                query = query.Where(p => p.ApplicationId == applicationId);
+
+            if (moduleId.HasValue)
+                query = query.Where(p => p.ModuleId == moduleId);
+
+            if (workspaceId.HasValue)
+                query = query.Where(p => p.WorkspaceId == workspaceId);
+
+            if (workspaceModuleId.HasValue)
+                query = query.Where(p => p.WorkspaceModuleId == workspaceModuleId);
+
+            return query;
+        }
+
+        private async Task<List<Domain.Schema.Properties.Property>> GetConnectionProperties(
+            Guid workspaceId,
+            CancellationToken cancellationToken)
+        {
+            var result = new List<Domain.Schema.Properties.Property>();
+
+            var connections = await _moduleDbContext.WorkspaceConnections
+                .Include(c => c.TargetWorkspace)
+                .Include(c => c.SourceWorkspace)
+                .Where(c => c.SourceWorkspaceId == workspaceId)
+                .ToListAsync(cancellationToken);
+
+            foreach (var conn in connections)
+            {
+                var connectionDto = new Domain.Schema.Properties.Property
+                {
+                    Id = conn.Id,
+                    Key = conn.TargetWorkspace?.Key ?? "Connection",
+                    NormalizedKey = (conn.TargetWorkspace?.Key ?? "Connection").ToUpperInvariant(),
+                    Title = conn.TargetWorkspace?.Title,
+                    DataType = DataTypeEnum.None,
+                    ViewType = ViewTypeEnum.Connection
+                };
+
+                var targetData = await _moduleDbContext.WorkspaceData
+                     .Where(d => d.WorkspaceId == conn.TargetWorkspaceId && !d.IsDeleted)
+                     .Include(d => d.PropertyData.Where(pd => pd.Property.NormalizedKey.ToLower() == "title"))
+                     .ToListAsync(cancellationToken);
+
+                var options = new List<ConnectionOptionDto>();
+                foreach (var row in targetData)
+                {
+                    var titlePd = row.PropertyData.FirstOrDefault();
+                    var titleValue = titlePd?.GetValue()?.ToString() ?? $"Item {row.Id}";
+                    options.Add(new ConnectionOptionDto
+                    {
+                        Id = row.Id,
+                        Title = titleValue
+                    });
+                }
+
+                var connectionConfig = new ConnectionConfig
+                {
+                    AllowMany = conn.AllowManySource,
+                    IsOptional = conn.IsOptional,
+                    Options = options
+                };
+                connectionDto.Configuration = connectionConfig.AsText();
+
+                result.Add(connectionDto);
+            }
+
+            return result;
+        }
+
+        private void AddVirtualProperties(
+            List<Domain.Schema.Properties.Property> propertiesList,
+            Guid? applicationId,
+            Guid? moduleId,
+            Guid? workspaceId,
+            Guid? workspaceModuleId)
+        {
+            if (applicationId.HasValue)
+            {
+                propertiesList.Add(new Domain.Schema.Properties.Property
+                {
+                    Id = Guid.NewGuid(),
+                    Key = "ApplicationId",
+                    NormalizedKey = "APPLICATIONID",
+                    Title = new TranslatableValue
+                    {
+                        En = "Application Id",
+                        Ar = "معرّف التطبيق"
+                    },
+                    DataType = DataTypeEnum.Guid,
+                    ViewType = ViewTypeEnum.ForeignKey
+                });
+            }
+
+            if (moduleId.HasValue)
+            {
+                propertiesList.Add(new Domain.Schema.Properties.Property
+                {
+                    Id = Guid.NewGuid(),
+                    Key = "ModuleId",
+                    NormalizedKey = "MODULEID",
+                    Title = new TranslatableValue
+                    {
+                        En = "Module Id",
+                        Ar = "معرّف الوحدة"
+                    },
+                    DataType = DataTypeEnum.Guid,
+                    ViewType = ViewTypeEnum.ForeignKey
+                });
+            }
+            if (workspaceId.HasValue)
+            {
+                propertiesList.Add(new Domain.Schema.Properties.Property
+                {
+                    Id = Guid.NewGuid(),
+                    Key = "WorkspaceId",
+                    NormalizedKey = "WORKSPACEID",
+                    Title = new TranslatableValue
+                    {
+                        En = "Workspace Id",
+                        Ar = "معرّف مساحة العمل"
+                    },
+                    DataType = DataTypeEnum.Guid,
+                    ViewType = ViewTypeEnum.ForeignKey
+                });
+            }
+            if (workspaceModuleId.HasValue)
+            {
+                propertiesList.Add(new Domain.Schema.Properties.Property
+                {
+                    Id = Guid.NewGuid(),
+                    Key = "WorkspaceModuleId",
+                    NormalizedKey = "WORKSPACEMODULEID",
+                    Title = new TranslatableValue
+                    {
+                        En = "Workspace Module Id",
+                        Ar = "معرّف وحدة مساحة العمل"
+                    },
+                    DataType = DataTypeEnum.Guid,
+                    ViewType = ViewTypeEnum.ForeignKey
+                });
+            }
+        }
+
         private void HandleFormulaProperties(
             Guid dataId,
             bool IsModule

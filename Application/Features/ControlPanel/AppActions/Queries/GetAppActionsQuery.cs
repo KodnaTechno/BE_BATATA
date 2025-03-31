@@ -1,5 +1,5 @@
-﻿using AppCommon.DTOs.Modules;
-using Application.Common.Models;
+﻿using AppCommon.DTOs;
+using AppCommon.DTOs.Modules;
 using Application.Interfaces;
 
 namespace Application.Features.ControlPanel.AppActions.Queries

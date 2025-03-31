@@ -31,4 +31,5 @@
         public DateTimeParseResult CreatedAt { get; set; }
         public DateTimeParseResult UpdatedAt { get; set; }
     }
+
 }
