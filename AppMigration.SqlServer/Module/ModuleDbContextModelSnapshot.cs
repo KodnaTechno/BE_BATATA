@@ -18,7 +18,7 @@ namespace AppMigration.SqlServer.Module
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("module")
-                .HasAnnotation("ProductVersion", "8.0.10")
+                .HasAnnotation("ProductVersion", "9.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -97,8 +97,9 @@ namespace AppMigration.SqlServer.Module
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("DataType")
-                        .HasColumnType("int");
+                    b.Property<string>("DataType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("DateTimeValue")
                         .HasColumnType("datetime2");
@@ -135,6 +136,10 @@ namespace AppMigration.SqlServer.Module
 
                     b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ViewType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("WorkspaceDataId")
                         .HasColumnType("uniqueidentifier");

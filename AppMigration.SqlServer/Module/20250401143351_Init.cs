@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AppMigration.SqlServer.Module
 {
     /// <inheritdoc />
-    public partial class Init_March : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -507,7 +507,8 @@ namespace AppMigration.SqlServer.Module
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     PropertyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DataType = table.Column<int>(type: "int", nullable: false),
+                    DataType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ViewType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SystemPropertyPath = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     GuidValue = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     StringValue = table.Column<string>(type: "nvarchar(max)", nullable: true),

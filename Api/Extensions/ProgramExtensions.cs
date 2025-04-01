@@ -20,6 +20,7 @@ using Application.Services;
 using AppWorkflow.Infrastructure.Data.Context;
 using AppWorkflow.Infrastructure;
 using AppWorkflow.Core.Interfaces.Services;
+using Microsoft.OpenApi.Models;
 
 namespace Api.Extensions
 {
@@ -159,7 +160,5 @@ namespace Api.Extensions
             return builder;
         }
     }
-
-
 
 }
