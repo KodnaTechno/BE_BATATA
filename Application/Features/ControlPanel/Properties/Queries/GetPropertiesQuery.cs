@@ -1,7 +1,6 @@
-﻿using AppCommon.DTOs.Modules;
-using Application.Common.Models;
+﻿using AppCommon.DTOs;
+using AppCommon.DTOs.Modules;
 using Application.Interfaces;
-using MediatR;
 
 namespace Application.Features.ControlPanel.Properties.Queries
 {

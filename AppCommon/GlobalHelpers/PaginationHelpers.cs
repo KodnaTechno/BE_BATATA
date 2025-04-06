@@ -1,4 +1,4 @@
-﻿using Application.Common.Models;
+﻿using AppCommon.DTOs;
 using Microsoft.EntityFrameworkCore;
 
 namespace AppCommon.GlobalHelpers

@@ -1,4 +1,4 @@
-﻿using Application.Common.Models;
+﻿using AppCommon.DTOs;
 using Events;
 using MediatR;
 

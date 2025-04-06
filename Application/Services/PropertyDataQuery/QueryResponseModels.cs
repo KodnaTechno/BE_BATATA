@@ -3,7 +3,7 @@ using AppCommon.EnumShared;
 using Module.Domain.Schema.Properties;
 using Module.Domain.Shared;
 
-namespace Application.Services.PropertyData
+namespace Application.Services.PropertyDataQuery
 {
     #region Query Models
     public class PropertyQueryModel

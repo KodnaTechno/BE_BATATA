@@ -23,6 +23,7 @@ using AppWorkflow.Core.Interfaces.Services;
 using AppWorkflow.Infrastructure.Actions;
 using Application.AppWorkflowActions;
 using AppWorkflow.Infrastructure.Services.Actions;
+using Microsoft.OpenApi.Models;
 
 namespace Api.Extensions
 {
@@ -166,7 +167,5 @@ namespace Api.Extensions
             return builder;
         }
     }
-
-
 
 }

@@ -12,8 +12,8 @@ using Module;
 namespace AppMigration.SqlServer.Module
 {
     [DbContext(typeof(ModuleDbContext))]
-    [Migration("20250323231642_Init_March")]
-    partial class Init_March
+    [Migration("20250401143351_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,7 +21,7 @@ namespace AppMigration.SqlServer.Module
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("module")
-                .HasAnnotation("ProductVersion", "8.0.10")
+                .HasAnnotation("ProductVersion", "9.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -100,8 +100,9 @@ namespace AppMigration.SqlServer.Module
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("DataType")
-                        .HasColumnType("int");
+                    b.Property<string>("DataType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("DateTimeValue")
                         .HasColumnType("datetime2");
@@ -138,6 +139,10 @@ namespace AppMigration.SqlServer.Module
 
                     b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ViewType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("WorkspaceDataId")
                         .HasColumnType("uniqueidentifier");

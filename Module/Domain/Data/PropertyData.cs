@@ -8,8 +8,8 @@ namespace Module.Domain.Data
         {
             public Guid PropertyId { get; set; }
             public virtual Property Property { get; set; }
-
             public DataTypeEnum DataType { get; set; }
+            public ViewTypeEnum ViewType  { get; set; }
             public string SystemPropertyPath { get; set; } // To Map the System Property 
 
             public Guid? GuidValue { get; set; }

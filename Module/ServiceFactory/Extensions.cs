@@ -27,6 +27,7 @@ namespace Module.ServiceFactory
             }
 
             services.AddScoped<PropertyKeyGenerator>();
+            services.AddScoped<PropertiesService>();
         }
 
         public static void ConfigureSqlServerDbContext(IServiceCollection services, string connectionString)

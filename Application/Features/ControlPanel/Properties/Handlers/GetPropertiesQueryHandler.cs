@@ -1,7 +1,7 @@
-﻿using AppCommon.DTOs.Modules;
+﻿using AppCommon.DTOs;
+using AppCommon.DTOs.Modules;
 using AppCommon.GlobalHelpers;
 using Application.Common.Handlers;
-using Application.Common.Models;
 using Application.Features.ControlPanel.Properties.Mapper;
 using Application.Features.ControlPanel.Properties.Queries;
 using MediatR;

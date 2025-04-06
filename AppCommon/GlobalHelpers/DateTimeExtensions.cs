@@ -49,7 +49,7 @@ namespace AppCommon.GlobalHelpers
             return Parse(dateTime, includeTime: false);
         }
 
-        public static object FormatTime(this TimeSpan? time)
+        public static TimeSpanParseResult FormatTime(this TimeSpan? time)
         {
             CultureInfo cultureInfo = Thread.CurrentThread.CurrentCulture;
             TimeSpan? regionTime = time.AdjustToRegionTime();
@@ -59,13 +59,17 @@ namespace AppCommon.GlobalHelpers
             if (regionTime.HasValue)
                 displayValue = DateTime.MinValue.Add(regionTime.Value).ToString(timespanFormat, cultureInfo);
 
-            return new
+            return new TimeSpanParseResult
             {
                 DisplayValue = displayValue,
-                RawValue = regionTime
+                RawValue = regionTime.Value
             };
         }
 
+        public static TimeSpanParseResult FormatTime(this TimeSpan time)
+        {
+            return FormatTime((TimeSpan?)time);
+        }
 
         public static object FormatDate(this string value)
         {
@@ -77,9 +81,9 @@ namespace AppCommon.GlobalHelpers
             return ParseStringDate(value, DATETIME_FORMAT, dt => dt.FormatDateTime());
         }
 
-        public static object FormatTime(this string value)
+        public static TimeSpanParseResult FormatTime(this string value)
         {
-            return ParseStringDate(value, TIME_FORMAT, dt => FormatTime(dt.TimeOfDay));
+            return (TimeSpanParseResult)ParseStringDate(value, TIME_FORMAT, dt => FormatTime(dt.TimeOfDay));
         }
 
         public static string ToSystemDateString(this string value)

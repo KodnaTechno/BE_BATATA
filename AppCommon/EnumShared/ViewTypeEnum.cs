@@ -26,6 +26,8 @@
         Dynamic,
         Attachment,
         MultiAttachment,
+        Connection,
+        ForeignKey,
         ModuleReference // => {"ReferenceModuleId":"", "Multiple": true, false}
     }
 }

@@ -1,32 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Remove="Features\ControlPanel\Workspace\Events\**" />
     <EmbeddedResource Remove="Features\ControlPanel\Workspace\Events\**" />
     <None Remove="Features\ControlPanel\Workspace\Events\**" />
   </ItemGroup>
-
   <ItemGroup>
     <Folder Include="Common\Behaviors\" />
     <Folder Include="Common\Exceptions\" />
     <Folder Include="Common\Constants\" />
+    <Folder Include="Common\Models\" />
     <Folder Include="Services\Caching\" />
   </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="Consul" Version="1.7.14.4" />
+    <PackageReference Include="Consul" Version="1.7.14.7" />
     <PackageReference Include="FluentValidation" Version="11.11.0" />
     <PackageReference Include="MediatR" Version="12.4.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.3" />
     <PackageReference Include="Riok.Mapperly" Version="4.0.0" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\AppCommon\AppCommon.csproj" />
     <ProjectReference Include="..\Events\Events.csproj" />
@@ -36,5 +32,4 @@
     <ProjectReference Include="..\Module\Module.csproj" />
     <ProjectReference Include="..\Workflow\AppWorkflow.csproj" />
   </ItemGroup>
-
 </Project>

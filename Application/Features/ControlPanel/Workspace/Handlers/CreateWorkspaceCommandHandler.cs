@@ -1,6 +1,6 @@
-﻿using AppCommon.DTOs.Modules;
+﻿using AppCommon.DTOs;
+using AppCommon.DTOs.Modules;
 using Application.Common.Handlers;
-using Application.Common.Models;
 using Application.Features.ControlPanel.Workspace.Commands;
 using Application.Features.ControlPanel.Workspace.Mapping;
 using Application.Services.EventsLogger;
@@ -8,7 +8,6 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Module;
-using Module.Service;
 
 namespace Application.Features.ControlPanel.Workspace.Handlers
 {

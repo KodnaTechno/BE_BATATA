@@ -13,8 +13,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppMigration.SqlServer.Identity
 {
     [DbContext(typeof(AppIdentityDbContext))]
-    [Migration("20250118122925_init")]
-    partial class init
+    [Migration("20250401143421_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -22,7 +22,7 @@ namespace AppMigration.SqlServer.Identity
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("identity")
-                .HasAnnotation("ProductVersion", "8.0.10")
+                .HasAnnotation("ProductVersion", "9.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -253,7 +253,7 @@ namespace AppMigration.SqlServer.Identity
                     b.Property<int?>("SourceId")
                         .HasColumnType("int");
 
-                    b.ComplexProperty<Dictionary<string, object>>("DisplayName", "AppIdentity.Domain.AppRole.DisplayName#Translatable", b1 =>
+                    b.ComplexProperty<Dictionary<string, object>>("DisplayName", "AppIdentity.Domain.AppRole.DisplayName#TranslatableValue", b1 =>
                         {
                             b1.IsRequired();
 
@@ -434,7 +434,7 @@ namespace AppMigration.SqlServer.Identity
                     b.Property<Guid>("RoleId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("ModuleId")
+                    b.Property<Guid>("ModuleId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("UserId", "RoleId", "ModuleId");

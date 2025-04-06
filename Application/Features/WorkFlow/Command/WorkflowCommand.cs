@@ -1,12 +1,7 @@
-﻿using AppCommon.DTOs.Modules;
-using Application.Common.Models;
+﻿using AppCommon.DTOs;
+using AppCommon.DTOs.Modules;
 using Application.Interfaces;
 using Events;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.WorkFlow.Command
 {

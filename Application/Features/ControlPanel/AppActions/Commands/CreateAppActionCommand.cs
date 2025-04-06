@@ -1,5 +1,4 @@
 ﻿using AppCommon.DTOs.Modules;
-using Application.Common.Models;
 using Application.Interfaces;
 using Events;
 using AppCommon.DTOs;

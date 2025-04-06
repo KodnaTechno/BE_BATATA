@@ -1,6 +1,6 @@
-﻿using AppCommon.DTOs.Modules;
+﻿using AppCommon.DTOs;
+using AppCommon.DTOs.Modules;
 using Application.Common.Handlers;
-using Application.Common.Models;
 using Application.Features.WorkFlow.Command;
 using Application.Services.EventsLogger;
 using AppWorkflow.Common.Enums;
@@ -11,12 +11,6 @@ using AppWorkflow.Infrastructure.Repositories.IRepository;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Module.Domain.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.WorkFlow.Handlers
 {

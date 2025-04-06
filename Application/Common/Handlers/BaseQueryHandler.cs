@@ -1,4 +1,4 @@
-﻿using Application.Common.Models;
+﻿using AppCommon.DTOs;
 using Application.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Http;

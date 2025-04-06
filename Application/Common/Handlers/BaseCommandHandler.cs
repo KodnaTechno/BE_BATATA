@@ -1,8 +1,7 @@
 ﻿using AppCommon;
-using Application.Common.Models;
+using AppCommon.DTOs;
 using Application.Interfaces;
 using Application.Services.EventsLogger;
-using Events;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;

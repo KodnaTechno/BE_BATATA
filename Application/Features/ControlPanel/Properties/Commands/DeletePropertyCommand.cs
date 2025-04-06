@@ -1,7 +1,7 @@
-﻿using Application.Common.Models;
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using Events.Modules.Properties;
 using Events;
+using AppCommon.DTOs;
 
 namespace Application.Features.ControlPanel.Properties.Commands
 {
