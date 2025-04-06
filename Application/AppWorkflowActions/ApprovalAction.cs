@@ -9,8 +9,11 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AppWorkflow.Core.Domain.Data;
 using AppWorkflow.Core.Interfaces.Services;
+using Application.AppWorkflowActions;
+using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
-namespace AppWorkflow.Infrastructure.Actions
+namespace Application.AppWorkflowActions
 {
     public class ApprovalAction : WorkflowActionBase
     {

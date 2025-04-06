@@ -27,7 +27,7 @@ public static class WorkflowServiceRegistration
 {
     public static void AddWorkflowInfrastructure(
         this IServiceCollection services,
-        IConfiguration configuration)
+        IConfiguration configuration, List<Type> actions)
     {
         // Register Options
         services.Configure<WorkflowOptions>(
@@ -67,26 +67,18 @@ public static class WorkflowServiceRegistration
 
 
         // Register all workflow actions
-        RegisterWorkflowActions(services);
+        RegisterWorkflowActions(services, actions);
 
         // Register workflow trigger handlers
         RegisterWorkflowTriggers(services);
     }
 
-    private static void RegisterWorkflowActions(IServiceCollection services)
+    private static void RegisterWorkflowActions(IServiceCollection services, List<Type> actions)
     {
-        // Register all implementations of IWorkflowAction
-        var actionTypes = typeof(IWorkflowAction).Assembly
-            .GetTypes()
-            .Where(t => !t.IsAbstract && !t.IsInterface
-                && typeof(IWorkflowAction).IsAssignableFrom(t));
-
-        foreach (var actionType in actionTypes)
+       
+        foreach (var actionType in actions)
         {
-            services.AddScoped(actionType);
-            services.AddScoped(
-                serviceProvider => (IWorkflowAction)ActivatorUtilities
-                    .CreateInstance(serviceProvider, actionType));
+            services.AddScoped(typeof(IWorkflowAction), actionType);
         }
     }
 

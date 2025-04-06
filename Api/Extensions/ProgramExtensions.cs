@@ -20,6 +20,9 @@ using Application.Services;
 using AppWorkflow.Infrastructure.Data.Context;
 using AppWorkflow.Infrastructure;
 using AppWorkflow.Core.Interfaces.Services;
+using AppWorkflow.Infrastructure.Actions;
+using Application.AppWorkflowActions;
+using AppWorkflow.Infrastructure.Services.Actions;
 
 namespace Api.Extensions
 {
@@ -84,8 +87,12 @@ namespace Api.Extensions
             services.AddFlexibleCaching(configuration);
 
             services.AddFileProvider(configuration);
-
-            services.AddWorkflowInfrastructure(configuration);
+            var assembly = typeof(CreateModuleAction).Assembly;
+            Type baseType = typeof(WorkflowActionBase);
+            var derivedTypes = assembly.GetTypes()
+                                       .Where(t => t.IsClass && !t.IsAbstract && baseType.IsAssignableFrom(t))
+                                       .ToList();
+            services.AddWorkflowInfrastructure(configuration, derivedTypes);
         }
 
         public static void ApplyMigrations(this IApplicationBuilder app, params Type[] dbContexts)

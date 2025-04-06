@@ -1,13 +1,19 @@
 ﻿using AppWorkflow.Core.Interfaces.Services;
 using AppWorkflow.Infrastructure.Services.Actions;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 
-namespace AppWorkflow.Infrastructure.Actions
+namespace Application.AppWorkflowActions
 {
-    public class DeleteModuleAction : WorkflowActionBase
+
+    public class UpdateModuleAction : WorkflowActionBase
     {
-        public DeleteModuleAction(ILogger<DeleteModuleAction> logger, IServiceProvider serviceProvider) : base(logger, serviceProvider)
+        public UpdateModuleAction(ILogger<UpdateModuleAction> logger, IServiceProvider serviceProvider) : base(logger, serviceProvider)
         {
         }
 

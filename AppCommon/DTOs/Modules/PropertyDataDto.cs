@@ -11,5 +11,6 @@ namespace AppCommon.DTOs.Modules
         public Guid? Id { get; set; }
         public Guid PropertyId { get; set; }
         public string  Value { get; set; }
+        public string PropertyKey { get; set; }
     }
 }

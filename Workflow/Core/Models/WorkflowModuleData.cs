@@ -16,6 +16,7 @@ namespace AppWorkflow.Core.Models
         public string CreatedBy { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public string UpdatedBy { get; set; }
-        public List<PropertyDataDto> ModuleProperties { get; set; } = new(); 
+        public List<PropertyDataDto> ModuleProperties { get; set; } = new();
+        public PropertyDataDto GetPropertyValueByKey(string key) => ModuleProperties?.FirstOrDefault(x => x.PropertyKey is not null && x.PropertyKey.Equals(key,StringComparison.OrdinalIgnoreCase));
     }
 }

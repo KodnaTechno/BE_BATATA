@@ -14,11 +14,9 @@ public class TransactionalStepExecutor : IStepExecutor
 
     public TransactionalStepExecutor(
         IStepTransactionManager transactionManager,
-        IWorkflowAction action,
         ILogger<TransactionalStepExecutor> logger)
     {
         _transactionManager = transactionManager;
-        _action = action;
         _logger = logger;
     }
 

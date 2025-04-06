@@ -223,7 +223,7 @@ namespace AppWorkflow.Infrastructure.Repositories
             return  _context.Workflows.ToList()
                         .Where(c =>
                             c.Metadata.Any(m => m.Key == "ModuleId" && m.Value.ToLower() == id.ToString().ToLower())
-                            && c.Metadata.Any(m => m.Key == "ModuleType" && m.Value == "Action")
+                            && c.Metadata.Any(m => m.Key == "ModuleType" && m.Value == "AppAction")
                         )
                         .SingleOrDefault();
         }

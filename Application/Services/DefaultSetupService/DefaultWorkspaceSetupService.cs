@@ -325,7 +325,7 @@ namespace Application.Services.DefaultSetupService
             }
         }
 
-        public void AddDefaultWorkflows(List<AppAction> actions, Guid userId)
+        public void AddDefaultWorkflows(List<AppAction> actions, Guid userId,Guid WorkspaceId)
         {
             foreach (var appAction in actions.Where(x=>x.Type!= ActionType.Read))
             {
@@ -336,7 +336,11 @@ namespace Application.Services.DefaultSetupService
                         En = $"{appAction.Name.En} Workflow",
                         Ar = $"{appAction.Name.Ar} سير العمل"
                     }.AsText(),
-                    Metadata = new Dictionary<string, string>{{"ModuleType","Action"},{"ModuleId",$"{appAction.Id}"}},
+                    Metadata = new Dictionary<string, string>{
+                        {"ModuleType","AppAction"},
+                        {"ModuleId",$"{appAction.Id}"},
+                        {"WorksapceId",WorkspaceId.ToString() }
+                    },
                     Description = $"Workflow for {appAction.Name.En} action",
                     Steps = new List<CreateWorkflowStepDto>
                     {

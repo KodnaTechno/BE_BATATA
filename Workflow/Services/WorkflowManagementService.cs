@@ -40,7 +40,11 @@ namespace AppWorkflow.Services
                 Metadata = createDto.Metadata ?? new Dictionary<string, string>(),
                 ModuleType="ttestt",
                 RetryPolicy=new RetryPolicy(),
-                TriggerConfigs=new List<TriggerConfiguration>()
+                TriggerConfigs=new List<TriggerConfiguration>(),
+                AuditLog=string.Empty,
+                UpdatedAt= DateTime.UtcNow,
+                UpdatedBy="dummy",
+                
             };
 
             // Map and connect steps

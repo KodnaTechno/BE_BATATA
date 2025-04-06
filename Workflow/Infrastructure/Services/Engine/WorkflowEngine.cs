@@ -78,8 +78,8 @@ public class WorkflowEngine: IWorkflowEngine
             await _instanceRepository.CreateAsync(instance);
             await _telemetry.TrackWorkflowStarted(instance);
 
-            // Start execution of initial step
-            _ = await Task.Run(async () => await ExecuteStepAsync(instance.Id, workflow.InitialStepId));
+        await ExecuteStepAsync(instance.Id, workflow.InitialStepId);
+          
 
             return instance;
         }
@@ -120,8 +120,8 @@ public class WorkflowEngine: IWorkflowEngine
 
     public async Task<StepExecutionResult> ExecuteStepAsync(Guid instanceId, Guid stepId)
     {
-        
 
+        using var scope = _serviceProvider.CreateScope();
         try
         {
             var instance = await _instanceRepository.GetByIdAsync(instanceId);
@@ -134,15 +134,16 @@ public class WorkflowEngine: IWorkflowEngine
                 CurrentStepId = stepId,
                 ModuleData = instance.ModuleData,
                 Variables = instance.Variables,
-                Status = instance.Status
+                Status = instance.Status,
+                Metadata= workflow.Metadata
             };
 
             // Update step status
             await UpdateStepStatus(instance, stepId, StepStatus.InProgress);
 
             // Get the appropriate action
-            var action = _actionResolver.ResolveAction(step.ActionType);
-            var actionContext = CreateActionContext(instance, step);
+            var action = _actionResolver.ResolveAction(step.ActionType, scope);
+            var actionContext = CreateActionContext(instance, step, context);
 
             // Execute the action
             var result = await ExecuteActionWithRetryAsync(action, actionContext, step.RetryPolicy);
@@ -504,7 +505,7 @@ public class WorkflowEngine: IWorkflowEngine
             //await _telemetry.TrackWorkflowCompleted(instance);
         }
 
-        private ActionContext CreateActionContext(WorkflowData instance, WorkflowStep step)
+        private ActionContext CreateActionContext(WorkflowData instance, WorkflowStep step, WorkflowExecutionContext context)
         {
             return new ActionContext
             {
@@ -514,7 +515,8 @@ public class WorkflowEngine: IWorkflowEngine
                 ActionConfiguration = step.ActionConfiguration,
                 Variables = instance.Variables,
                 ServiceProvider = _serviceProvider,
-                CancellationToken = CancellationToken.None
+                CancellationToken = CancellationToken.None,
+                WorkflowExecutionContext = context
             };
         }
 

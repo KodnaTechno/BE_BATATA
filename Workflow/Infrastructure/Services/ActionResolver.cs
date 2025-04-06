@@ -1,5 +1,4 @@
 ﻿using AppWorkflow.Common.Exceptions;
-using AppWorkflow.Infrastructure.Actions;
 using AppWorkflow.Infrastructure.Services.Actions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -13,7 +12,7 @@ namespace AppWorkflow.Infrastructure.Services
 {
     public interface IActionResolver
     {
-        IWorkflowAction ResolveAction(string actionType);
+        IWorkflowAction ResolveAction(string actionType,IServiceScope scope);
         void RegisterAction<TAction>(string actionType) where TAction : IWorkflowAction;
     }
 
@@ -21,7 +20,7 @@ namespace AppWorkflow.Infrastructure.Services
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<ActionResolver> _logger;
-        private readonly IDictionary<string, Type> _actionTypes;
+        private  IDictionary<string, Type> _actionTypes;
 
         public ActionResolver(
             IServiceProvider serviceProvider,
@@ -29,12 +28,12 @@ namespace AppWorkflow.Infrastructure.Services
         {
             _serviceProvider = serviceProvider;
             _logger = logger;
-            _actionTypes = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
-            RegisterBuiltInActions();
+          
         }
 
-        public IWorkflowAction ResolveAction(string actionType)
+        public IWorkflowAction ResolveAction(string actionType, IServiceScope s)
         {
+            _actionTypes = _serviceProvider.GetServices<IWorkflowAction>().ToDictionary(c => c.GetType().Name, c => c.GetType());
             try
             {
                 if (string.IsNullOrEmpty(actionType))
@@ -47,8 +46,8 @@ namespace AppWorkflow.Infrastructure.Services
                     throw new WorkflowValidationException($"No action implementation found for type: {actionType}", "ACTION_NOT_FOUND");
                 }
 
-                using var scope = _serviceProvider.CreateScope();
-                var action = (IWorkflowAction)ActivatorUtilities.CreateInstance(scope.ServiceProvider, implementationType);
+                
+                var action = (IWorkflowAction)ActivatorUtilities.CreateInstance(s.ServiceProvider, implementationType);
                 return action;
             }
             catch (Exception ex)
@@ -68,18 +67,6 @@ namespace AppWorkflow.Infrastructure.Services
                 actionType, typeof(TAction).Name);
         }
 
-        private void RegisterBuiltInActions()
-        {
-            // Register core action types
-            //RegisterAction<CreateModuleAction>("CREATE_MODULE");
-            RegisterAction<UpdateModuleAction>("UPDATE_MODULE");
-            RegisterAction<DeleteModuleAction>("DELETE_MODULE");
-            //RegisterAction<SendNotificationAction>("SEND_NOTIFICATION");
-            //RegisterAction<ExecuteQueryAction>("EXECUTE_QUERY");
-            //RegisterAction<HttpRequestAction>("HTTP_REQUEST");
-            //RegisterAction<FileOperationAction>("FILE_OPERATION");
-            //RegisterAction<ValidationAction>("VALIDATE_DATA");
-            //RegisterAction<TransformDataAction>("TRANSFORM_DATA");
-        }
+        
     }
 }
