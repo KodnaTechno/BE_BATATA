@@ -3,6 +3,7 @@ using AppWorkflow.Core.Interfaces.Services;
 using AppWorkflow.Infrastructure.Data.Context;
 using AppWorkflow.Services.Interfaces;
 using Microsoft.Extensions.Caching.Distributed;
+using AppWorkflow.Core.Models;
 
 namespace AppWorkflow.Infrastructure.Services
 {
@@ -62,18 +63,6 @@ namespace AppWorkflow.Infrastructure.Services
                     currentStep.UpdatedAt = DateTime.UtcNow;
                 }
 
-                // Save metadata
-                foreach (var (key, value) in context.Metadata)
-                {
-                    workflowData.AuditLog += $"{DateTime.UtcNow:s} - {key}: {value}\n";
-                }
-
-                // Save execution path
-                foreach (var path in context.ExecutionPath)
-                {
-                    workflowData.AuditLog += $"{path}\n";
-                }
-
                 await _dbContext.SaveChangesAsync();
 
                 // Cache the latest state
@@ -111,7 +100,9 @@ namespace AppWorkflow.Infrastructure.Services
 
             if (cachedState != null)
             {
-                return JsonSerializer.Deserialize<WorkflowExecutionContext>(cachedState);
+                var deserialized = JsonSerializer.Deserialize<WorkflowExecutionContext>(cachedState);
+                if (deserialized != null)
+                    return deserialized;
             }
 
             // Load from database
@@ -133,7 +124,7 @@ namespace AppWorkflow.Infrastructure.Services
                 Status = workflowData.Status,
                 CurrentStepId = workflowData.CurrentStepId,
                 Variables = workflowData.Variables,
-                ModuleData = workflowData.ModuleData,
+                ModuleData = workflowData.ModuleData ?? new WorkflowModuleData(),
                 StartTime = workflowData.StartedAt
             };
 
@@ -144,15 +135,6 @@ namespace AppWorkflow.Infrastructure.Services
             if (currentStep != null)
             {
                 context.StepData = currentStep.StepVariables;
-            }
-
-            // Parse execution path from audit log
-            if (!string.IsNullOrEmpty(workflowData.AuditLog))
-            {
-                context.ExecutionPath = workflowData.AuditLog
-                    .Split('\n')
-                    .Where(l => !string.IsNullOrEmpty(l))
-                    .ToList();
             }
 
             return context;
@@ -243,7 +225,6 @@ namespace AppWorkflow.Infrastructure.Services
                 }
             }
 
-            workflowData.AuditLog += $"{DateTime.UtcNow:s} - Rolled back to checkpoint from {checkpoint.CheckpointTime:s}\n";
             await _dbContext.SaveChangesAsync();
 
             // Clear cache

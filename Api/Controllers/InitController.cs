@@ -2,7 +2,7 @@ using Application.Features.ControlPanel.Workspace.Commands;
 using Application.Features.ControlPanel.Workspace.Queries;
 using AppWorkflow.Common.Enums;
 using AppWorkflow.Core.Domain.Data;
-using AppWorkflow.Core.Domain.Schema;
+
 using AppWorkflow.Core.Interfaces.Services;
 using AppWorkflow.Core.Models;
 using AppWorkflow.Infrastructure.Data.Context;
@@ -45,7 +45,6 @@ namespace Api.Controllers
             workflow.ModuleType = "WorkSpace";
             workflow.Status = WorkflowStatus.Active;
             workflow.InitialStepId = stepId;
-            workflow.AuditLog = "";
             workflow.CreatedBy = "sds";
             workflow.UpdatedAt = DateTime.Now;
             workflow.UpdatedBy = "sds";

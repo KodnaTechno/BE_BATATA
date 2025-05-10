@@ -11,4 +11,6 @@ global using System.Text.Json;
 global using AppWorkflow.Common.Enums;
 global using AppWorkflow.Common.Exceptions;
 global using AppWorkflow.Core.Interfaces;
+global using AppWorkflow.Domain.Schema;
+global using AppWorkflow.Core.Domain.Data;
 

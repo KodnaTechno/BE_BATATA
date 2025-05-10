@@ -1,27 +1,16 @@
-namespace AppWorkflow.Common.Exceptions;
-
-using AppWorkflow.Infrastructure.Data.Context;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-public class ExpressionEvaluationException : Exception
+namespace AppWorkflow.Common.Exceptions
+{
+    public class ExpressionEvaluationException : WorkflowException
     {
-        public ExpressionEvaluationException(string message) : base(message) { }
-        public ExpressionEvaluationException(string message, Exception innerException)
-            : base(message, innerException) { }
+        public ExpressionEvaluationException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+       
     }
-
-    // Example usage of custom expression parser (you might want to use a library like Flee or NCalc instead)
-    public interface IExpressionParser
-    {
-        Task<IExpression> ParseAsync(string expression);
-    }
-
-    public interface IExpression
-    {
-        Task<object> EvaluateAsync(EvaluationContext context);
-    }
-
-    public interface IExpressionValidator
-    {
-        Task<bool> ValidateAsync(string expression);
-    }
+}

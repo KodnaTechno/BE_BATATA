@@ -1,4 +1,4 @@
-namespace AppWorkflow.Core.Domain.Schema;
+namespace AppWorkflow.Domain.Schema;
 
 public class RetryPolicy
 {

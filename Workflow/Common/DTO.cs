@@ -63,7 +63,7 @@ namespace AppWorkflow.Common.DTO
         public DateTime? UpdatedAt { get; set; }
         public DateTime? PublishedAt { get; set; }
         public List<WorkflowStepDto> Steps { get; set; }
-        public List<WorkflowVariableDto> Variables { get; set; }
+        public List<WorkflowVariableDto> Variables { get; set; }    
         public Dictionary<string, string> Metadata { get; set; }
         public List<WorkflowTriggerDto> Triggers { get; set; }
     }

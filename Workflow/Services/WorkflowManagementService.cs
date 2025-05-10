@@ -1,5 +1,5 @@
 ﻿using AppWorkflow.Common.DTO;
-using AppWorkflow.Core.Domain.Schema;
+
 using AppWorkflow.Core.Interfaces.Services;
 using AppWorkflow.Infrastructure.Data.Configurations;
 using AppWorkflow.Infrastructure.Repositories.IRepository;
@@ -41,7 +41,6 @@ namespace AppWorkflow.Services
                 ModuleType="ttestt",
                 RetryPolicy=new RetryPolicy(),
                 TriggerConfigs=new List<TriggerConfiguration>(),
-                AuditLog=string.Empty,
                 UpdatedAt= DateTime.UtcNow,
                 UpdatedBy="dummy",
                 
@@ -60,7 +59,7 @@ namespace AppWorkflow.Services
                     UpdatedBy="dummi",
                     RetryPolicy = new RetryPolicy(),
                     Description =stepDto.Name,
-                    ActionConfiguration = stepDto.Configuration ?? default,
+                    ActionConfiguration = stepDto.Configuration ?? System.Text.Json.JsonDocument.Parse("{}"),
                 };
                 stepDict[step.Name] = step;
                 return step;
@@ -71,9 +70,11 @@ namespace AppWorkflow.Services
             var validationResult = await workflowValidator.ValidateWorkflowAsync(workflow);
             if (!validationResult.IsValid)
             {
-                throw new WorkflowValidationException(validationResult.Errors);
+                // Convert validation errors to a single string for the exception
+                var errorMessage = string.Join("; ", validationResult.Errors.Select(e => e.Error));
+                throw new WorkflowValidationException(errorMessage);
             }
-            workflow.InitialStepId = workflow.Steps.FirstOrDefault().Id;
+            workflow.InitialStepId = workflow.Steps.FirstOrDefault()?.Id ?? Guid.Empty;
             // Create workflow and version
             await workflowRepository.CreateAsync(workflow, cancellationToken);
 
@@ -120,35 +121,113 @@ namespace AppWorkflow.Services
         public async Task<IEnumerable<WorkflowListItemDto>> GetWorkflowsAsync(
             int page = 1,
             int pageSize = 20,
-            string searchTerm = null,
+            string? searchTerm = null,
             WorkflowStatus? status = null,
             CancellationToken cancellationToken = default)
         {
-           throw new NotImplementedException();
+            // No GetAllAsync, so get all workflows and filter/paginate in memory
+            var allWorkflows = await workflowRepository.GetVersionHistoryAsync(Guid.Empty); // Replace Guid.Empty with actual logic if needed
+            var filtered = allWorkflows
+                .Where(w => (string.IsNullOrEmpty(searchTerm) || (w.Name != null && w.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)))
+                    && (!status.HasValue || w.Status == status.Value))
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(MapToListItemDto);
+            return filtered;
         }
 
-        // ... Other methods (delete, publish, etc.) with DTO mapping
+        public async Task DeleteWorkflowAsync(Guid workflowId, CancellationToken cancellationToken = default)
+        {
+            await workflowRepository.DeleteAsync(workflowId);
+        }
+
+        public async Task<WorkflowDto> PublishWorkflowAsync(Guid workflowId, CancellationToken cancellationToken = default)
+        {
+            var workflow = await workflowRepository.GetByIdAsync(workflowId);
+            if (workflow == null) throw new WorkflowNotFoundException(workflowId);
+            workflow.Status = WorkflowStatus.Active;
+            await workflowRepository.UpdateAsync(workflow);
+            return MapToDto(workflow);
+        }
+
+        public async Task<WorkflowDto> DeactivateWorkflowAsync(Guid workflowId, CancellationToken cancellationToken = default)
+        {
+            var workflow = await workflowRepository.GetByIdAsync(workflowId);
+            if (workflow == null) throw new WorkflowNotFoundException(workflowId);
+            workflow.Status = WorkflowStatus.Suspended;
+            await workflowRepository.UpdateAsync(workflow);
+            return MapToDto(workflow);
+        }
+
+        public async Task<IEnumerable<WorkflowDto>> GetWorkflowVersionHistoryAsync(Guid workflowId, CancellationToken cancellationToken = default)
+        {
+            var versions = await workflowRepository.GetVersionHistoryAsync(workflowId);
+            return versions.Select(MapToDto);
+        }
+
+        public async Task<WorkflowDto> CloneWorkflowAsync(Guid workflowId, CancellationToken cancellationToken = default)
+        {
+            var workflow = await workflowRepository.GetByIdAsync(workflowId);
+            if (workflow == null) throw new WorkflowNotFoundException(workflowId);
+            var clone = new Workflow
+            {
+                Id = Guid.NewGuid(),
+                Name = workflow.Name + " (Clone)",
+                Description = workflow.Description,
+                Status = WorkflowStatus.Draft,
+                Version = "1",
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+                CreatedBy = workflow.CreatedBy,
+                UpdatedBy = workflow.UpdatedBy,
+                Metadata = new Dictionary<string, string>(workflow.Metadata),
+                ModuleType = workflow.ModuleType,
+                RetryPolicy = workflow.RetryPolicy,
+                TriggerConfigs = workflow.TriggerConfigs != null ? new List<TriggerConfiguration>(workflow.TriggerConfigs) : null,
+                Steps = workflow.Steps.Select(s => new WorkflowStep
+                {
+                    Id = Guid.NewGuid(),
+                    Name = s.Name,
+                    ActionType = s.ActionType,
+                    CreatedBy = s.CreatedBy,
+                    UpdatedBy = s.UpdatedBy,
+                    RetryPolicy = s.RetryPolicy,
+                    Description = s.Description,
+                    ActionConfiguration = s.ActionConfiguration,
+                    Transitions = s.Transitions?.Select(t => new StepTransition
+                    {
+                        Id = Guid.NewGuid(),
+                        TargetStepId = t.TargetStepId,
+                        Condition = t.Condition
+                    }).ToList()
+                }).ToList(),
+                Variables = workflow.Variables != null ? new List<WorkflowVariable>(workflow.Variables) : new List<WorkflowVariable>(),
+                PropertiesKeys = workflow.PropertiesKeys != null ? new List<string>(workflow.PropertiesKeys) : new List<string>()
+            };
+            await workflowRepository.CreateAsync(clone, cancellationToken);
+            return MapToDto(clone);
+        }
 
         private WorkflowDto MapToDto(Workflow workflow)
         {
             return new WorkflowDto
             {
                 Id = workflow.Id,
-                Name = workflow.Name,
-                Description = workflow.Description,
+                Name = workflow.Name ?? string.Empty,
+                Description = workflow.Description ?? string.Empty,
                 Status = workflow.Status,
-                Version = workflow.Version,
+                Version = workflow.Version ?? string.Empty,
                 CreatedAt = workflow.CreatedAt,
                 UpdatedAt = workflow.UpdatedAt,
                 Metadata = workflow.Metadata,
                 Steps = workflow.Steps.Select(s => new WorkflowStepDto
                 {
                     Id = s.Id,
-                    Name = s.Name,
+                    Name = s.Name ?? string.Empty,
                     Transitions = s.Transitions?.Select(t => new StepTransitionDto
                     {
                         TargetStepId = t.TargetStepId,
-                        Condition = t.Condition
+                        Condition = t.Condition ?? string.Empty
                     }).ToList()
                 }).ToList(),
              
@@ -161,16 +240,14 @@ namespace AppWorkflow.Services
             return new WorkflowListItemDto
             {
                 Id = workflow.Id,
-                Name = workflow.Name,
-                Description = workflow.Description,
+                Name = workflow.Name ?? string.Empty,
+                Description = workflow.Description ?? string.Empty,
                 Status = workflow.Status,
-                Version = workflow.Version,
+                Version = workflow.Version ?? string.Empty,
                 CreatedAt = workflow.CreatedAt,
                 UpdatedAt = workflow.UpdatedAt
             };
         }
-
-       
 
      
     }

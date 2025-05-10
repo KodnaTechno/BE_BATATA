@@ -16,7 +16,12 @@ using Microsoft.EntityFrameworkCore;
 using AppWorkflow.Services.Interfaces;
 using AppWorkflow.Services;
 using Microsoft.OpenApi.Models;
-
+using Application.AppWorkflowActions;
+using AppWorkflow.Core.Interfaces.Services;
+using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
+using AppWorkflow.Infrastructure.Actions;
+using AppWorkflow.Infrastructure.Services.Actions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +40,15 @@ builder.Services.AddCustomServices(builder.Configuration);
 
 builder.Services.AddHangfire(builder.Configuration, false);
 builder.Services.AddScoped<IWorkflowManagementService, WorkflowManagementService>();
+
+// Register all IWorkflowAction implementations in AppWorkflow.Infrastructure.Actions via reflection
+Assembly appActionsAssembly = typeof(CreateWorkspaceAction).Assembly;
+var workflowActionType = typeof(IWorkflowAction);
+foreach (var type in appActionsAssembly.GetTypes().Where(t => workflowActionType.IsAssignableFrom(t) && t.IsClass && !t.IsAbstract))
+{
+    builder.Services.AddScoped(workflowActionType, type);
+}
+
 var app = builder.Build();
 
 ServiceActivator.Configure(app.Services);

@@ -1,6 +1,5 @@
 
 using AppWorkflow.Core.Domain.Data;
-using AppWorkflow.Core.Domain.Schema;
 using AppWorkflow.Core.Models;
 using AppWorkflow.Infrastructure.Data.Configurations;
 using Microsoft.EntityFrameworkCore;

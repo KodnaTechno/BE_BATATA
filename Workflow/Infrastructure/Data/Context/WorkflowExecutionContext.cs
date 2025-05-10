@@ -2,7 +2,7 @@ namespace AppWorkflow.Infrastructure.Data.Context;
 
 using System.Text;
 using AppWorkflow.Common.Enums;
-using AppWorkflow.Core.Domain.Schema;
+
 using AppWorkflow.Core.Models;
 using Microsoft.Extensions.DependencyInjection;
 

@@ -1,5 +1,5 @@
 ﻿using AppCommon.GlobalHelpers;
-using AppWorkflow.Core.Domain.Schema;
+
 using AppWorkflow.Core.Interfaces.Services;
 using AppWorkflow.Infrastructure.Repositories.IRepository;
 
@@ -61,7 +61,7 @@ namespace AppWorkflow.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to create new version for workflow {WorkflowId}", workflowId);
-                throw new WorkflowEngineException("Failed to create new version", workflowId, null, null, ex);
+                throw new WorkflowEngineException("Failed to create new version", workflowId, null, Guid.Empty, ex);
             }
         }
 

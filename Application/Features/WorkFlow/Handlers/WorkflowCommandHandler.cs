@@ -3,25 +3,27 @@ using AppCommon.DTOs.Modules;
 using Application.Common.Handlers;
 using Application.Features.WorkFlow.Command;
 using Application.Services.EventsLogger;
-using AppWorkflow.Common.Enums;
-using AppWorkflow.Core.Domain.Schema;
+
 using AppWorkflow.Core.Interfaces.Services;
 using AppWorkflow.Core.Models;
 using AppWorkflow.Infrastructure.Repositories.IRepository;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using WorkflowCommandResultApp = Application.Features.WorkFlow.Command.WorkflowCommandResult;
+using AppWorkflow.Domain.Schema;
+using AppWorkflow.Common.Enums;
 
 namespace Application.Features.WorkFlow.Handlers
 {
-    public class WorkflowCommandHandler : BaseCommandHandler<WorkflowCommand, WorkflowCommandResult>
+    public class WorkflowCommandHandler : BaseCommandHandler<WorkflowCommand, WorkflowCommandResultApp>
     {
         private readonly IWorkflowEngine _workflowEngine;
         private readonly IWorkflowRepository _workflowRepository;
 
         public WorkflowCommandHandler(
             IMediator mediator,
-            ILogger<BaseCommandHandler<WorkflowCommand, WorkflowCommandResult>> logger,
+            ILogger<BaseCommandHandler<WorkflowCommand, WorkflowCommandResultApp>> logger,
             IEventLogger eventLogger,
             IHttpContextAccessor httpContextAccessor,
             IWorkflowEngine workflowEngine,
@@ -32,7 +34,7 @@ namespace Application.Features.WorkFlow.Handlers
             _workflowRepository = workflowRepository;
         }
 
-        protected override async Task<ApiResponse<WorkflowCommandResult>> HandleCommand(
+        protected override async Task<ApiResponse<WorkflowCommandResultApp>> HandleCommand(
             WorkflowCommand request, CancellationToken cancellationToken)
         {
             try
@@ -41,7 +43,7 @@ namespace Application.Features.WorkFlow.Handlers
                 var workflow = await FindWorkflowForActionAsync(request.ActionId, cancellationToken);
                 if (workflow == null)
                 {
-                    return ApiResponse<WorkflowCommandResult>.Fail(
+                    return ApiResponse<WorkflowCommandResultApp>.Fail(
                         "WORKFLOW_NOT_FOUND",
                         $"No workflow found for action {request.ActionId}");
                 }
@@ -62,7 +64,7 @@ namespace Application.Features.WorkFlow.Handlers
                 if (workflowInstance.Status == WorkflowStatus.Completed)
                 {
                     // Workflow completed - retrieve result from output variables
-                    return ApiResponse<WorkflowCommandResult>.Success(new WorkflowCommandResult
+                    return ApiResponse<WorkflowCommandResultApp>.Success(new WorkflowCommandResultApp
                     {
                         Success = true,
                         Result = ExtractPrimaryResult(workflowInstance.Variables),
@@ -73,7 +75,7 @@ namespace Application.Features.WorkFlow.Handlers
 
 
                 // 5. Workflow is running in the background - return reference to track it
-                return ApiResponse<WorkflowCommandResult>.Success(new WorkflowCommandResult
+                return ApiResponse<WorkflowCommandResultApp>.Success(new WorkflowCommandResultApp
                 {
                     Success = true,
                     Result = new { WorkflowId = workflowInstance.Id },
@@ -83,13 +85,13 @@ namespace Application.Features.WorkFlow.Handlers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error executing workflow for action {ActionId}", request.ActionId);
-                return ApiResponse<WorkflowCommandResult>.Fail(
+                return ApiResponse<WorkflowCommandResultApp>.Fail(
                     "WORKFLOW_EXECUTION_ERROR",
                     $"Error executing workflow: {ex.Message}");
             }
         }
 
-        private async Task<Workflow> FindWorkflowForActionAsync(Guid actionId, CancellationToken cancellationToken)
+        private async Task<AppWorkflow.Domain.Schema.Workflow> FindWorkflowForActionAsync(Guid actionId, CancellationToken cancellationToken)
         {
             // Query to find workflow where the action ID is specified in metadata
             // Example:

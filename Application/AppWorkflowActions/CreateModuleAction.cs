@@ -7,6 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Module;
+using Module.Domain.Data;
+using AppCommon.DTOs.Modules;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.AppWorkflowActions
 {
@@ -16,9 +20,34 @@ namespace Application.AppWorkflowActions
         {
         }
 
-        public override Task<ActionResult> ExecuteAsync(ActionContext context)
+        public override async Task<ActionResult> ExecuteAsync(ActionContext context)
         {
-            throw new NotImplementedException();
+            var db = context.ServiceProvider.GetRequiredService<ModuleDbContext>();
+            var userId = context.CurrentUserId ?? Guid.Empty;
+            var moduleData = new ModuleData
+            {
+                CreatedAt = DateTime.UtcNow,
+                CreatedBy = userId,
+                UpdatedAt = DateTime.UtcNow,
+                UpdatedBy = userId,
+                ModuleId = context.ModuleData?.Id ?? Guid.Empty,
+                PropertyData = context.ModuleData?.ModuleProperties?.Select(p => new PropertyData
+                {
+                    PropertyId = p.PropertyId,
+                    StringValue = p.Value,
+                    // Map other value types as needed
+                }).ToList() ?? new List<PropertyData>()
+            };
+            try
+            {
+                db.ModuleData.Add(moduleData);
+                await db.SaveChangesAsync();
+                return new ActionResult { Success = true, Message = "Module created successfully" };
+            }
+            catch (Exception ex)
+            {
+                return new ActionResult { Success = false, Exception = ex, Message = ex.Message };
+            }
         }
 
         public override Task<object> GetConfigurationSchemaAsync()

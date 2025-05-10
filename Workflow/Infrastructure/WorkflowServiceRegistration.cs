@@ -1,10 +1,8 @@
 ﻿using AppWorkflow.Common.Exceptions;
-using AppWorkflow.Common.Extensions;
 using AppWorkflow.Core.Interfaces.Services;
 using AppWorkflow.Engine;
 using AppWorkflow.Infrastructure.Data.Context;
 using AppWorkflow.Infrastructure.Services.Actions;
-using AppWorkflow.Infrastructure.Services.Engine;
 using AppWorkflow.Infrastructure.Services;
 using AppWorkflow.Infrastructure.Triggers;
 using AppWorkflow.Services.Interfaces;
@@ -21,6 +19,10 @@ using Microsoft.AspNetCore.Http;
 using AppWorkflow.Services.HealthCheck;
 using Module;
 using AppWorkflow.Expressions;
+using MediatR;
+using Events;
+using AppWorkflow.Common;
+
 namespace AppWorkflow.Infrastructure;
 
 public static class WorkflowServiceRegistration
@@ -65,17 +67,24 @@ public static class WorkflowServiceRegistration
         //services.AddScoped<IExpressionParser>();
         //services.AddScoped<IExpressionValidator>();
 
+        services.AddScoped<AppWorkflow.Triggers.TriggerManager>();
 
         // Register all workflow actions
         RegisterWorkflowActions(services, actions);
 
         // Register workflow trigger handlers
         RegisterWorkflowTriggers(services);
+
+        // Register EventTriggerListener as a MediatR notification handler for IEvent
+        services.AddScoped<INotificationHandler<Events.IEvent>, AppWorkflow.Infrastructure.Triggers.EventTriggerListener>();
+
+        // Register ScheduledTriggerBackgroundService as a hosted service
+        services.AddHostedService<AppWorkflow.Infrastructure.Triggers.ScheduledTriggerBackgroundService>();
     }
 
     private static void RegisterWorkflowActions(IServiceCollection services, List<Type> actions)
     {
-       
+        // Only register actions passed in from the host (no hardcoded registrations)
         foreach (var actionType in actions)
         {
             services.AddScoped(typeof(IWorkflowAction), actionType);
@@ -85,13 +94,20 @@ public static class WorkflowServiceRegistration
     private static void RegisterWorkflowTriggers(IServiceCollection services)
     {
         services.AddScoped<IWorkflowTrigger, ScheduledTrigger>();
-        // Add other trigger implementations
+        services.AddScoped<IWorkflowTrigger, ManualTrigger>();
+        services.AddScoped<IWorkflowTrigger, ExternalTrigger>();
+        services.AddScoped<IWorkflowTrigger, EventTrigger>();
     }
 
     private static void ConfigureDB(IServiceCollection services, IConfiguration configuration)
     {
-        string connectionString = configuration.GetConnectionString("DefaultConnection");
-        string databaseProvider = configuration["DatabaseProvider"];
+        string? connectionString = configuration.GetConnectionString("DefaultConnection");
+        string? databaseProvider = configuration["DatabaseProvider"];
+
+        if (string.IsNullOrEmpty(connectionString) || string.IsNullOrEmpty(databaseProvider))
+        {
+            throw new InvalidOperationException("Database connection string or provider is not configured.");
+        }
 
         switch (databaseProvider)
         {

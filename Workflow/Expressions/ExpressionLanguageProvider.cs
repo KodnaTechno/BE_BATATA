@@ -1,6 +1,5 @@
 namespace AppWorkflow.Expressions;
 
-using AppWorkflow.Common.Exceptions;
 using AppWorkflow.Infrastructure.Data.Context;
 using Microsoft.Extensions.Logging;
 using System.Text;

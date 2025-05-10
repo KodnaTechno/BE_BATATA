@@ -1,5 +1,5 @@
 using AppWorkflow.Common.Enums;
-using AppWorkflow.Core.Domain.Schema;
+
 using AppWorkflow.Engine;
 using AppWorkflow.Infrastructure.Data.Context;
 using Microsoft.Extensions.Logging;

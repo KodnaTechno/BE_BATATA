@@ -1,4 +1,6 @@
-﻿namespace AppCommon.DTOs.Modules
+﻿// WARNING: This class name conflicts with Application.Features.WorkFlow.Command.WorkflowCommandResult
+// If you intend to use only one, consider removing or renaming the other.
+namespace AppCommon.DTOs.Modules
 {
     public class WorkflowCommandResult
     {

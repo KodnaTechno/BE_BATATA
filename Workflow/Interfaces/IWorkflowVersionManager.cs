@@ -1,6 +1,6 @@
 namespace AppWorkflow.Core.Interfaces.Services;
 
-using AppWorkflow.Core.Domain.Schema;
+
 using System.Text;
 
 public interface IWorkflowVersionManager

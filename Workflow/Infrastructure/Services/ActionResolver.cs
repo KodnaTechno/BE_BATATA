@@ -20,7 +20,6 @@ namespace AppWorkflow.Infrastructure.Services
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<ActionResolver> _logger;
-        private  IDictionary<string, Type> _actionTypes;
 
         public ActionResolver(
             IServiceProvider serviceProvider,
@@ -33,20 +32,14 @@ namespace AppWorkflow.Infrastructure.Services
 
         public IWorkflowAction ResolveAction(string actionType, IServiceScope s)
         {
-            _actionTypes = _serviceProvider.GetServices<IWorkflowAction>().ToDictionary(c => c.GetType().Name, c => c.GetType());
+            // Use the static registry for action lookup
+            var implementationType = Actions.WorkflowActionRegistry.GetActionType(actionType);
+            if (implementationType == null)
+            {
+                throw new WorkflowValidationException($"No action implementation found for type: {actionType}");
+            }
             try
             {
-                if (string.IsNullOrEmpty(actionType))
-                {
-                    throw new WorkflowValidationException("Action type cannot be empty", "INVALID_ACTION_TYPE");
-                }
-
-                if (!_actionTypes.TryGetValue(actionType, out var implementationType))
-                {
-                    throw new WorkflowValidationException($"No action implementation found for type: {actionType}", "ACTION_NOT_FOUND");
-                }
-
-                
                 var action = (IWorkflowAction)ActivatorUtilities.CreateInstance(s.ServiceProvider, implementationType);
                 return action;
             }
@@ -59,14 +52,9 @@ namespace AppWorkflow.Infrastructure.Services
 
         public void RegisterAction<TAction>(string actionType) where TAction : IWorkflowAction
         {
-            if (string.IsNullOrEmpty(actionType))
-                throw new ArgumentNullException(nameof(actionType));
-
-            _actionTypes[actionType] = typeof(TAction);
+            Actions.WorkflowActionRegistry.Register<TAction>(actionType);
             _logger.LogInformation("Registered action type: {ActionType} -> {ImplementationType}",
                 actionType, typeof(TAction).Name);
         }
-
-        
     }
 }

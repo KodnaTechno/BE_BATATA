@@ -1,6 +1,6 @@
 ﻿using AppWorkflow.Common.Exceptions;
 using AppWorkflow.Core.Domain.Data;
-using AppWorkflow.Core.Domain.Schema;
+
 using AppWorkflow.Infrastructure.Data.Context;
 using AppWorkflow.Infrastructure.Repositories.IRepository;
 using Microsoft.EntityFrameworkCore;
@@ -68,10 +68,12 @@ namespace AppWorkflow.Infrastructure.Repositories
                 return await _context.Workflows
                     .Include(w => w.Steps)
                     .Include(w => w.Variables)
-                    .Where(w => w.ModuleType == moduleType &&
-                               w.IsLatestVersion &&
-                               !w.IsDeleted &&
-                               w.TriggerConfigs.Any(c=>c.Type == triggerType))
+                    .Where(w =>
+                        w.IsLatestVersion &&
+                        !w.IsDeleted &&
+                        (w.TriggerConfigs != null && w.TriggerConfigs.Any(c => c.Type == triggerType)) &&
+                        (string.IsNullOrEmpty(moduleType) ? string.IsNullOrEmpty(w.ModuleType) : w.ModuleType == moduleType)
+                    )
                     .ToListAsync();
             }
             catch (Exception ex)
