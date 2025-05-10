@@ -8,8 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace AppWorkflow.Infrastructure.Repositories.IRepository
-{
-    public interface IWorkflowRepository
+{    public interface IWorkflowRepository
     {
         Task<Workflow> GetByIdAsync(Guid id);
         Task<IEnumerable<Workflow>> GetWorkflowsByTriggerTypeAsync(string triggerType, string moduleType);
@@ -22,5 +21,6 @@ namespace AppWorkflow.Infrastructure.Repositories.IRepository
         Task DeleteAsync(Guid id);
         Task<bool> ExistsAsync(Guid id);
         Task<Workflow> FindByActionIdAsync(Guid id, CancellationToken cancellationToken);
+        Task<int> GetCountAsync();
     }
 }

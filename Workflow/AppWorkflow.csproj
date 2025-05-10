@@ -20,4 +20,7 @@
     <ProjectReference Include="..\Module\Module.csproj" />
     <ProjectReference Include="..\Events\Events.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Core\Domain\" />
+  </ItemGroup>
 </Project>

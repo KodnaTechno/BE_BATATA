@@ -1,4 +1,5 @@
 using AppWorkflow.Common.DTO;
+using AppWorkflow.Common.Enums;
 using AppWorkflow.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System;

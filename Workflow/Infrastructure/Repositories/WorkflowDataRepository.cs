@@ -74,6 +74,58 @@ namespace AppWorkflow.Infrastructure.Repositories
                 throw new RepositoryException("Error retrieving active workflow instances", ex);
             }
         }
+        
+        public async Task<IEnumerable<WorkflowData>> GetActiveInstancesAsync(int maxResults)
+        {
+            try
+            {
+                return await _context.WorkflowData
+                    .Include(w => w.StepInstances)
+                    .Where(w => w.Status == WorkflowStatus.Active && !w.IsDeleted)
+                    .OrderByDescending(w => w.UpdatedAt)
+                    .Take(maxResults)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error retrieving {maxResults} active workflow instances");
+                throw new RepositoryException($"Error retrieving {maxResults} active workflow instances", ex);
+            }
+        }
+        
+        public async Task<IEnumerable<WorkflowData>> GetAllInstancesAsync()
+        {
+            try
+            {
+                return await _context.WorkflowData
+                    .Include(w => w.StepInstances)
+                    .Where(w => !w.IsDeleted)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving all workflow instances");
+                throw new RepositoryException("Error retrieving all workflow instances", ex);
+            }
+        }
+        
+        public async Task<IEnumerable<WorkflowData>> GetRecentInstancesAsync(int maxResults)
+        {
+            try
+            {
+                return await _context.WorkflowData
+                    .Include(w => w.StepInstances)
+                    .Where(w => !w.IsDeleted)
+                    .OrderByDescending(w => w.CreatedAt)
+                    .Take(maxResults)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error retrieving {maxResults} recent workflow instances");
+                throw new RepositoryException($"Error retrieving {maxResults} recent workflow instances", ex);
+            }
+        }
 
         public async Task<IEnumerable<WorkflowData>> GetInstancesByVersionAsync(string version)
         {
@@ -522,6 +574,105 @@ namespace AppWorkflow.Infrastructure.Repositories
         {
             var cacheKey = $"workflow-instance:{instanceId}";
             await _cache.RemoveAsync(cacheKey);
+        }
+
+        public async Task<IEnumerable<WorkflowData>> GetFailedInstancesAsync(int maxResults)
+        {
+            try
+            {
+                return await _context.WorkflowData
+                    .Include(w => w.StepInstances)
+                    .Where(w => !w.IsDeleted && w.Status == WorkflowStatus.Failed)
+                    .OrderByDescending(w => w.UpdatedAt)
+                    .Take(maxResults)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error retrieving {maxResults} failed workflow instances");
+                throw new RepositoryException($"Error retrieving {maxResults} failed workflow instances", ex);
+            }
+        }
+        
+        public async Task<IEnumerable<WorkflowData>> GetRecentCompletedInstancesAsync(int count, int? daysBack = null)
+        {
+            try
+            {
+                var query = _context.WorkflowData
+                    .Include(w => w.StepInstances)
+                    .Where(w => !w.IsDeleted && w.Status == WorkflowStatus.Completed);
+                
+                if (daysBack.HasValue)
+                {
+                    var cutoffDate = DateTime.UtcNow.AddDays(-daysBack.Value);
+                    query = query.Where(w => w.CompletedAt >= cutoffDate);
+                }
+                
+                return await query
+                    .OrderByDescending(w => w.CompletedAt)
+                    .Take(count)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error retrieving {count} recent completed workflow instances");
+                throw new RepositoryException($"Error retrieving {count} recent completed workflow instances", ex);
+            }
+        }
+        
+        public async Task<IEnumerable<WorkflowData>> SearchInstancesAsync(
+            string keyword, 
+            DateTime? startDate, 
+            DateTime? endDate, 
+            WorkflowStatus? status, 
+            string? version, 
+            int maxResults)
+        {
+            try
+            {
+                var query = _context.WorkflowData
+                    .Include(w => w.StepInstances)
+                    .Where(w => !w.IsDeleted);
+            
+                // Apply filters
+                if (!string.IsNullOrEmpty(keyword))
+                {
+                    query = query.Where(w => 
+                        w.WorkflowId.ToString().Contains(keyword) || 
+                        w.WorkflowVersion.Contains(keyword)
+                    );
+                }
+            
+                if (startDate.HasValue)
+                {
+                    query = query.Where(w => w.CreatedAt >= startDate.Value);
+                }
+            
+                if (endDate.HasValue)
+                {
+                    query = query.Where(w => w.CreatedAt <= endDate.Value);
+                }
+            
+                if (status.HasValue)
+                {
+                    query = query.Where(w => w.Status == status.Value);
+                }
+            
+                if (!string.IsNullOrEmpty(version))
+                {
+                    query = query.Where(w => w.WorkflowVersion == version);
+                }
+            
+                return await query
+                    .OrderByDescending(w => w.CreatedAt)
+                    .Take(maxResults)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error searching workflow instances");
+                throw new RepositoryException("Error searching workflow instances", ex);
+            }
         }
     }
 }

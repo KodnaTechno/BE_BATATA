@@ -39,6 +39,7 @@ public static class WorkflowServiceRegistration
 
         //Database Context
         // Core Services -Scoped
+        services.AddScoped<IWorkflowEventHandler, WorkflowEventHandler>();
         services.AddScoped<IWorkflowEngine, WorkflowEngine>();
         services.AddScoped<IWorkflowStateManager, WorkflowStateManager>();
         services.AddScoped<IWorkflowValidator, WorkflowValidator>();
@@ -71,8 +72,9 @@ public static class WorkflowServiceRegistration
         // Register missing services for monitoring, recovery and checkpoints
         services.AddScoped<IWorkflowCheckpointRepository, WorkflowCheckpointRepository>();
         services.AddScoped<IWorkflowRecoveryService, WorkflowRecoveryService>();
-        services.AddScoped<IWorkflowMonitoringService, WorkflowMonitoringService>();        services.AddScoped<AppWorkflow.Triggers.TriggerManager>();
-        services.AddScoped<AppWorkflow.Infrastructure.Triggers.TriggerManager>();
+        services.AddScoped<IWorkflowMonitoringService, WorkflowMonitoringService>();
+
+        services.AddScoped<AppWorkflow.Triggers.TriggerManager>();
 
         // Register all workflow actions
         RegisterWorkflowActions(services, actions);
@@ -98,64 +100,44 @@ public static class WorkflowServiceRegistration
 
     private static void RegisterWorkflowTriggers(IServiceCollection services)
     {
-        // Register workflow trigger handlers
-        services.AddScoped<IWorkflowTriggerHandler, AppWorkflow.Infrastructure.Triggers.EventTriggerHandler>();
-        services.AddScoped<IWorkflowTriggerHandler, AppWorkflow.Infrastructure.Triggers.ScheduledTriggerHandler>();
-        services.AddScoped<IWorkflowTriggerHandler, AppWorkflow.Infrastructure.Triggers.ManualTriggerHandler>();
-        services.AddScoped<IWorkflowTriggerHandler, AppWorkflow.Infrastructure.Triggers.ApiTriggerHandler>();
-
-        // Additional handler registrations as needed
+        services.AddScoped<IWorkflowTrigger, ScheduledTrigger>();
+        services.AddScoped<IWorkflowTrigger, ManualTrigger>();
+        services.AddScoped<IWorkflowTrigger, ExternalTrigger>();
+        services.AddScoped<IWorkflowTrigger, EventTrigger>();
     }
 
-    // Add UseWorkflowSystem extension method for IApplicationBuilder
-    public static IApplicationBuilder UseWorkflowSystem(this IApplicationBuilder app)
+    private static void ConfigureDB(IServiceCollection services, IConfiguration configuration)
     {
-        // Initialize any middleware or startup tasks required by the workflow system
-        app.UseMiddleware<WorkflowExceptionMiddleware>();
-        
-        // Initialize workflow engine, triggers, etc.
-        var serviceProvider = app.ApplicationServices;
-        var logger = serviceProvider.GetRequiredService<ILogger<WorkflowEngine>>();
-        
-        logger.LogInformation("Workflow system initialized");
-        
-        return app;
-    }
-}
+        string? connectionString = configuration.GetConnectionString("DefaultConnection");
+        string? databaseProvider = configuration["DatabaseProvider"];
 
-// Define the middleware for workflow exceptions
-public class WorkflowExceptionMiddleware
-{
-    private readonly RequestDelegate _next;
-    private readonly ILogger<WorkflowExceptionMiddleware> _logger;
-
-    public WorkflowExceptionMiddleware(RequestDelegate next, ILogger<WorkflowExceptionMiddleware> logger)
-    {
-        _next = next;
-        _logger = logger;
-    }
-
-    public async Task InvokeAsync(HttpContext context)
-    {
-        try
+        if (string.IsNullOrEmpty(connectionString) || string.IsNullOrEmpty(databaseProvider))
         {
-            await _next(context);
+            throw new InvalidOperationException("Database connection string or provider is not configured.");
         }
-        catch (WorkflowException ex)
+
+        switch (databaseProvider)
         {
-            _logger.LogError(ex, "Workflow exception occurred");
-            
-            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            context.Response.ContentType = "application/json";
-            
-            var errorResponse = new
+            case "SqlServer":
+                ConfigureSqlServerDbContext(services, connectionString);
+                break;
+            case "PostgreSQL":
+                //ConfigurePostgreSQLDbContext(services, connectionString);
+                break;
+            default:
+                throw new Exception("Invalid database provider");
+        }
+    }
+
+    private static void ConfigureSqlServerDbContext(IServiceCollection services, string connectionString)
+    {
+        services.AddDbContext<WorkflowDbContext>(options =>
+        {
+            options.UseSqlServer(connectionString, sqlOptions =>
             {
-                Message = "A workflow error occurred",
-                Error = ex.Message,
-              
-            };
-            
-            await context.Response.WriteAsJsonAsync(errorResponse);
-        }
+                sqlOptions.MigrationsAssembly("AppMigration.SqlServer");
+                sqlOptions.MigrationsHistoryTable("__Workflow_MigrationTable");
+            });
+        });
     }
 }

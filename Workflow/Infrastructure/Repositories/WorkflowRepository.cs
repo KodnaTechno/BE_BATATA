@@ -229,5 +229,18 @@ namespace AppWorkflow.Infrastructure.Repositories
                         )
                         .SingleOrDefault();
         }
+
+        public async Task<int> GetCountAsync()
+        {
+            try
+            {
+                return await _context.Workflows.CountAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting workflow count");
+                throw new RepositoryException("Failed to get workflow count", ex);
+            }
+        }
     }
 }

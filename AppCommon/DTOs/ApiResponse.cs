@@ -6,6 +6,7 @@
         public T Data { get; set; }
         public string ErrorCode { get; set; }
         public string ErrorMessage { get; set; }
+        public object ErorrHandlingOptions { get; set; }
 
         public static ApiResponse<T> Success(T data) => new() { IsSuccess = true, Data = data };
         public static ApiResponse<T> Fail(string errorCode, string errorMessage) => new()
@@ -13,6 +14,12 @@
             IsSuccess = false,
             ErrorCode = errorCode,
             ErrorMessage = errorMessage
+        };
+        public static ApiResponse<T> Fail(string errorCode, object erorrHandlingOptions) => new()
+        {
+            IsSuccess = false,
+            ErrorCode = errorCode,
+            ErorrHandlingOptions = erorrHandlingOptions
         };
     }
 

@@ -37,7 +37,7 @@ builder.Services.AddHangfire(builder.Configuration);
 
 
 builder.Services.AddJobsProcessor();
-WorkflowServiceRegistration.AddWorkflowInfrastructure(builder.Services,builder.Configuration,new List<Type> { });
+//WorkflowServiceRegistration.AddWorkflowInfrastructure(builder.Services,builder.Configuration,new List<Type> { });
 builder.Services.AddScoped<IDefaultWorkspaceSetupService, DefaultWorkspaceSetupService>();
 builder.Services.AddScoped<IWorkflowManagementService,  WorkflowManagementService>();
 builder.Services.AddScoped<IDefaultModuleSetupService, DefaultModuleSetupService>();
