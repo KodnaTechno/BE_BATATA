@@ -27,13 +27,49 @@ using Microsoft.OpenApi.Models;
 
 namespace Api.Extensions
 {
+    #region Program Extensions
     public static class ProgramExtensions
     {
+        #region Add Custom Services
         public static void AddCustomServices(this IServiceCollection services, IConfiguration configuration)
         {
+            // Add culture and configuration
             services.AddCulture();
             AppConfigration.Configure(configuration);
+
+            // Add modules and identity
             services.AddModule(configuration);
+            ConfigureIdentity(services, configuration);
+
+            // Add database contexts
+            ConfigureDatabaseContexts(services);
+
+            // Add configuration settings
+            services.Configure<TimezoneSetting>(configuration.GetSection("timezoneSetting"));
+
+            // Add Consul client
+            ConfigureConsulClient(services, configuration);
+
+            // Add application services
+            services.AddScoped<AppConfigSeeder>();
+            services.AddScoped<ApplicationManager>();
+            services.AddImportServices();
+            services.AddHttpContextAccessor();
+            services.AddApplication();
+            services.AddFlexibleCaching(configuration);
+            services.AddFileProvider(configuration);
+
+            // Add session configuration
+            ConfigureSession(services);
+
+            // Add workflow infrastructure
+            ConfigureWorkflowInfrastructure(services, configuration);
+        }
+        #endregion
+
+        #region Private Configuration Methods
+        private static void ConfigureIdentity(IServiceCollection services, IConfiguration configuration)
+        {
             services.AddAppIdentity(configuration, options =>
             {
                 options.UseSqlServer(AppConfigration.IdentityDbConnection, sqlOptions =>
@@ -42,7 +78,10 @@ namespace Api.Extensions
                     sqlOptions.MigrationsHistoryTable("__AppIdentity_MigrationTable");
                 });
             });
+        }
 
+        private static void ConfigureDatabaseContexts(IServiceCollection services)
+        {
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(AppConfigration.AppDbConnection, sqlOptions =>
@@ -51,7 +90,7 @@ namespace Api.Extensions
                     sqlOptions.MigrationsHistoryTable("__App_MigrationTable");
                 });
             });
-            
+
             services.AddDbContext<WorkflowDbContext>(options =>
             {
                 options.UseSqlServer(AppConfigration.AppDbConnection, sqlOptions =>
@@ -60,34 +99,28 @@ namespace Api.Extensions
                     sqlOptions.MigrationsHistoryTable("__AppWorkFlow_MigrationTable");
                 });
             });
+        }
 
-            services.Configure<TimezoneSetting>(configuration.GetSection("timezoneSetting"));
-
-
+        private static void ConfigureConsulClient(IServiceCollection services, IConfiguration configuration)
+        {
             services.AddSingleton<IConsulClient, ConsulClient>(p => new ConsulClient(consulConfig =>
             {
                 consulConfig.Address = new Uri(configuration["Consul:Host"]);
             }));
+        }
 
-            services.AddScoped<AppConfigSeeder>();
-
-            services.AddScoped<ApplicationManager>();
-
-            services.AddImportServices();
-
+        private static void ConfigureSession(IServiceCollection services)
+        {
             services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout
                 options.Cookie.HttpOnly = true; // Set HttpOnly for security
                 options.Cookie.IsEssential = true; // Make the session cookie essential
             });
+        }
 
-            services.AddHttpContextAccessor();
-            services.AddApplication();
-
-            services.AddFlexibleCaching(configuration);
-
-            services.AddFileProvider(configuration);
+        private static void ConfigureWorkflowInfrastructure(IServiceCollection services, IConfiguration configuration)
+        {
             var assembly = typeof(CreateModuleAction).Assembly;
             Type baseType = typeof(WorkflowActionBase);
             var derivedTypes = assembly.GetTypes()
@@ -95,7 +128,9 @@ namespace Api.Extensions
                                        .ToList();
             services.AddWorkflowInfrastructure(configuration, derivedTypes);
         }
+        #endregion
 
+        #region Application Methods
         public static void ApplyMigrations(this IApplicationBuilder app, params Type[] dbContexts)
         {
             using var scope = app.ApplicationServices.CreateScope();
@@ -113,13 +148,16 @@ namespace Api.Extensions
             await seeder.SeedAsync();
         }
 
-
         public static void ConfigureTimezoneSettings(this WebApplication app)
         {
             var timezoneSettings = app.Services.GetRequiredService<IOptionsMonitor<TimezoneSetting>>();
             DateTimeExtensions.ConfigureTimezone(timezoneSettings);
         }
+        #endregion
     }
+    #endregion
+
+    #region Serilog Extensions
     public static class SerilogExtensions
     {
         public static WebApplicationBuilder AddSerilogConfiguration(this WebApplicationBuilder builder)
@@ -134,8 +172,9 @@ namespace Api.Extensions
             return builder;
         }
     }
+    #endregion
 
-
+    #region Consul Extensions
     public static class ConsulExtensions
     {
         public static WebApplicationBuilder AddConsulConfiguration(this WebApplicationBuilder builder)
@@ -167,5 +206,5 @@ namespace Api.Extensions
             return builder;
         }
     }
-
+    #endregion
 }
