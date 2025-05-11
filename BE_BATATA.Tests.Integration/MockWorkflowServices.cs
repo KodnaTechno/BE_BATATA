@@ -380,7 +380,12 @@ namespace BE_BATATA.Tests.Integration
                 .Returns(true);
             ScheduledTriggerHandler
                 .Setup(h => h.HandleTriggerAsync(It.IsAny<TriggerContext>()))
-                .ReturnsAsync((TriggerContext ctx) => true);
+                .ReturnsAsync((TriggerContext ctx) => {
+                    // Simulate sending an email when the scheduled trigger fires
+                    // You can expand this logic as needed for your tests
+                    Console.WriteLine($"[Mock] Scheduled trigger fired. Sending email to: test@example.com, Subject: Workflow Notification");
+                    return true;
+                });
             ScheduledTriggerHandler
                 .Setup(h => h.RegisterTriggerAsync(It.IsAny<TriggerConfiguration>()))
                 .Returns(Task.CompletedTask);
