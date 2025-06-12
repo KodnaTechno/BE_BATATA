@@ -12,8 +12,24 @@ public class NotificationAction : WorkflowActionBase
 
     public override async Task<ActionResult> ExecuteAsync(ActionContext context)
     {
-        // TODO: Implement notification logic using config
-        return await CreateSuccessResult("Notification sent");
+        try
+        {
+            // TODO: Implement notification logic using config
+            return new ActionResult {
+                Success = true,
+                Message = "Notification sent",
+                Command = StepCommandType.Completed
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ActionResult {
+                Success = false,
+                Exception = ex,
+                Message = $"Failed to send notification: {ex.Message}",
+                Command = StepCommandType.Failed
+            };
+        }
     }
 
     public override Task<ValidationResult> ValidateConfigurationAsync(JsonDocument config)

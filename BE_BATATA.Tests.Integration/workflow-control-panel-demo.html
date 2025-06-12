@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workflow Control Panel Demo</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f4f6fa;
+      margin: 0;
+      padding: 0;
+    }
+    .navbar {
+      background: #2d3e50;
+      color: #fff;
+      padding: 16px 32px;
+      font-size: 1.2em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .navbar .nav {
+      display: flex;
+      gap: 24px;
+    }
+    .navbar .nav a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .navbar .nav a:hover {
+      color: #4fc3f7;
+    }
+    .dashboard {
+      display: flex;
+      gap: 32px;
+      padding: 32px;
+      background: #fff;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .card {
+      background: #f9fafc;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+      padding: 24px 32px;
+      min-width: 140px;
+      text-align: center;
+    }
+    .card .value {
+      font-size: 2em;
+      font-weight: bold;
+      color: #1976d2;
+    }
+    .card .label {
+      color: #888;
+      font-size: 1em;
+    }
+    .main-content {
+      display: flex;
+      padding: 32px;
+      gap: 32px;
+    }
+    .workflow-list {
+      flex: 2;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+      padding: 24px;
+    }
+    .workflow-list h2 {
+      margin-top: 0;
+      font-size: 1.3em;
+      color: #2d3e50;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+    }
+    th, td {
+      padding: 10px 8px;
+      text-align: left;
+    }
+    th {
+      background: #f4f6fa;
+      color: #555;
+      font-weight: 600;
+    }
+    tr {
+      border-bottom: 1px solid #eee;
+    }
+    .status {
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.95em;
+      font-weight: 500;
+      display: inline-block;
+    }
+    .status.active { background: #e3f7e6; color: #388e3c; }
+    .status.failed { background: #fdecea; color: #d32f2f; }
+    .status.completed { background: #e3f2fd; color: #1976d2; }
+    .status.waiting { background: #fff8e1; color: #ff9800; }
+    .status.paused { background: #e1f5fe; color: #0288d1; }
+    .status.skipped { background: #f3e5f5; color: #8e24aa; }
+    .status.retry { background: #fff3e0; color: #f57c00; }
+    .actions button {
+      background: #1976d2;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 6px 14px;
+      margin-right: 6px;
+      cursor: pointer;
+      font-size: 0.95em;
+      transition: background 0.2s;
+    }
+    .actions button:hover {
+      background: #1565c0;
+    }
+    .workflow-details {
+      flex: 1.2;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+      padding: 24px;
+    }
+    .workflow-details h3 {
+      margin-top: 0;
+      color: #1976d2;
+    }
+    .step-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .step-list li {
+      margin-bottom: 10px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      background: #f4f6fa;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .step-list .step-status {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .step-list .step-status.completed { background: #4caf50; }
+    .step-list .step-status.active { background: #1976d2; }
+    .step-list .step-status.failed { background: #d32f2f; }
+    .step-list .step-status.waiting { background: #ffb300; }
+    .step-list .step-status.paused { background: #0288d1; }
+    .step-list .step-status.skipped { background: #8e24aa; }
+    .step-list .step-status.retry { background: #f57c00; }
+    .email-action {
+      margin-top: 24px;
+      background: #e3f2fd;
+      padding: 16px;
+      border-radius: 6px;
+    }
+    .email-action label {
+      display: block;
+      margin-bottom: 6px;
+      color: #1976d2;
+      font-weight: 500;
+    }
+    .email-action input, .email-action textarea {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #b3c6e0;
+      border-radius: 4px;
+      font-size: 1em;
+    }
+    .email-action button {
+      background: #388e3c;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 7px 18px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .email-action button:hover {
+      background: #2e7031;
+    }
+    @media (max-width: 900px) {
+      .main-content { flex-direction: column; }
+      .dashboard { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <div><b>Workflow Control Panel</b></div>
+    <div class="nav">
+      <a href="#">Dashboard</a>
+      <a href="#">Workflows</a>
+      <a href="#">Instances</a>
+      <a href="#">Triggers</a>
+      <a href="#">Versions</a>
+    </div>
+  </div>
+  <div class="dashboard">
+    <div class="card">
+      <div class="value">20</div>
+      <div class="label">Active</div>
+    </div>
+    <div class="card">
+      <div class="value">25</div>
+      <div class="label">Completed</div>
+    </div>
+    <div class="card">
+      <div class="value">5</div>
+      <div class="label">Failed</div>
+    </div>
+    <div class="card">
+      <div class="value">2</div>
+      <div class="label">Created Today</div>
+    </div>
+  </div>
+  <div class="main-content">
+    <div class="workflow-list">
+      <h2>Workflows</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Version</th>
+            <th>Last Run</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Onboarding</td>
+            <td><span class="status active">Active</span></td>
+            <td>2</td>
+            <td>1 min ago</td>
+            <td class="actions">
+              <button>View</button>
+              <button>Edit</button>
+            </td>
+          </tr>
+          <tr>
+            <td>Payroll</td>
+            <td><span class="status failed">Failed</span></td>
+            <td>1</td>
+            <td>2 days ago</td>
+            <td class="actions">
+              <button>View</button>
+              <button>Retry</button>
+            </td>
+          </tr>
+          <tr>
+            <td>Leave Request</td>
+            <td><span class="status completed">Completed</span></td>
+            <td>3</td>
+            <td>5 hours ago</td>
+            <td class="actions">
+              <button>View</button>
+            </td>
+          </tr>
+          <tr>
+            <td>Expense Approval</td>
+            <td><span class="status waiting">Waiting</span></td>
+            <td>1</td>
+            <td>Just now</td>
+            <td class="actions">
+              <button>View</button>
+              <button>Approve</button>
+            </td>
+          </tr>
+          <tr>
+            <td>Document Review</td>
+            <td><span class="status paused">Paused</span></td>
+            <td>2</td>
+            <td>10 min ago</td>
+            <td class="actions">
+              <button>View</button>
+              <button>Resume</button>
+            </td>
+          </tr>
+          <tr>
+            <td>Data Sync</td>
+            <td><span class="status skipped">Skipped</span></td>
+            <td>1</td>
+            <td>1 hour ago</td>
+            <td class="actions">
+              <button>View</button>
+            </td>
+          </tr>
+          <tr>
+            <td>Report Generation</td>
+            <td><span class="status retry">Retry</span></td>
+            <td>1</td>
+            <td>3 min ago</td>
+            <td class="actions">
+              <button>View</button>
+              <button>Retry</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="margin-top:18px; font-size:0.95em; color:#888;">
+        <b>Status Legend:</b>
+        <span class="status active">Active</span>
+        <span class="status completed">Completed</span>
+        <span class="status failed">Failed</span>
+        <span class="status waiting">Waiting</span>
+        <span class="status paused">Paused</span>
+        <span class="status skipped">Skipped</span>
+        <span class="status retry">Retry</span>
+      </div>
+    </div>
+    <div class="workflow-details">
+      <h3>Workflow: Onboarding</h3>
+      <ul class="step-list">
+        <li><span class="step-status completed"></span> Start</li>
+        <li><span class="step-status completed"></span> Collect Info</li>
+        <li><span class="step-status active"></span> Manager Approval</li>
+        <li><span class="step-status waiting"></span> HR Approval (Waiting)</li>
+        <li><span class="step-status paused"></span> IT Setup (Paused)</li>
+        <li><span class="step-status skipped"></span> Optional Training (Skipped)</li>
+        <li><span class="step-status retry"></span> Send Welcome Email (Retry)</li>
+        <li><span class="step-status"></span> End</li>
+      </ul>
+      <div class="email-action">
+        <label for="to">Send Email Action</label>
+        <input id="to" type="email" placeholder="To: user@example.com" value="test@example.com" readonly />
+        <input id="subject" type="text" placeholder="Subject" value="Welcome to the Company!" readonly />
+        <textarea id="body" rows="3" placeholder="Email body..." readonly>Hi, welcome to the company. Your onboarding is in progress.</textarea>
+        <button disabled>Send Email</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

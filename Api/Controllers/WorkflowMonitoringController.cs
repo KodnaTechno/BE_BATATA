@@ -167,5 +167,28 @@ namespace Api.Controllers
                     "An error occurred while searching instances");
             }
         }
+
+        [HttpGet("monitoring/active")]
+        public async Task<IActionResult> GetActiveWorkflows()
+        {
+            var active = await _monitoringService.GetActiveWorkflowInstancesAsync();
+            return Ok(active);
+        }
+
+        [HttpGet("monitoring/metrics")]
+        public async Task<IActionResult> GetMetrics()
+        {
+            var metrics = await _monitoringService.GetPerformanceMetricsAsync();
+            return Ok(metrics);
+        }
+
+        [HttpGet("monitoring/updates")]
+        public async Task<IActionResult> GetUpdates([FromQuery] string since)
+        {
+            // TODO: Implement polling logic to return updates since the given timestamp
+            // For now, return all active instances as a placeholder
+            var active = await _monitoringService.GetActiveWorkflowInstancesAsync();
+            return Ok(active);
+        }
     }
 }

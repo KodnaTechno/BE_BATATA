@@ -58,18 +58,27 @@ namespace Application.AppWorkflowActions
                 // Create and save approval request
                 var approvalId = await _approvalService.CreateApprovalRequestAsync(approvalRequest);
 
-                // Return result indicating workflow should pause
-                return await CreateSuccessResult("Approval request created", new Dictionary<string, object>
-                {
-                    ["approvalId"] = approvalId,
-                    ["status"] = "pending",
-                    ["targetUsers"] = targetUsers
-                });
+                // Return result indicating workflow should pause/wait for approval
+                return new ActionResult {
+                    Success = true,
+                    Message = "Approval request created",
+                    OutputVariables = new Dictionary<string, object> {
+                        ["approvalId"] = approvalId,
+                        ["status"] = "pending",
+                        ["targetUsers"] = targetUsers
+                    },
+                    Command = StepCommandType.Waiting
+                };
             }
             catch (Exception ex)
             {
                 LogActionError(context, ex);
-                return await CreateFailureResult($"Failed to create approval request: {ex.Message}", ex);
+                return new ActionResult {
+                    Success = false,
+                    Exception = ex,
+                    Message = $"Failed to create approval request: {ex.Message}",
+                    Command = StepCommandType.Failed
+                };
             }
         }
 
@@ -179,5 +188,4 @@ namespace Application.AppWorkflowActions
             required = new[] { "type", "timeoutInHours" }
         };
     }
-}
 }

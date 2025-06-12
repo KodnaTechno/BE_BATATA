@@ -42,6 +42,12 @@ builder.Services.AddScoped<IDefaultWorkspaceSetupService, DefaultWorkspaceSetupS
 builder.Services.AddScoped<IWorkflowManagementService,  WorkflowManagementService>();
 builder.Services.AddScoped<IDefaultModuleSetupService, DefaultModuleSetupService>();
 builder.Services.AddHttpContextAccessor();
+                               
+// Register FormulaCalculationService for DI
+builder.Services.AddScoped<Module.Service.FormulaCalculationService>();
+// Register the job
+builder.Services.AddScoped<Hangfire.Api.Jobs.FormulaRecalculationJob>();
+
 var app = builder.Build();
 
 ServiceActivator.Configure(app.Services);
@@ -58,6 +64,11 @@ app.UseCustomHangfireDashboard(builder.Configuration);
 
 JobContext.ActivateHangfireJobs();
 
+using (var scope = app.Services.CreateScope())
+{
+    var job = scope.ServiceProvider.GetRequiredService<Hangfire.Api.Jobs.FormulaRecalculationJob>();
+    job.Define();
+}
 
 var summaries = new[]
 {

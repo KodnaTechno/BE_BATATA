@@ -42,11 +42,20 @@ namespace Application.AppWorkflowActions
             {
                 db.ModuleData.Add(moduleData);
                 await db.SaveChangesAsync();
-                return new ActionResult { Success = true, Message = "Module created successfully" };
+                return new ActionResult {
+                    Success = true,
+                    Message = "Module created successfully",
+                    Command = StepCommandType.Completed
+                };
             }
             catch (Exception ex)
             {
-                return new ActionResult { Success = false, Exception = ex, Message = ex.Message };
+                return new ActionResult {
+                    Success = false,
+                    Exception = ex,
+                    Message = ex.Message,
+                    Command = StepCommandType.Failed
+                };
             }
         }
 

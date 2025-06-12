@@ -121,7 +121,6 @@ public class WorkflowEngine: IWorkflowEngine
 
     public async Task<StepExecutionResult> ExecuteStepAsync(Guid instanceId, Guid stepId)
     {
-
         using var scope = _serviceProvider.CreateScope();
         WorkflowData? instance = null;
         try
@@ -134,7 +133,6 @@ public class WorkflowEngine: IWorkflowEngine
             if (step.IsParallel && step.ParallelSteps != null && step.ParallelSteps.Count > 0)
             {
                 var parallelResult = await ExecuteParallelStepsAsync(instance, step);
-                // After all parallel steps, continue as normal (could add join logic here)
                 return parallelResult;
             }
 
@@ -145,7 +143,7 @@ public class WorkflowEngine: IWorkflowEngine
                 ModuleData = instance.ModuleData ?? new WorkflowModuleData(),
                 Variables = instance.Variables,
                 Status = instance.Status,
-                Metadata= workflow.Metadata
+                Metadata = workflow.Metadata
             };
 
             // Update step status
@@ -156,106 +154,113 @@ public class WorkflowEngine: IWorkflowEngine
             var action = _actionResolver.ResolveAction(step.ActionType, scope);
             var actionContext = CreateActionContext(instance, step, context);
 
-            // Execute the action
             if (_eventHandler != null)
                 await _eventHandler.OnStepStartedAsync(instanceId, stepId);
             var result = await ExecuteActionWithRetryAsync(action, actionContext, step.RetryPolicy);
 
-            if (result.Success)
+            // Update instance variables with action outputs
+            foreach (var (key, value) in result.OutputVariables)
             {
-                // Update instance variables with action outputs
-                foreach (var (key, value) in result.OutputVariables)
-                {
-                    instance.Variables[key] = value;
-                }
+                instance.Variables[key] = value;
+            }
 
-                // Check if this is an approval action that needs to pause the workflow
-                if (step.ActionType == "Approval" && result.OutputVariables.ContainsKey("status")
-                    && result.OutputVariables["status"].ToString() == "pending")
-                {
-                    // Update workflow state for approval
+            // Handle command generically
+            switch (result.Command)
+            {
+                case StepCommandType.Waiting:
+                case StepCommandType.Paused:
                     instance.Status = WorkflowStatus.Suspended;
-                    instance.Variables["approvalId"] = result.OutputVariables["approvalId"];
-                    instance.Variables["approvalStep"] = stepId;
-
+                    foreach (var kv in result.CommandParameters)
+                        instance.Variables[kv.Key] = kv.Value;
                     await UpdateStepStatus(instance, stepId, StepStatus.Pending);
                     await _instanceRepository.UpdateAsync(instance);
-
                     return new StepExecutionResult
                     {
                         Success = true,
-                        Message = "Workflow paused for approval",
+                        Message = result.Message ?? "Workflow paused/waiting",
                         Status = StepStatus.Pending,
-                        NextStepId = stepId
+                        NextStepId = stepId,
+                        Command = result.Command,
+                        CommandParameters = result.CommandParameters,
+                        OutputVariables = result.OutputVariables,
+                        ExecutionTime = DateTime.UtcNow - context.StartTime
                     };
-                }
-
-                // Normal completion flow
-                await UpdateStepStatus(instance, stepId, StepStatus.Completed);
-                await _telemetry.TrackStepCompleted(instance, stepId, DateTime.UtcNow - context.StartTime, true);
-                if (_eventHandler != null)
-                    await _eventHandler.OnStepCompletedAsync(instanceId, stepId, new StepExecutionResult {
-                        Success = result.Success,
+                case StepCommandType.Skipped:
+                    await UpdateStepStatus(instance, stepId, StepStatus.Skipped);
+                    await _instanceRepository.UpdateAsync(instance);
+                    return new StepExecutionResult
+                    {
+                        Success = true,
+                        Message = result.Message ?? "Step skipped",
+                        Status = StepStatus.Skipped,
+                        Command = result.Command,
+                        CommandParameters = result.CommandParameters,
+                        OutputVariables = result.OutputVariables,
+                        ExecutionTime = DateTime.UtcNow - context.StartTime
+                    };
+                case StepCommandType.Failed:
+                    await HandleStepFailure(instance, step, result.Exception ?? new Exception(result.Message ?? "Step failed"));
+                    await _telemetry.TrackStepCompleted(instance, stepId, DateTime.UtcNow - context.StartTime, false);
+                    await _instanceRepository.UpdateAsync(instance);
+                    if (_eventHandler != null)
+                        await _eventHandler.OnStepErrorAsync(instanceId, stepId, result.Exception ?? new Exception(result.Message ?? "Step failed"));
+                    return new StepExecutionResult
+                    {
+                        Success = false,
                         Message = result.Message ?? string.Empty,
+                        Error = result.Exception ?? new Exception(result.Message ?? "Step failed"),
+                        Status = StepStatus.Failed,
+                        Command = result.Command,
+                        CommandParameters = result.CommandParameters,
+                        OutputVariables = result.OutputVariables,
+                        ExecutionTime = DateTime.UtcNow - context.StartTime
+                    };
+                case StepCommandType.Completed:
+                case StepCommandType.None:
+                default:
+                    await UpdateStepStatus(instance, stepId, StepStatus.Completed);
+                    await _telemetry.TrackStepCompleted(instance, stepId, DateTime.UtcNow - context.StartTime, true);
+                    if (_eventHandler != null)
+                        await _eventHandler.OnStepCompletedAsync(instanceId, stepId, new StepExecutionResult {
+                            Success = result.Success,
+                            Message = result.Message ?? string.Empty,
+                            OutputVariables = result.OutputVariables,
+                            Status = StepStatus.Completed,
+                            ExecutionTime = DateTime.UtcNow - context.StartTime,
+                            Command = result.Command,
+                            CommandParameters = result.CommandParameters
+                        });
+                    // Evaluate transitions
+                    var nextStep = await EvaluateTransitionsAsync(step, instance);
+                    if (nextStep != null)
+                    {
+                        instance.CurrentStepId = nextStep.Id;
+                        instance.Status = WorkflowStatus.Active;
+                        _ = Task.Run(() => ExecuteStepAsync(instance.Id, nextStep.Id));
+                    }
+                    else
+                    {
+                        await CompleteWorkflowAsync(instance, DateTime.UtcNow - instance.StartedAt);
+                        if (_eventHandler != null)
+                            await _eventHandler.OnWorkflowCompletedAsync(instance);
+                    }
+                    await _instanceRepository.UpdateAsync(instance);
+                    return new StepExecutionResult
+                    {
+                        Success = true,
+                        Message = result.Message ?? string.Empty,
+                        NextStepId = instance.CurrentStepId,
                         OutputVariables = result.OutputVariables,
                         Status = StepStatus.Completed,
+                        Command = result.Command,
+                        CommandParameters = result.CommandParameters,
                         ExecutionTime = DateTime.UtcNow - context.StartTime
-                    });
-
-                // Evaluate transitions
-                var nextStep = await EvaluateTransitionsAsync(step, instance);
-                if (nextStep != null)
-                {
-                    instance.CurrentStepId = nextStep.Id;
-                    instance.Status = WorkflowStatus.Active;
-
-                    // Start next step execution asynchronously
-                    _ = Task.Run(() => ExecuteStepAsync(instance.Id, nextStep.Id));
-                }
-                else
-                {
-                    // No more steps - complete workflow
-                    await CompleteWorkflowAsync(instance, DateTime.UtcNow - instance.StartedAt);
-                    if (_eventHandler != null)
-                        await _eventHandler.OnWorkflowCompletedAsync(instance);
-                }
-
-                await _instanceRepository.UpdateAsync(instance);
-
-                return new StepExecutionResult
-                {
-                    Success = true,
-                    Message = result.Message ?? string.Empty,
-                    NextStepId = instance.CurrentStepId,
-                    OutputVariables = result.OutputVariables,
-                    Status = StepStatus.Completed,
-                    ExecutionTime = DateTime.UtcNow - context.StartTime
-                };
-            }
-            else
-            {
-                // Handle failure
-                await HandleStepFailure(instance, step, result.Exception ?? new Exception(result.Message ?? "Step failed"));
-                await _telemetry.TrackStepCompleted(instance, stepId, DateTime.UtcNow - context.StartTime, false);
-                await _instanceRepository.UpdateAsync(instance);
-                if (_eventHandler != null)
-                    await _eventHandler.OnStepErrorAsync(instanceId, stepId, result.Exception ?? new Exception(result.Message ?? "Step failed"));
-
-                return new StepExecutionResult
-                {
-                    Success = false,
-                    Message = result.Message ?? string.Empty,
-                    Error = result.Exception ?? new Exception(result.Message ?? "Step failed"),
-                    Status = StepStatus.Failed,
-                    ExecutionTime = DateTime.UtcNow - context.StartTime
-                };
+                    };
             }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error executing step {StepId} for workflow instance {InstanceId}",
-                stepId, instanceId);
-
+            _logger.LogError(ex, "Error executing step {StepId} for workflow instance {InstanceId}", stepId, instanceId);
             if (instance == null)
                 instance = await _instanceRepository.GetByIdAsync(instanceId);
             if (instance != null)
@@ -268,7 +273,6 @@ public class WorkflowEngine: IWorkflowEngine
             }
             if (_eventHandler != null && instance != null)
                 await _eventHandler.OnStepErrorAsync(instanceId, stepId, ex);
-
             throw new WorkflowExecutionException(
                 $"Step execution failed: {ex.Message}",
                 instance?.WorkflowId ?? Guid.Empty,

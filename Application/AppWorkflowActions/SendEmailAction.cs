@@ -12,8 +12,24 @@ public class SendEmailAction : WorkflowActionBase
 
     public override async Task<ActionResult> ExecuteAsync(ActionContext context)
     {
-        // TODO: Implement email sending logic using config
-        return await CreateSuccessResult("Email sent");
+        try
+        {
+            // TODO: Implement email sending logic using config
+            return new ActionResult {
+                Success = true,
+                Message = "Email sent",
+                Command = StepCommandType.Completed
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ActionResult {
+                Success = false,
+                Exception = ex,
+                Message = $"Failed to send email: {ex.Message}",
+                Command = StepCommandType.Failed
+            };
+        }
     }
 
     public override Task<ValidationResult> ValidateConfigurationAsync(JsonDocument config)
